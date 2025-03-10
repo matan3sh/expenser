@@ -1,30 +1,14 @@
 'use client'
 
-import { ThemeToggle } from '@/components/theme/ThemeToggle'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
+import { useSettings } from '@/contexts/SettingsContext'
 import {
   Calendar,
   ChevronLeft,
   ChevronRight,
-  Coins,
   HomeIcon,
   LineChart,
   LogOut,
@@ -35,7 +19,7 @@ import {
   X,
 } from 'lucide-react'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 interface SidebarProps {
   className?: string
@@ -44,6 +28,14 @@ interface SidebarProps {
 }
 
 export function Sidebar({ className, isOpen = true, onClose }: SidebarProps) {
+  const { settings, updateSelectedMonth, isCurrentMonth } = useSettings()
+  const [mounted, setMounted] = useState(false)
+
+  // Prevent hydration mismatch
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
   // Dummy user data
   const user = {
     name: 'John Doe',
@@ -51,36 +43,35 @@ export function Sidebar({ className, isOpen = true, onClose }: SidebarProps) {
     avatar: '/images/avatar.png',
   }
 
-  // State for selected date
-  const [selectedDate, setSelectedDate] = useState(new Date())
-  const currentDate = new Date()
-  const [showConfigDialog, setShowConfigDialog] = useState(false)
-
   // Format the selected date
-  const selectedMonth = selectedDate.toLocaleString('en-US', {
-    month: 'long',
-  })
-  const selectedYear = selectedDate.getFullYear()
-
-  // Function to check if selected date is current month
-  const isCurrentMonth = () => {
-    return (
-      selectedDate.getMonth() === currentDate.getMonth() &&
-      selectedDate.getFullYear() === currentDate.getFullYear()
+  const getFormattedDate = () => {
+    const date = new Date(
+      settings.selectedMonth.year,
+      settings.selectedMonth.month
     )
+    return date.toLocaleString('en-US', {
+      month: 'long',
+      year: 'numeric',
+    })
   }
 
-  // Function to handle month navigation
   const handleMonthChange = (direction: 'prev' | 'next') => {
+    const currentMonth = settings.selectedMonth.month
+    const currentYear = settings.selectedMonth.year
+
     if (direction === 'prev') {
-      setSelectedDate(
-        new Date(selectedDate.getFullYear(), selectedDate.getMonth() - 1)
-      )
+      const newMonth = currentMonth === 0 ? 11 : currentMonth - 1
+      const newYear = currentMonth === 0 ? currentYear - 1 : currentYear
+      updateSelectedMonth(newMonth, newYear)
     } else if (direction === 'next' && !isCurrentMonth()) {
-      setSelectedDate(
-        new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1)
-      )
+      const newMonth = currentMonth === 11 ? 0 : currentMonth + 1
+      const newYear = currentMonth === 11 ? currentYear + 1 : currentYear
+      updateSelectedMonth(newMonth, newYear)
     }
+  }
+
+  if (!mounted) {
+    return null // Prevent hydration mismatch
   }
 
   return (
@@ -127,9 +118,6 @@ export function Sidebar({ className, isOpen = true, onClose }: SidebarProps) {
         <ScrollArea className="flex-1">
           <div className="p-4">
             <div className="mb-6">
-              <span className="text-xs font-medium mb-2 block text-muted-foreground">
-                Quick Settings
-              </span>
               <div className="space-y-2">
                 <div className="rounded-lg border bg-card p-3">
                   <div className="flex items-center gap-2 mb-2">
@@ -147,46 +135,19 @@ export function Sidebar({ className, isOpen = true, onClose }: SidebarProps) {
                     </Button>
                     <div className="flex-1 text-center">
                       <span className="text-sm font-medium">
-                        {selectedMonth} {selectedYear}
+                        {getFormattedDate()}
                       </span>
                     </div>
                     <Button
                       variant="outline"
                       size="icon"
-                      className={`h-8 w-8 ${
-                        isCurrentMonth() ? 'opacity-50 cursor-not-allowed' : ''
-                      }`}
+                      className="h-8 w-8"
                       disabled={isCurrentMonth()}
                       onClick={() => handleMonthChange('next')}
                     >
                       <ChevronRight className="h-4 w-4" />
                     </Button>
                   </div>
-                </div>
-
-                <div className="rounded-lg border bg-card p-3">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Coins className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-xs font-medium">Currency</span>
-                  </div>
-                  <Select defaultValue="usd">
-                    <SelectTrigger className="h-8">
-                      <SelectValue placeholder="Select currency" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="eur">Euro (€)</SelectItem>
-                      <SelectItem value="usd">Dollar ($)</SelectItem>
-                      <SelectItem value="ils">Shekel (₪)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="rounded-lg border bg-card p-3">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Palette className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-xs font-medium">Theme</span>
-                  </div>
-                  <ThemeToggle />
                 </div>
               </div>
             </div>
@@ -222,8 +183,18 @@ export function Sidebar({ className, isOpen = true, onClose }: SidebarProps) {
                   asChild
                 >
                   <Link href="/categories">
-                    <Settings className="mr-2 h-4 w-4" />
+                    <Palette className="mr-2 h-4 w-4" />
                     Categories
+                  </Link>
+                </Button>
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start"
+                  asChild
+                >
+                  <Link href="/settings">
+                    <Settings className="mr-2 h-4 w-4" />
+                    Settings
                   </Link>
                 </Button>
               </div>
@@ -271,71 +242,6 @@ export function Sidebar({ className, isOpen = true, onClose }: SidebarProps) {
           </Button>
         </div>
       </div>
-
-      {/* Configuration Dialog */}
-      <Dialog open={showConfigDialog} onOpenChange={setShowConfigDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Month & Currency Settings</DialogTitle>
-            <DialogDescription>
-              Configure the month and currency for your expenses.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4 py-4">
-            <div>
-              <label className="text-sm font-medium mb-2 block">Month</label>
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="h-8 w-8"
-                  onClick={() => handleMonthChange('prev')}
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                </Button>
-                <div className="flex-1 text-center">
-                  <span className="text-sm font-medium">
-                    {selectedMonth} {selectedYear}
-                  </span>
-                </div>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className={`h-8 w-8 ${
-                    isCurrentMonth() ? 'opacity-50 cursor-not-allowed' : ''
-                  }`}
-                  disabled={isCurrentMonth()}
-                  onClick={() => handleMonthChange('next')}
-                >
-                  <ChevronRight className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-            <div>
-              <label className="text-sm font-medium mb-2 block">Currency</label>
-              <Select defaultValue="usd">
-                <SelectTrigger>
-                  <SelectValue placeholder="Select currency" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="eur">Euro (€)</SelectItem>
-                  <SelectItem value="usd">Dollar ($)</SelectItem>
-                  <SelectItem value="ils">Shekel (₪)</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setShowConfigDialog(false)}
-            >
-              Cancel
-            </Button>
-            <Button onClick={() => setShowConfigDialog(false)}>Save</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </>
   )
 }

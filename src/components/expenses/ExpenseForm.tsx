@@ -31,6 +31,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
+import { useSettings } from '@/contexts/SettingsContext'
 import { cn } from '@/lib/utils'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { format } from 'date-fns'
@@ -65,10 +66,12 @@ const formSchema = z.object({
 })
 
 export function ExpenseForm() {
+  const { settings } = useSettings()
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      currency: 'USD',
+      currency: settings.currency.value,
       date: new Date(),
       description: '',
       location: '',
