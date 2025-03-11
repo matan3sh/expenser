@@ -1,20 +1,14 @@
-export interface Expense {
-  id: string
-  date: string
-  description: string
-  amount: number
-  categoryId: string
-  currency: string
-}
+import { Expense } from '@/types/expense'
 
 export const expenses: Expense[] = [
   {
-    id: 'exp_1',
-    date: '2024-03-15',
-    description: 'Grocery Shopping',
-    amount: 150.0,
-    categoryId: 'groceries',
+    id: '1',
+    amount: 42.5,
     currency: 'USD',
+    date: '2024-03-20',
+    categoryId: 'food',
+    description: 'Lunch at Downtown Cafe',
+    location: 'Downtown Cafe',
   },
   {
     id: 'exp_2',
@@ -64,3 +58,9 @@ export const monthlyExpenses = [
   { month: 'Nov', amount: 1350 },
   { month: 'Dec', amount: 1600 },
 ]
+
+export const getRecentExpenses = (limit: number = 5) => {
+  return [...expenses]
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .slice(0, limit)
+}

@@ -38,6 +38,14 @@ export function ExpensesDataTable() {
     dateFrom: undefined as Date | undefined,
     dateTo: undefined as Date | undefined,
   })
+  const [page, setPage] = useState(1)
+  const pageSize = 5
+  const totalPages = Math.ceil(expenses.length / pageSize)
+
+  const paginatedExpenses = expenses.slice(
+    (page - 1) * pageSize,
+    page * pageSize
+  )
 
   return (
     <Card className="p-4">
@@ -123,29 +131,61 @@ export function ExpensesDataTable() {
           <TableRow>
             <TableHead>Date</TableHead>
             <TableHead>Description</TableHead>
+            <TableHead>Location</TableHead>
             <TableHead>Category</TableHead>
             <TableHead>Amount</TableHead>
             <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {expenses.map((expense) => (
-            <TableRow key={expense.id}>
-              <TableCell>{expense.date}</TableCell>
-              <TableCell>{expense.description}</TableCell>
-              <TableCell>{getCategoryById(expense.categoryId)?.name}</TableCell>
-              <TableCell>
-                {formatCurrency(expense.amount, expense.currency)}
-              </TableCell>
-              <TableCell>
-                <Button variant="ghost" size="sm">
-                  Edit
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
+          {paginatedExpenses.map((expense) => {
+            const category = getCategoryById(expense.categoryId)
+            return (
+              <TableRow key={expense.id}>
+                <TableCell>{format(new Date(expense.date), 'PPP')}</TableCell>
+                <TableCell>{expense.description}</TableCell>
+                <TableCell>{expense.location}</TableCell>
+                <TableCell>
+                  <div className="flex items-center gap-2">
+                    <div
+                      className="w-3 h-3 rounded-full"
+                      style={{ backgroundColor: category?.color }}
+                    />
+                    {category?.name}
+                  </div>
+                </TableCell>
+                <TableCell>
+                  {formatCurrency(expense.amount, expense.currency)}
+                </TableCell>
+                <TableCell>
+                  <Button variant="ghost" size="sm">
+                    Edit
+                  </Button>
+                </TableCell>
+              </TableRow>
+            )
+          })}
         </TableBody>
       </Table>
+
+      <div className="flex items-center justify-end space-x-2 mt-4">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setPage((p) => Math.max(1, p - 1))}
+          disabled={page === 1}
+        >
+          Previous
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+          disabled={page === totalPages}
+        >
+          Next
+        </Button>
+      </div>
     </Card>
   )
 }
