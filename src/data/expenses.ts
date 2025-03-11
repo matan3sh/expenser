@@ -6,7 +6,7 @@ export const expenses: Expense[] = [
     amount: 42.5,
     currency: 'USD',
     date: '2024-03-20',
-    categoryId: 'food',
+    categoryId: 'other',
     description: 'Lunch at Downtown Cafe',
     location: 'Downtown Cafe',
   },
@@ -17,6 +17,7 @@ export const expenses: Expense[] = [
     amount: 85.5,
     categoryId: 'utilities',
     currency: 'USD',
+    location: 'Power Company',
   },
   {
     id: 'exp_3',
@@ -25,6 +26,7 @@ export const expenses: Expense[] = [
     amount: 30.0,
     categoryId: 'entertainment',
     currency: 'USD',
+    location: 'Cinema Complex',
   },
   {
     id: 'exp_4',
@@ -33,6 +35,7 @@ export const expenses: Expense[] = [
     amount: 45.0,
     categoryId: 'transport',
     currency: 'USD',
+    location: 'Shell Gas Station',
   },
   {
     id: 'exp_5',
@@ -41,6 +44,7 @@ export const expenses: Expense[] = [
     amount: 60.0,
     categoryId: 'utilities',
     currency: 'USD',
+    location: 'Internet Provider',
   },
 ]
 

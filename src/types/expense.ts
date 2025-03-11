@@ -4,6 +4,6 @@ export type Expense = {
   currency: string
   date: string
   description: string
-  location?: string
+  location: string
   categoryId: string
 }
