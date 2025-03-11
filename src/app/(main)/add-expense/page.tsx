@@ -1,6 +1,17 @@
+'use client'
+
 import { ExpenseForm } from '@/components/expenses/ExpenseForm'
+import { useSearchParams } from 'next/navigation'
 
 export default function AddExpensePage() {
+  const searchParams = useSearchParams()
+  const formData = searchParams.get('data')
+
+  // Parse the data if coming from receipt upload
+  const initialData = formData
+    ? JSON.parse(decodeURIComponent(formData))
+    : undefined
+
   return (
     <div className="space-y-6">
       <div>
@@ -10,7 +21,7 @@ export default function AddExpensePage() {
         </p>
       </div>
       <div className="border rounded-lg p-6">
-        <ExpenseForm />
+        <ExpenseForm initialData={initialData} />
       </div>
     </div>
   )

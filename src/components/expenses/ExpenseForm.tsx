@@ -31,17 +31,23 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
-import { useSettings } from '@/contexts/SettingsContext'
-import {
-  currencies as currencyOptions,
-  formatCurrency,
-} from '@/data/currencies'
+import { currencies as currencyOptions } from '@/data/currencies'
 import { cn } from '@/lib/utils'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { format } from 'date-fns'
 import { CalendarIcon } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
+
+interface Expense {
+  id: string
+  date: string
+  description: string
+  amount: number
+  currency: string
+  categoryId: string
+  location: string
+}
 
 const categories = [
   { id: '1', name: 'Food & Dining', color: '#FF6B6B' },
@@ -63,31 +69,28 @@ const formSchema = z.object({
 
 type ExpenseFormData = z.infer<typeof formSchema>
 
-export function ExpenseForm() {
-  const { convertAmount, settings } = useSettings()
+interface ExpenseFormProps {
+  initialData?: {
+    amount?: number
+    currency?: string
+    date?: string
+    description?: string
+    location?: string
+  }
+}
 
+export function ExpenseForm({ initialData }: ExpenseFormProps) {
   const form = useForm<ExpenseFormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      amount: '',
-      currency: settings?.displayCurrency?.code || 'USD',
-      date: new Date(),
-      category: '',
-      description: '',
-      location: '',
+      amount: initialData?.amount?.toString() || '',
+      currency: initialData?.currency || 'USD',
+      date: initialData?.date ? new Date(initialData.date) : new Date(),
+      description: initialData?.description || '',
+      location: initialData?.location || '',
+      category: '', // Always empty for user selection
     },
   })
-
-  // Helper function to safely format currency
-  const safeFormatCurrency = (amount: number, currency: string = 'USD') => {
-    if (!settings?.displayCurrency?.code) {
-      return formatCurrency(amount, currency)
-    }
-    return formatCurrency(
-      convertAmount(amount, currency),
-      settings.displayCurrency.code
-    )
-  }
 
   async function onSubmit(values: ExpenseFormData) {
     const newExpense: Expense = {
@@ -127,15 +130,6 @@ export function ExpenseForm() {
                           type="number"
                           step="0.01"
                         />
-                        {field.value && (
-                          <p className="text-sm text-muted-foreground">
-                            Converted:{' '}
-                            {safeFormatCurrency(
-                              parseFloat(field.value),
-                              form.getValues('currency')
-                            )}
-                          </p>
-                        )}
                       </div>
                     </FormControl>
                     <FormMessage />
