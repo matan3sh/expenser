@@ -23,8 +23,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { useSettings } from '@/contexts/SettingsContext'
 import { categories, getCategoryById } from '@/data/categories'
-import { formatCurrency } from '@/data/currencies'
 import { expenses } from '@/data/expenses'
 import { cn } from '@/lib/utils'
 import { format } from 'date-fns'
@@ -32,6 +32,7 @@ import { Calendar as CalendarIcon } from 'lucide-react'
 import { useState } from 'react'
 
 export function ExpensesDataTable() {
+  const { convertAmount, settings } = useSettings()
   const [filters, setFilters] = useState({
     search: '',
     category: '',
@@ -155,7 +156,8 @@ export function ExpensesDataTable() {
                   </div>
                 </TableCell>
                 <TableCell>
-                  {formatCurrency(expense.amount, expense.currency)}
+                  {settings.targetCurrency.code === 'ILS' ? '₪' : '$'}{' '}
+                  {convertAmount(expense.amount).toFixed(2)}
                 </TableCell>
                 <TableCell>
                   <Button variant="ghost" size="sm">

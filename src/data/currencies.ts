@@ -35,6 +35,13 @@ export const currencies: Currency[] = [
     decimal_digits: 0,
     format: '{symbol}{amount}',
   },
+  {
+    code: 'ILS',
+    name: 'Israeli Shekel',
+    symbol: '₪',
+    decimal_digits: 2,
+    format: '{symbol}{amount}',
+  },
 ]
 
 // Helper function to format amount based on currency

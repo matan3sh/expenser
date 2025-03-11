@@ -66,12 +66,12 @@ const formSchema = z.object({
 })
 
 export function ExpenseForm() {
-  const { settings } = useSettings()
+  const { convertAmount, settings } = useSettings()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      currency: settings.currency.value,
+      currency: settings.sourceCurrency.code,
       date: new Date(),
       description: '',
       location: '',
@@ -100,12 +100,21 @@ export function ExpenseForm() {
                   <FormItem>
                     <FormLabel>Amount</FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder="0.00"
-                        {...field}
-                        type="number"
-                        step="0.01"
-                      />
+                      <div className="space-y-2">
+                        <Input
+                          placeholder="0.00"
+                          {...field}
+                          type="number"
+                          step="0.01"
+                        />
+                        {field.value && (
+                          <p className="text-sm text-muted-foreground">
+                            Converted:{' '}
+                            {settings.targetCurrency.code === 'ILS' ? '₪' : '$'}
+                            {convertAmount(parseFloat(field.value)).toFixed(2)}
+                          </p>
+                        )}
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>

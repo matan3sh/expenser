@@ -1,6 +1,7 @@
 'use client'
 
 import { Card } from '@/components/ui/card'
+import { useSettings } from '@/contexts/SettingsContext'
 import { categories } from '@/data/categories'
 import { monthlyExpenses } from '@/data/expenses'
 import {
@@ -29,19 +30,27 @@ const CHART_COLORS = [
 ]
 
 export function ExpensesCharts() {
+  const { convertAmount, settings } = useSettings()
+
   // Transform categories data for the pie chart
   const categoryData = categories.map((category) => ({
     name: category.name,
-    value: 1500, // This should come from your actual data aggregation
+    value: convertAmount(1500), // This should come from your actual data
     color: category.color,
   }))
 
   // Transform categories data for the bar chart
   const topCategoriesData = categories.map((category) => ({
     category: category.name,
-    amount: 1200, // This should come from your actual data aggregation
+    amount: convertAmount(1200), // This should come from your actual data
     color: category.color,
   }))
+
+  const formatValue = (value: number) => {
+    return `${
+      settings.targetCurrency.code === 'ILS' ? '₪' : '$'
+    }${convertAmount(value).toFixed(2)}`
+  }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -54,9 +63,10 @@ export function ExpensesCharts() {
             <XAxis dataKey="month" className="text-muted-foreground text-xs" />
             <YAxis
               className="text-muted-foreground text-xs"
-              tickFormatter={(value) => `$${value}`}
+              tickFormatter={formatValue}
             />
             <Tooltip
+              formatter={(value: number) => formatValue(value)}
               contentStyle={{
                 backgroundColor: 'hsl(var(--popover))',
                 border: '1px solid hsl(var(--border))',
@@ -94,6 +104,7 @@ export function ExpensesCharts() {
               ))}
             </Pie>
             <Tooltip
+              formatter={(value: number) => formatValue(value)}
               contentStyle={{
                 backgroundColor: 'hsl(var(--popover))',
                 border: '1px solid hsl(var(--border))',
@@ -118,9 +129,10 @@ export function ExpensesCharts() {
             />
             <YAxis
               className="text-muted-foreground text-xs"
-              tickFormatter={(value) => `$${value}`}
+              tickFormatter={formatValue}
             />
             <Tooltip
+              formatter={(value: number) => formatValue(value)}
               contentStyle={{
                 backgroundColor: 'hsl(var(--popover))',
                 border: '1px solid hsl(var(--border))',

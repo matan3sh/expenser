@@ -1,13 +1,22 @@
+'use client'
+
+import { useSettings } from '@/contexts/SettingsContext'
 import { StatCard } from './StatCard'
 
 const CURRENT_MONTH_TEXT = 'For current month'
 
 export function DashboardStats() {
+  const { convertAmount, settings } = useSettings()
+  const totalAmount = 1234.56 // This should come from your actual data
+  const formattedAmount = `${
+    settings.targetCurrency.code === 'ILS' ? '₪' : '$'
+  }${convertAmount(totalAmount).toFixed(2)}`
+
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       <StatCard
         title="Total Expenses"
-        value="$1,234.56"
+        value={formattedAmount}
         subtitle={CURRENT_MONTH_TEXT}
       />
       <StatCard

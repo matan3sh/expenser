@@ -2,13 +2,15 @@
 
 import { createContext, useContext, useEffect, useState } from 'react'
 
-type Currency = {
-  label: string
-  value: string
+type CurrencySelection = {
+  code: string
+  name: string
 }
 
 type Settings = {
-  currency: Currency
+  sourceCurrency: CurrencySelection
+  targetCurrency: CurrencySelection
+  exchangeRate: number
   theme: 'light' | 'dark' | 'system'
   selectedMonth: {
     month: number
@@ -18,14 +20,19 @@ type Settings = {
 
 type SettingsContextType = {
   settings: Settings
-  updateCurrency: (currency: Currency) => void
+  updateSourceCurrency: (currency: CurrencySelection) => void
+  updateTargetCurrency: (currency: CurrencySelection) => void
+  updateExchangeRate: (rate: number) => void
   updateTheme: (theme: 'light' | 'dark' | 'system') => void
   updateSelectedMonth: (month: number, year: number) => void
   isCurrentMonth: () => boolean
+  convertAmount: (amount: number) => number
 }
 
 const defaultSettings: Settings = {
-  currency: { label: 'USD - US Dollar', value: 'USD' },
+  sourceCurrency: { code: 'ILS', name: 'Israeli Shekel' },
+  targetCurrency: { code: 'USD', name: 'US Dollar' },
+  exchangeRate: 1,
   theme: 'system',
   selectedMonth: {
     month: new Date().getMonth(),
@@ -53,8 +60,16 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem('user-settings', JSON.stringify(settings))
   }, [settings])
 
-  const updateCurrency = (currency: Currency) => {
-    setSettings((prev) => ({ ...prev, currency }))
+  const updateSourceCurrency = (currency: CurrencySelection) => {
+    setSettings((prev) => ({ ...prev, sourceCurrency: currency }))
+  }
+
+  const updateTargetCurrency = (currency: CurrencySelection) => {
+    setSettings((prev) => ({ ...prev, targetCurrency: currency }))
+  }
+
+  const updateExchangeRate = (rate: number) => {
+    setSettings((prev) => ({ ...prev, exchangeRate: rate }))
   }
 
   const updateTheme = (theme: 'light' | 'dark' | 'system') => {
@@ -76,14 +91,21 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     )
   }
 
+  const convertAmount = (amount: number) => {
+    return amount * settings.exchangeRate
+  }
+
   return (
     <SettingsContext.Provider
       value={{
         settings,
-        updateCurrency,
+        updateSourceCurrency,
+        updateTargetCurrency,
+        updateExchangeRate,
         updateTheme,
         updateSelectedMonth,
         isCurrentMonth,
+        convertAmount,
       }}
     >
       {children}

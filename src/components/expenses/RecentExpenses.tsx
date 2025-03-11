@@ -15,11 +15,13 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
+import { useSettings } from '@/contexts/SettingsContext'
 import { getCategoryById } from '@/data/categories'
 import { getRecentExpenses } from '@/data/expenses'
 import { format } from 'date-fns'
 
 export function RecentExpenses() {
+  const { convertAmount, settings } = useSettings()
   const recentExpenses = getRecentExpenses(5)
 
   return (
@@ -63,7 +65,8 @@ export function RecentExpenses() {
                 </div>
                 <div className="text-right">
                   <p className="font-medium">
-                    {expense.currency} {expense.amount.toFixed(2)}
+                    {settings.targetCurrency.code === 'ILS' ? '₪' : '$'}{' '}
+                    {convertAmount(expense.amount).toFixed(2)}
                   </p>
                   <p className="text-sm text-muted-foreground mt-1">
                     {format(new Date(expense.date), 'h:mm a')}
