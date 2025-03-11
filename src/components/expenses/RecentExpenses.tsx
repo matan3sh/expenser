@@ -80,6 +80,11 @@ export function RecentExpenses() {
                   <p className="font-medium">
                     {safeFormatCurrency(expense.amount, expense.currency)}
                   </p>
+                  {settings?.displayCurrency?.code !== expense.currency && (
+                    <p className="text-sm text-muted-foreground">
+                      ({formatCurrency(expense.amount, expense.currency)})
+                    </p>
+                  )}
                   <p className="text-sm text-muted-foreground mt-1">
                     {format(new Date(expense.date), 'h:mm a')}
                   </p>

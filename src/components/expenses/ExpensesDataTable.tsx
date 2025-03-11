@@ -168,7 +168,16 @@ export function ExpensesDataTable() {
                   </div>
                 </TableCell>
                 <TableCell>
-                  {safeFormatCurrency(expense.amount, expense.currency)}
+                  <div className="flex flex-col">
+                    <span>
+                      {safeFormatCurrency(expense.amount, expense.currency)}
+                    </span>
+                    {settings?.displayCurrency?.code !== expense.currency && (
+                      <span className="text-sm text-muted-foreground">
+                        ({formatCurrency(expense.amount, expense.currency)})
+                      </span>
+                    )}
+                  </div>
                 </TableCell>
                 <TableCell>
                   <Button variant="ghost" size="sm">
