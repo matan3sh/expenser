@@ -32,20 +32,16 @@ import {
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { useSettings } from '@/contexts/SettingsContext'
+import {
+  currencies as currencyOptions,
+  formatCurrency,
+} from '@/data/currencies'
 import { cn } from '@/lib/utils'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { format } from 'date-fns'
 import { CalendarIcon } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
-
-const currencies = [
-  { label: 'USD - US Dollar', value: 'USD' },
-  { label: 'EUR - Euro', value: 'EUR' },
-  { label: 'GBP - British Pound', value: 'GBP' },
-  { label: 'JPY - Japanese Yen', value: 'JPY' },
-  { label: 'CAD - Canadian Dollar', value: 'CAD' },
-]
 
 const categories = [
   { id: '1', name: 'Food & Dining', color: '#FF6B6B' },
@@ -110,8 +106,10 @@ export function ExpenseForm() {
                         {field.value && (
                           <p className="text-sm text-muted-foreground">
                             Converted:{' '}
-                            {settings.targetCurrency.code === 'ILS' ? '₪' : '$'}
-                            {convertAmount(parseFloat(field.value)).toFixed(2)}
+                            {formatCurrency(
+                              convertAmount(parseFloat(field.value)),
+                              settings.targetCurrency.code
+                            )}
                           </p>
                         )}
                       </div>
@@ -137,12 +135,9 @@ export function ExpenseForm() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {currencies.map((currency) => (
-                          <SelectItem
-                            key={currency.value}
-                            value={currency.value}
-                          >
-                            {currency.label}
+                        {currencyOptions.map((currency) => (
+                          <SelectItem key={currency.code} value={currency.code}>
+                            {`${currency.code} - ${currency.name}`}
                           </SelectItem>
                         ))}
                       </SelectContent>

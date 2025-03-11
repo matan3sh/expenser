@@ -1,6 +1,7 @@
 'use client'
 
 import { useSettings } from '@/contexts/SettingsContext'
+import { formatCurrency } from '@/data/currencies'
 import { StatCard } from './StatCard'
 
 const CURRENT_MONTH_TEXT = 'For current month'
@@ -8,9 +9,10 @@ const CURRENT_MONTH_TEXT = 'For current month'
 export function DashboardStats() {
   const { convertAmount, settings } = useSettings()
   const totalAmount = 1234.56 // This should come from your actual data
-  const formattedAmount = `${
-    settings.targetCurrency.code === 'ILS' ? '₪' : '$'
-  }${convertAmount(totalAmount).toFixed(2)}`
+  const formattedAmount = formatCurrency(
+    convertAmount(totalAmount),
+    settings.targetCurrency.code
+  )
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">

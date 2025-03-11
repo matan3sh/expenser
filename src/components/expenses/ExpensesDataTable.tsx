@@ -25,6 +25,7 @@ import {
 } from '@/components/ui/table'
 import { useSettings } from '@/contexts/SettingsContext'
 import { categories, getCategoryById } from '@/data/categories'
+import { formatCurrency } from '@/data/currencies'
 import { expenses } from '@/data/expenses'
 import { cn } from '@/lib/utils'
 import { format } from 'date-fns'
@@ -156,8 +157,10 @@ export function ExpensesDataTable() {
                   </div>
                 </TableCell>
                 <TableCell>
-                  {settings.targetCurrency.code === 'ILS' ? '₪' : '$'}{' '}
-                  {convertAmount(expense.amount).toFixed(2)}
+                  {formatCurrency(
+                    convertAmount(expense.amount),
+                    settings.targetCurrency.code
+                  )}
                 </TableCell>
                 <TableCell>
                   <Button variant="ghost" size="sm">

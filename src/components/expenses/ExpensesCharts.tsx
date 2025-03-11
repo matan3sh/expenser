@@ -3,6 +3,7 @@
 import { Card } from '@/components/ui/card'
 import { useSettings } from '@/contexts/SettingsContext'
 import { categories } from '@/data/categories'
+import { formatCurrency } from '@/data/currencies'
 import { monthlyExpenses } from '@/data/expenses'
 import {
   Bar,
@@ -47,9 +48,7 @@ export function ExpensesCharts() {
   }))
 
   const formatValue = (value: number) => {
-    return `${
-      settings.targetCurrency.code === 'ILS' ? '₪' : '$'
-    }${convertAmount(value).toFixed(2)}`
+    return formatCurrency(convertAmount(value), settings.targetCurrency.code)
   }
 
   return (
