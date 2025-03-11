@@ -9,6 +9,7 @@ import {
   Calendar,
   ChevronLeft,
   ChevronRight,
+  DollarSign,
   HomeIcon,
   LineChart,
   LogOut,
@@ -165,6 +166,16 @@ export function Sidebar({ className, isOpen = true, onClose }: SidebarProps) {
                   <Link href="/">
                     <HomeIcon className="mr-2 h-4 w-4" />
                     Dashboard
+                  </Link>
+                </Button>
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start"
+                  asChild
+                >
+                  <Link href="/expenses">
+                    <DollarSign className="mr-2 h-4 w-4" />
+                    Expenses
                   </Link>
                 </Button>
                 <Button
