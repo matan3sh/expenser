@@ -1,34 +1,13 @@
 'use client'
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
-import { Label } from '@/components/ui/label'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+import { CurrencySettings } from '@/components/settings/CurrencySettings'
+import { ThemeSettings } from '@/components/settings/ThemeSettings'
 import { useSettings } from '@/contexts/SettingsContext'
 import { useTheme } from 'next-themes'
 import { useEffect } from 'react'
 
-const currencies = [
-  { label: 'USD - US Dollar', value: 'USD' },
-  { label: 'EUR - Euro', value: 'EUR' },
-  { label: 'GBP - British Pound', value: 'GBP' },
-  { label: 'JPY - Japanese Yen', value: 'JPY' },
-  { label: 'CAD - Canadian Dollar', value: 'CAD' },
-]
-
 export default function SettingsPage() {
-  const { settings, updateCurrency, updateTheme } = useSettings()
+  const { settings } = useSettings()
   const { setTheme } = useTheme()
 
   // Sync theme with next-themes
@@ -38,76 +17,16 @@ export default function SettingsPage() {
 
   return (
     <div className="space-y-6">
-      <div>
+      <header>
         <h2 className="text-2xl font-bold tracking-tight">Settings</h2>
         <p className="text-muted-foreground">
           Manage your application preferences
         </p>
-      </div>
+      </header>
 
       <div className="grid gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Currency</CardTitle>
-            <CardDescription>
-              Choose your preferred currency for displaying expenses
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="grid gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="currency">Default Currency</Label>
-              <Select
-                value={settings.currency.value}
-                onValueChange={(value) => {
-                  const currency = currencies.find((c) => c.value === value)
-                  if (currency) {
-                    updateCurrency(currency)
-                  }
-                }}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select currency" />
-                </SelectTrigger>
-                <SelectContent>
-                  {currencies.map((currency) => (
-                    <SelectItem key={currency.value} value={currency.value}>
-                      {currency.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Appearance</CardTitle>
-            <CardDescription>
-              Customize the appearance of the application
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="grid gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="theme">Theme</Label>
-              <Select
-                value={settings.theme}
-                onValueChange={(value: 'light' | 'dark' | 'system') => {
-                  updateTheme(value)
-                }}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select theme" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="light">Light</SelectItem>
-                  <SelectItem value="dark">Dark</SelectItem>
-                  <SelectItem value="system">System</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </CardContent>
-        </Card>
+        <CurrencySettings />
+        <ThemeSettings />
       </div>
     </div>
   )
