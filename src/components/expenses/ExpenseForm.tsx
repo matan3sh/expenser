@@ -31,6 +31,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
+import { categories } from '@/data/categories'
 import { currencies as currencyOptions } from '@/data/currencies'
 import { cn } from '@/lib/utils'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -48,13 +49,6 @@ interface Expense {
   categoryId: string
   location: string
 }
-
-const categories = [
-  { id: '1', name: 'Food & Dining', color: '#FF6B6B' },
-  { id: '2', name: 'Transportation', color: '#4ECDC4' },
-  { id: '3', name: 'Shopping', color: '#45B7D1' },
-  { id: '4', name: 'Bills & Utilities', color: '#96CEB4' },
-]
 
 const formSchema = z.object({
   amount: z.string().min(1, 'Amount is required'),
