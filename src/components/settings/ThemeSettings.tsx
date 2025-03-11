@@ -23,16 +23,16 @@ export function ThemeSettings() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Appearance</CardTitle>
+        <CardTitle>Theme</CardTitle>
         <CardDescription>
           Customize the appearance of the application
         </CardDescription>
       </CardHeader>
-      <CardContent className="grid gap-4">
+      <CardContent>
         <div className="space-y-2">
-          <Label htmlFor="theme">Theme</Label>
+          <Label htmlFor="theme">Color Theme</Label>
           <Select
-            value={settings.theme}
+            value={settings?.theme || 'system'}
             onValueChange={(value: 'light' | 'dark' | 'system') => {
               updateTheme(value)
             }}

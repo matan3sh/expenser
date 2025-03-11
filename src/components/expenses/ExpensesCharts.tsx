@@ -3,8 +3,8 @@
 import { Card } from '@/components/ui/card'
 import { useSettings } from '@/contexts/SettingsContext'
 import { categories } from '@/data/categories'
-import { formatCurrency } from '@/data/currencies'
-import { monthlyExpenses } from '@/data/expenses'
+import { getCategoryTotals, getMonthlyExpenses } from '@/data/expenses'
+import { useCurrencyFormat } from '@/hooks/useCurrencyFormat'
 import {
   Bar,
   BarChart,
@@ -31,24 +31,44 @@ const CHART_COLORS = [
 ]
 
 export function ExpensesCharts() {
-  const { convertAmount, settings } = useSettings()
+  const { formatAmount, convertToDisplayCurrency } = useCurrencyFormat()
+  const { settings } = useSettings()
+  const monthlyData = getMonthlyExpenses()
+
+  // Transform monthly data for the line chart
+  const monthlyChartData = monthlyData.map((month) => ({
+    month: month.month,
+    amount: month.expenses.reduce((total, expense) => {
+      return total + convertToDisplayCurrency(expense.amount, expense.currency)
+    }, 0),
+  }))
+
+  // Calculate category totals for all expenses
+  const allExpenses = monthlyData.flatMap((month) => month.expenses)
+  const categoryTotals = getCategoryTotals(
+    allExpenses,
+    convertToDisplayCurrency,
+    settings?.displayCurrency?.code
+  )
 
   // Transform categories data for the pie chart
   const categoryData = categories.map((category) => ({
     name: category.name,
-    value: convertAmount(1500), // This should come from your actual data
+    value: categoryTotals[category.id] || 0,
     color: category.color,
   }))
 
   // Transform categories data for the bar chart
-  const topCategoriesData = categories.map((category) => ({
-    category: category.name,
-    amount: convertAmount(1200), // This should come from your actual data
-    color: category.color,
-  }))
+  const topCategoriesData = categories
+    .map((category) => ({
+      category: category.name,
+      amount: categoryTotals[category.id] || 0,
+      color: category.color,
+    }))
+    .sort((a, b) => b.amount - a.amount) // Sort by amount descending
 
   const formatValue = (value: number) => {
-    return formatCurrency(convertAmount(value), settings.targetCurrency.code)
+    return formatAmount(value)
   }
 
   return (
@@ -57,7 +77,7 @@ export function ExpensesCharts() {
       <Card className="p-4">
         <h3 className="font-semibold mb-4">Monthly Expenses Trend</h3>
         <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={monthlyExpenses}>
+          <LineChart data={monthlyChartData}>
             <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
             <XAxis dataKey="month" className="text-muted-foreground text-xs" />
             <YAxis

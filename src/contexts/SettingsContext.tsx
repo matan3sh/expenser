@@ -8,9 +8,8 @@ type CurrencySelection = {
 }
 
 type Settings = {
-  sourceCurrency: CurrencySelection
-  targetCurrency: CurrencySelection
-  exchangeRate: number
+  displayCurrency: CurrencySelection
+  exchangeRates: Record<string, number>
   theme: 'light' | 'dark' | 'system'
   selectedMonth: {
     month: number
@@ -20,19 +19,17 @@ type Settings = {
 
 type SettingsContextType = {
   settings: Settings
-  updateSourceCurrency: (currency: CurrencySelection) => void
-  updateTargetCurrency: (currency: CurrencySelection) => void
-  updateExchangeRate: (rate: number) => void
+  updateDisplayCurrency: (currency: CurrencySelection) => void
+  updateExchangeRates: (rates: Record<string, number>) => void
   updateTheme: (theme: 'light' | 'dark' | 'system') => void
   updateSelectedMonth: (month: number, year: number) => void
   isCurrentMonth: () => boolean
-  convertAmount: (amount: number) => number
+  convertAmount: (amount: number, fromCurrency: string) => number
 }
 
 const defaultSettings: Settings = {
-  sourceCurrency: { code: 'ILS', name: 'Israeli Shekel' },
-  targetCurrency: { code: 'USD', name: 'US Dollar' },
-  exchangeRate: 1,
+  displayCurrency: { code: 'USD', name: 'US Dollar' },
+  exchangeRates: {},
   theme: 'system',
   selectedMonth: {
     month: new Date().getMonth(),
@@ -46,30 +43,38 @@ const SettingsContext = createContext<SettingsContextType | undefined>(
 
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
   const [settings, setSettings] = useState<Settings>(defaultSettings)
+  const [isInitialized, setIsInitialized] = useState(false)
 
   // Load settings from localStorage on mount
   useEffect(() => {
     const savedSettings = localStorage.getItem('user-settings')
     if (savedSettings) {
-      setSettings(JSON.parse(savedSettings))
+      try {
+        const parsed = JSON.parse(savedSettings)
+        // Validate that we have the required fields
+        if (parsed?.displayCurrency?.code) {
+          setSettings(parsed)
+        }
+      } catch (error) {
+        console.error('Failed to parse saved settings:', error)
+      }
     }
+    setIsInitialized(true)
   }, [])
 
   // Save settings to localStorage whenever they change
   useEffect(() => {
-    localStorage.setItem('user-settings', JSON.stringify(settings))
-  }, [settings])
+    if (isInitialized) {
+      localStorage.setItem('user-settings', JSON.stringify(settings))
+    }
+  }, [settings, isInitialized])
 
-  const updateSourceCurrency = (currency: CurrencySelection) => {
-    setSettings((prev) => ({ ...prev, sourceCurrency: currency }))
+  const updateDisplayCurrency = (currency: CurrencySelection) => {
+    setSettings((prev) => ({ ...prev, displayCurrency: currency }))
   }
 
-  const updateTargetCurrency = (currency: CurrencySelection) => {
-    setSettings((prev) => ({ ...prev, targetCurrency: currency }))
-  }
-
-  const updateExchangeRate = (rate: number) => {
-    setSettings((prev) => ({ ...prev, exchangeRate: rate }))
+  const updateExchangeRates = (rates: Record<string, number>) => {
+    setSettings((prev) => ({ ...prev, exchangeRates: rates }))
   }
 
   const updateTheme = (theme: 'light' | 'dark' | 'system') => {
@@ -91,17 +96,34 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     )
   }
 
-  const convertAmount = (amount: number) => {
-    return amount * settings.exchangeRate
+  const convertAmount = (amount: number, fromCurrency: string = 'USD') => {
+    // If settings aren't initialized yet, return the original amount
+    if (!settings?.displayCurrency?.code) {
+      return amount
+    }
+
+    // If the currencies are the same, no conversion needed
+    if (fromCurrency === settings.displayCurrency.code) {
+      return amount
+    }
+
+    // Get the exchange rate for the currency pair
+    const rate = settings.exchangeRates[fromCurrency || 'USD']
+    if (!rate) {
+      console.warn(`No exchange rate found for ${fromCurrency}, using 1:1 rate`)
+      return amount
+    }
+
+    // Convert to display currency
+    return amount * rate
   }
 
   return (
     <SettingsContext.Provider
       value={{
         settings,
-        updateSourceCurrency,
-        updateTargetCurrency,
-        updateExchangeRate,
+        updateDisplayCurrency,
+        updateExchangeRates,
         updateTheme,
         updateSelectedMonth,
         isCurrentMonth,

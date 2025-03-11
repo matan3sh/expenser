@@ -25,6 +25,18 @@ export function RecentExpenses() {
   const { convertAmount, settings } = useSettings()
   const recentExpenses = getRecentExpenses(5)
 
+  // Helper function to safely format currency
+  const safeFormatCurrency = (amount: number, currency: string = 'USD') => {
+    if (!settings?.displayCurrency?.code) {
+      // Fallback to original currency if settings aren't loaded
+      return formatCurrency(amount, currency)
+    }
+    return formatCurrency(
+      convertAmount(amount, currency),
+      settings.displayCurrency.code
+    )
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -66,10 +78,7 @@ export function RecentExpenses() {
                 </div>
                 <div className="text-right">
                   <p className="font-medium">
-                    {formatCurrency(
-                      convertAmount(expense.amount),
-                      settings.targetCurrency.code
-                    )}
+                    {safeFormatCurrency(expense.amount, expense.currency)}
                   </p>
                   <p className="text-sm text-muted-foreground mt-1">
                     {format(new Date(expense.date), 'h:mm a')}

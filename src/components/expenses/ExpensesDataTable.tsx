@@ -49,6 +49,17 @@ export function ExpensesDataTable() {
     page * pageSize
   )
 
+  // Helper function to safely format currency
+  const safeFormatCurrency = (amount: number, currency: string = 'USD') => {
+    if (!settings?.displayCurrency?.code) {
+      return formatCurrency(amount, currency)
+    }
+    return formatCurrency(
+      convertAmount(amount, currency),
+      settings.displayCurrency.code
+    )
+  }
+
   return (
     <Card className="p-4">
       <div className="flex flex-wrap gap-4 mb-4">
@@ -157,10 +168,7 @@ export function ExpensesDataTable() {
                   </div>
                 </TableCell>
                 <TableCell>
-                  {formatCurrency(
-                    convertAmount(expense.amount),
-                    settings.targetCurrency.code
-                  )}
+                  {safeFormatCurrency(expense.amount, expense.currency)}
                 </TableCell>
                 <TableCell>
                   <Button variant="ghost" size="sm">

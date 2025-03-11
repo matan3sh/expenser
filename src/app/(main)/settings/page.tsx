@@ -12,8 +12,10 @@ export default function SettingsPage() {
 
   // Sync theme with next-themes
   useEffect(() => {
-    setTheme(settings.theme)
-  }, [settings.theme, setTheme])
+    if (settings?.theme) {
+      setTheme(settings.theme)
+    }
+  }, [settings?.theme, setTheme])
 
   return (
     <div className="space-y-6">

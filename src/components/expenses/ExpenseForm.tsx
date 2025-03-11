@@ -61,22 +61,46 @@ const formSchema = z.object({
   location: z.string().min(1, 'Location is required'),
 })
 
+type ExpenseFormData = z.infer<typeof formSchema>
+
 export function ExpenseForm() {
   const { convertAmount, settings } = useSettings()
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<ExpenseFormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      currency: settings.sourceCurrency.code,
+      amount: '',
+      currency: settings?.displayCurrency?.code || 'USD',
       date: new Date(),
+      category: '',
       description: '',
       location: '',
     },
   })
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
-    // TODO: Handle form submission
+  // Helper function to safely format currency
+  const safeFormatCurrency = (amount: number, currency: string = 'USD') => {
+    if (!settings?.displayCurrency?.code) {
+      return formatCurrency(amount, currency)
+    }
+    return formatCurrency(
+      convertAmount(amount, currency),
+      settings.displayCurrency.code
+    )
+  }
+
+  async function onSubmit(values: ExpenseFormData) {
+    const newExpense: Expense = {
+      id: crypto.randomUUID(),
+      date: values.date.toISOString(),
+      description: values.description,
+      amount: parseFloat(values.amount),
+      currency: values.currency,
+      categoryId: values.category,
+      location: values.location,
+    }
+
+    console.log(newExpense)
   }
 
   return (
@@ -106,9 +130,9 @@ export function ExpenseForm() {
                         {field.value && (
                           <p className="text-sm text-muted-foreground">
                             Converted:{' '}
-                            {formatCurrency(
-                              convertAmount(parseFloat(field.value)),
-                              settings.targetCurrency.code
+                            {safeFormatCurrency(
+                              parseFloat(field.value),
+                              form.getValues('currency')
                             )}
                           </p>
                         )}
