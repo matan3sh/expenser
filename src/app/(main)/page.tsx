@@ -3,7 +3,7 @@ import { DashboardStats } from '@/components/dashboard/DashboardStats'
 import { RecentExpenses } from '@/components/expenses/RecentExpenses'
 import { DashboardSkeleton } from '@/components/skeletons/DashboardSkeleton'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { auth } from '@clerk/nextjs'
+import { auth } from '@clerk/nextjs/server'
 import { Suspense } from 'react'
 
 export default async function DashboardPage() {
