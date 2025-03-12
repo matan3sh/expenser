@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/button'
 import { Menu } from 'lucide-react'
 import { ReactNode, useState } from 'react'
-import { Sidebar } from './Sidebar'
+import { Sidebar } from './sidebar/Sidebar'
 
 interface MainLayoutProps {
   children: ReactNode
