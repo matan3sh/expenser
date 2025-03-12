@@ -1,10 +1,13 @@
 'use client'
 
+import { UserProfileSkeleton } from '@/components/skeletons/UserProfileSkeleton'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { UserProfileProps } from './types'
 
 export function UserProfile({ user, isLoaded }: UserProfileProps) {
-  if (!isLoaded) return null
+  if (!isLoaded) {
+    return <UserProfileSkeleton />
+  }
 
   return (
     <div className="flex items-center gap-3">
