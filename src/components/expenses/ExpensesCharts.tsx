@@ -11,8 +11,6 @@ import {
   CartesianGrid,
   Cell,
   Legend,
-  Line,
-  LineChart,
   Pie,
   PieChart,
   ResponsiveContainer,
@@ -29,6 +27,64 @@ const CHART_COLORS = [
   'var(--chart-4)',
   'var(--chart-5)',
 ]
+
+interface CustomTooltipProps {
+  active?: boolean
+  payload?: Array<{
+    name: string
+    value: number
+    color: string
+    payload: {
+      name: string
+      value: number
+      color: string
+    }
+  }>
+  label?: string
+}
+
+const CustomBarChartTooltip = ({
+  active,
+  payload,
+  label,
+}: CustomTooltipProps) => {
+  if (!active || !payload) return null
+
+  return (
+    <div className="rounded-lg border bg-popover p-3 shadow-md">
+      <p className="mb-2 font-medium">{label}</p>
+      <div className="flex items-center gap-2">
+        <div
+          className="h-3 w-3 rounded-full"
+          style={{ backgroundColor: CHART_COLORS[0] }}
+        />
+        <span className="text-sm text-muted-foreground">Amount:</span>
+        <span className="text-sm font-medium">{payload[0]?.value}</span>
+      </div>
+    </div>
+  )
+}
+
+const CustomPieChartTooltip = ({ active, payload }: CustomTooltipProps) => {
+  if (!active || !payload?.[0]) return null
+
+  const data = payload[0]
+  return (
+    <div className="rounded-lg border bg-popover p-3 shadow-md">
+      <div className="flex items-center gap-2">
+        <div
+          className="h-3 w-3 rounded-full"
+          style={{ backgroundColor: data.payload.color }}
+        />
+        <span className="font-medium">{data.name}</span>
+      </div>
+      <div className="mt-1.5 text-sm text-muted-foreground">
+        Amount:{' '}
+        <span className="font-medium text-foreground">{data.value}</span>
+      </div>
+    </div>
+  )
+}
 
 export function ExpensesCharts() {
   const { formatAmount, convertToDisplayCurrency } = useCurrencyFormat()
@@ -58,113 +114,83 @@ export function ExpensesCharts() {
     color: category.color,
   }))
 
-  // Transform categories data for the bar chart
-  const topCategoriesData = categories
-    .map((category) => ({
-      category: category.name,
-      amount: categoryTotals[category.id] || 0,
-      color: category.color,
-    }))
-    .sort((a, b) => b.amount - a.amount) // Sort by amount descending
-
   const formatValue = (value: number) => {
     return formatAmount(value)
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
       {/* Monthly Trend Chart */}
-      <Card className="p-4">
-        <h3 className="font-semibold mb-4">Monthly Expenses Trend</h3>
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={monthlyChartData}>
+      <Card className="p-3">
+        <h3 className="font-semibold mb-2">Monthly Expenses Trend</h3>
+        <ResponsiveContainer width="100%" height={220}>
+          <BarChart data={monthlyChartData}>
             <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-            <XAxis dataKey="month" className="text-muted-foreground text-xs" />
+            <XAxis
+              dataKey="month"
+              className="text-muted-foreground text-xs"
+              tickLine={false}
+              axisLine={false}
+            />
             <YAxis
               className="text-muted-foreground text-xs"
               tickFormatter={formatValue}
+              tickLine={false}
+              axisLine={false}
             />
             <Tooltip
-              formatter={(value: number) => formatValue(value)}
-              contentStyle={{
-                backgroundColor: 'hsl(var(--popover))',
-                border: '1px solid hsl(var(--border))',
-                borderRadius: 'var(--radius)',
-              }}
-              labelStyle={{ color: 'hsl(var(--popover-foreground))' }}
+              content={<CustomBarChartTooltip />}
+              cursor={{ fill: 'hsl(var(--muted))', opacity: 0.1 }}
             />
-            <Line
-              type="monotone"
+            <Bar
               dataKey="amount"
-              stroke={CHART_COLORS[0]}
-              strokeWidth={2}
-              dot={false}
+              fill={CHART_COLORS[0]}
+              radius={[4, 4, 0, 0]}
+              maxBarSize={50}
             />
-          </LineChart>
+          </BarChart>
         </ResponsiveContainer>
       </Card>
 
       {/* Category Distribution Chart */}
-      <Card className="p-4">
-        <h3 className="font-semibold mb-4">Expenses by Category</h3>
-        <ResponsiveContainer width="100%" height={300}>
+      <Card className="p-3">
+        <h3 className="font-semibold mb-2">Expenses by Category</h3>
+        <ResponsiveContainer width="100%" height={220}>
           <PieChart>
             <Pie
               data={categoryData}
               cx="50%"
               cy="50%"
-              innerRadius={60}
-              outerRadius={80}
-              paddingAngle={5}
+              innerRadius={50}
+              outerRadius={70}
+              paddingAngle={4}
               dataKey="value"
+              startAngle={90}
+              endAngle={-270}
             >
               {categoryData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={entry.color} />
+                <Cell
+                  key={`cell-${index}`}
+                  fill={entry.color}
+                  stroke="hsl(var(--background))"
+                  strokeWidth={2}
+                />
               ))}
             </Pie>
-            <Tooltip
-              formatter={(value: number) => formatValue(value)}
-              contentStyle={{
-                backgroundColor: 'hsl(var(--popover))',
-                border: '1px solid hsl(var(--border))',
-                borderRadius: 'var(--radius)',
+            <Tooltip content={<CustomPieChartTooltip />} />
+            <Legend
+              verticalAlign="middle"
+              align="right"
+              layout="vertical"
+              iconType="circle"
+              wrapperStyle={{
+                paddingLeft: '24px',
               }}
-              labelStyle={{ color: 'hsl(var(--popover-foreground))' }}
+              formatter={(value) => (
+                <span className="text-sm text-muted-foreground">{value}</span>
+              )}
             />
-            <Legend />
           </PieChart>
-        </ResponsiveContainer>
-      </Card>
-
-      {/* Top Categories Chart */}
-      <Card className="p-4">
-        <h3 className="font-semibold mb-4">Top Spending Categories</h3>
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={topCategoriesData}>
-            <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-            <XAxis
-              dataKey="category"
-              className="text-muted-foreground text-xs"
-            />
-            <YAxis
-              className="text-muted-foreground text-xs"
-              tickFormatter={formatValue}
-            />
-            <Tooltip
-              formatter={(value: number) => formatValue(value)}
-              contentStyle={{
-                backgroundColor: 'hsl(var(--popover))',
-                border: '1px solid hsl(var(--border))',
-                borderRadius: 'var(--radius)',
-              }}
-              labelStyle={{ color: 'hsl(var(--popover-foreground))' }}
-            />
-            <Bar
-              dataKey="amount"
-              fill={CHART_COLORS[2]}
-              radius={[4, 4, 0, 0]}
-            />
-          </BarChart>
         </ResponsiveContainer>
       </Card>
     </div>
