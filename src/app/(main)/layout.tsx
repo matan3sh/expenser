@@ -1,18 +1,21 @@
 import { SignInForm } from '@/components/auth/SignInForm'
-import { Sidebar } from '@/components/layout/sidebar/Sidebar'
+import { MainLayout } from '@/components/layout/MainLayout'
 import { auth } from '@clerk/nextjs/server'
 
-export default async function MainLayout({
+export default async function Layout({
   children,
 }: {
   children: React.ReactNode
 }) {
   const { userId } = await auth()
 
-  return (
+  return userId ? (
+    <MainLayout>{children}</MainLayout>
+  ) : (
     <div className="flex min-h-screen">
-      <Sidebar />
-      <main className="flex-1">{userId ? children : <SignInForm />}</main>
+      <main className="flex-1">
+        <SignInForm />
+      </main>
     </div>
   )
 }

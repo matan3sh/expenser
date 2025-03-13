@@ -15,7 +15,7 @@ import { MonthSelector } from './MonthSelector'
 import { SidebarProps } from './types'
 import { UserProfile } from './UserProfile'
 
-export function Sidebar({ className, isOpen = true, onClose }: SidebarProps) {
+export function Sidebar({ className, isOpen, onClose }: SidebarProps) {
   const { settings, updateSelectedMonth, isCurrentMonth } = useSettings()
   const [mounted, setMounted] = useState(false)
   const { user, isLoaded } = useUser()
@@ -72,14 +72,16 @@ export function Sidebar({ className, isOpen = true, onClose }: SidebarProps) {
       >
         <div className="p-4 flex items-center justify-between">
           <UserProfile user={user} isLoaded={isLoaded} />
-          <Button
-            variant="ghost"
-            size="icon"
-            className="lg:hidden"
-            onClick={onClose}
-          >
-            <X className="h-4 w-4" />
-          </Button>
+          {onClose && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="lg:hidden"
+              onClick={onClose}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          )}
         </div>
 
         <Separator />

@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 
 export interface SidebarProps {
   className?: string
-  isOpen?: boolean
+  isOpen: boolean
   onClose?: () => void
 }
 
