@@ -1,8 +1,6 @@
 'use client'
 
 import { ExpenseReceiptDialog } from '@/components/expenses/ExpenseReceiptDialog'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   Table,
   TableBody,
@@ -16,7 +14,6 @@ import { getCategoryById } from '@/data/categories'
 import { formatCurrency } from '@/data/currencies'
 import { expenses } from '@/data/expenses'
 import { format } from 'date-fns'
-import Link from 'next/link'
 
 export function RecentExpenses() {
   const { convertAmount, settings } = useSettings()
@@ -38,43 +35,31 @@ export function RecentExpenses() {
     .slice(0, 5)
 
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium">Recent Expenses</CardTitle>
-        <Button variant="outline" size="sm" asChild>
-          <Link href="/expenses">All Expenses</Link>
-        </Button>
-      </CardHeader>
-      <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Date</TableHead>
-              <TableHead>Description</TableHead>
-              <TableHead>Category</TableHead>
-              <TableHead>Amount</TableHead>
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Date</TableHead>
+          <TableHead>Description</TableHead>
+          <TableHead>Category</TableHead>
+          <TableHead>Amount</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {recentExpenses.map((expense) => (
+          <ExpenseReceiptDialog key={expense.id} expense={expense}>
+            <TableRow className="cursor-pointer hover:bg-muted/50">
+              <TableCell>
+                {format(new Date(expense.date), 'MMM d, yyyy')}
+              </TableCell>
+              <TableCell>{expense.description}</TableCell>
+              <TableCell>{getCategoryById(expense.categoryId)?.name}</TableCell>
+              <TableCell>
+                {safeFormatCurrency(expense.amount, expense.currency)}
+              </TableCell>
             </TableRow>
-          </TableHeader>
-          <TableBody>
-            {recentExpenses.map((expense) => (
-              <ExpenseReceiptDialog key={expense.id} expense={expense}>
-                <TableRow className="cursor-pointer hover:bg-muted/50">
-                  <TableCell>
-                    {format(new Date(expense.date), 'MMM d, yyyy')}
-                  </TableCell>
-                  <TableCell>{expense.description}</TableCell>
-                  <TableCell>
-                    {getCategoryById(expense.categoryId)?.name}
-                  </TableCell>
-                  <TableCell>
-                    {safeFormatCurrency(expense.amount, expense.currency)}
-                  </TableCell>
-                </TableRow>
-              </ExpenseReceiptDialog>
-            ))}
-          </TableBody>
-        </Table>
-      </CardContent>
-    </Card>
+          </ExpenseReceiptDialog>
+        ))}
+      </TableBody>
+    </Table>
   )
 }

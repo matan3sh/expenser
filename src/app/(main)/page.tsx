@@ -2,8 +2,10 @@ import { CategoryTrendChart } from '@/components/dashboard/CategoryTrendChart'
 import { DashboardStats } from '@/components/dashboard/DashboardStats'
 import { RecentExpenses } from '@/components/dashboard/RecentExpenses'
 import { DashboardSkeleton } from '@/components/skeletons/DashboardSkeleton'
+import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { auth } from '@clerk/nextjs/server'
+import Link from 'next/link'
 import { Suspense } from 'react'
 
 export default async function DashboardPage() {
@@ -33,6 +35,9 @@ export default async function DashboardPage() {
               <CardTitle className="text-base font-medium">
                 Recent Expenses
               </CardTitle>
+              <Button variant="outline" size="sm" asChild>
+                <Link href="/expenses">All Expenses</Link>
+              </Button>
             </CardHeader>
             <CardContent className="flex-1 overflow-hidden">
               <RecentExpenses />
