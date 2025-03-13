@@ -6,11 +6,13 @@ import { useSearchParams } from 'next/navigation'
 export default function AddExpensePage() {
   const searchParams = useSearchParams()
   const formData = searchParams.get('data')
+  console.log('Raw form data:', formData)
 
   // Parse the data if coming from receipt upload
   const initialData = formData
     ? JSON.parse(decodeURIComponent(formData))
     : undefined
+  console.log('Parsed initial data:', initialData)
 
   return (
     <div className="space-y-6">

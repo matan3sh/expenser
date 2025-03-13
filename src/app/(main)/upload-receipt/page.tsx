@@ -2,76 +2,90 @@
 
 import { UploadArea } from '@/components/receipt/UploadArea'
 import { Separator } from '@/components/ui/separator'
-import { ReceiptErrorStep, ReceiptProcessingError } from '@/types/receipt'
+import { useSettings } from '@/contexts/SettingsContext'
 import {
   GEMINI_PROMPT,
   cleanGeminiResponse,
   convertImageToBase64,
+  extractReceiptData,
   prepareImageData,
   validateAndFormatData,
 } from '@/utils/receipt'
 import { GoogleGenerativeAI } from '@google/generative-ai'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-
-const ERROR_MESSAGES: Record<ReceiptErrorStep, string> = {
-  image_conversion:
-    'Failed to process the image. Please try a different image.',
-  image_preparation: 'Invalid image format. Please try a different image.',
-  api_error: 'Failed to analyze the receipt. Please try again.',
-  data_validation:
-    'Could not extract valid data from the receipt. Please check the image quality.',
-  response_cleaning:
-    'Failed to process the receipt response. Please try again.',
-  default:
-    'Failed to process receipt. Please try again or enter details manually.',
-} as const
+import { createWorker } from 'tesseract.js'
 
 export default function UploadReceiptPage() {
   const router = useRouter()
   const [isProcessing, setIsProcessing] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const { settings } = useSettings()
 
   const handleFileUpload = async (file: File) => {
-    setIsProcessing(true)
-    setError(null)
-
     try {
-      // Step 1: Convert image to base64
-      const base64Image = await convertImageToBase64(file)
+      setIsProcessing(true)
+      setError(null)
 
-      // Step 2: Initialize Gemini AI
-      const genAI = new GoogleGenerativeAI(
-        process.env.NEXT_PUBLIC_GOOGLE_AI_API_KEY!
-      )
-      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
+      if (settings?.useGeminiAI) {
+        // Existing Gemini AI implementation
+        const base64Image = await convertImageToBase64(file)
+        const imageData = prepareImageData(base64Image, file.type)
 
-      // Step 3: Prepare and process image
-      const imageData = prepareImageData(base64Image, file.type)
-      const result = await model.generateContent([GEMINI_PROMPT, imageData])
+        const genAI = new GoogleGenerativeAI(
+          process.env.NEXT_PUBLIC_GOOGLE_AI_API_KEY!
+        )
+        const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
+        const result = await model.generateContent([GEMINI_PROMPT, imageData])
+        const response = await result.response
+        const text = response.text()
 
-      // Step 4: Parse and validate response
-      const response = await result.response
-      const cleanedText = cleanGeminiResponse(response.text())
-      const parsedData = JSON.parse(cleanedText)
-
-      // Step 5: Format and validate data
-      const extractedData = validateAndFormatData(parsedData)
-
-      // Step 6: Navigate to add expense page
-      router.push(
-        `/add-expense?data=${encodeURIComponent(JSON.stringify(extractedData))}`
-      )
-    } catch (err) {
-      console.error('Receipt processing error:', err)
-
-      if (err instanceof ReceiptProcessingError) {
-        setError(ERROR_MESSAGES[err.step] || ERROR_MESSAGES.default)
-      } else if (err instanceof SyntaxError) {
-        setError(ERROR_MESSAGES.data_validation)
+        const cleanedResponse = cleanGeminiResponse(text)
+        const parsedData = JSON.parse(cleanedResponse)
+        const processedData = validateAndFormatData(parsedData)
+        const params = {
+          amount: processedData.amount.toString(),
+          currency: processedData.currency,
+          date: processedData.date,
+          description: processedData.description,
+          location: processedData.location,
+        }
+        router.push(
+          `/add-expense?data=${encodeURIComponent(JSON.stringify(params))}`
+        )
       } else {
-        setError(ERROR_MESSAGES.default)
+        // Tesseract.js implementation
+        const worker = await createWorker('eng')
+        const {
+          data: { text },
+        } = await worker.recognize(file)
+        await worker.terminate()
+
+        const extractedData = extractReceiptData(text)
+        console.log('Tesseract extracted data:', extractedData)
+
+        if (!extractedData.amount) {
+          throw new Error('Could not extract amount from receipt')
+        }
+
+        const params = {
+          amount: extractedData.amount.toString(),
+          currency: extractedData.currency,
+          date: extractedData.date || new Date().toISOString(),
+          description: extractedData.description,
+          location: extractedData.location || 'Unknown location',
+        }
+        console.log('Tesseract params to be sent:', params)
+        const url = `/add-expense?data=${encodeURIComponent(
+          JSON.stringify(params)
+        )}`
+        console.log('Tesseract URL:', url)
+        router.push(url)
       }
+    } catch (error) {
+      setError(
+        error instanceof Error ? error.message : 'Failed to process receipt'
+      )
     } finally {
       setIsProcessing(false)
     }

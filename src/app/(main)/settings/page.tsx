@@ -2,23 +2,15 @@
 
 import { CurrencySettings } from '@/components/settings/CurrencySettings'
 import { ThemeSettings } from '@/components/settings/ThemeSettings'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Switch } from '@/components/ui/switch'
 import { useSettings } from '@/contexts/SettingsContext'
-import { useTheme } from 'next-themes'
-import { useEffect } from 'react'
 
 export default function SettingsPage() {
-  const { settings } = useSettings()
-  const { setTheme } = useTheme()
-
-  // Sync theme with next-themes
-  useEffect(() => {
-    if (settings?.theme) {
-      setTheme(settings.theme)
-    }
-  }, [settings?.theme, setTheme])
+  const { settings, updateUseGeminiAI } = useSettings()
 
   return (
-    <div className="space-y-6">
+    <div className="container mx-auto space-y-6">
       <header>
         <h2 className="text-2xl font-bold tracking-tight">Settings</h2>
         <p className="text-muted-foreground">
@@ -30,6 +22,24 @@ export default function SettingsPage() {
         <CurrencySettings />
         <ThemeSettings />
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Receipt Processing</CardTitle>
+        </CardHeader>
+        <CardContent className="flex items-center justify-between">
+          <div>
+            <h3 className="font-medium">Use Gemini AI</h3>
+            <p className="text-sm text-muted-foreground">
+              Toggle between Gemini AI and Tesseract.js for receipt processing
+            </p>
+          </div>
+          <Switch
+            checked={settings?.useGeminiAI ?? true}
+            onCheckedChange={updateUseGeminiAI}
+          />
+        </CardContent>
+      </Card>
     </div>
   )
 }

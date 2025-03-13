@@ -13,11 +13,12 @@ type MonthSelection = {
   year: number
 }
 
-type Settings = {
-  displayCurrency: CurrencySelection
+export interface Settings {
+  displayCurrency?: CurrencySelection
   exchangeRates: Record<string, number>
   theme: 'light' | 'dark' | 'system'
   selectedMonth: MonthSelection
+  useGeminiAI: boolean
 }
 
 type SettingsContextType = {
@@ -26,6 +27,7 @@ type SettingsContextType = {
   updateExchangeRates: (rates: Record<string, number>) => void
   updateTheme: (theme: Settings['theme']) => void
   updateSelectedMonth: (month: number, year: number) => void
+  updateUseGeminiAI: (enabled: boolean) => void
   isCurrentMonth: () => boolean
   convertAmount: (amount: number, fromCurrency: string) => number
 }
@@ -39,6 +41,7 @@ const defaultSettings: Settings = {
     month: new Date().getMonth(),
     year: new Date().getFullYear(),
   },
+  useGeminiAI: true,
 }
 
 // Context
@@ -100,8 +103,8 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     fromCurrency: string = 'USD'
   ): number => {
     if (
-      !settings.displayCurrency.code ||
-      fromCurrency === settings.displayCurrency.code
+      !settings.displayCurrency?.code ||
+      fromCurrency === settings.displayCurrency?.code
     ) {
       return amount
     }
@@ -128,6 +131,8 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
         ...prev,
         selectedMonth: { month, year },
       })),
+    updateUseGeminiAI: (enabled) =>
+      setSettings((prev) => ({ ...prev, useGeminiAI: enabled })),
     isCurrentMonth: () => {
       const now = new Date()
       return (
