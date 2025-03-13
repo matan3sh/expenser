@@ -1,5 +1,6 @@
 'use client'
 
+import { ExpenseReceiptDialog } from '@/components/expenses/ExpenseReceiptDialog'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import { Card } from '@/components/ui/card'
@@ -154,37 +155,41 @@ export function ExpensesDataTable() {
           {paginatedExpenses.map((expense) => {
             const category = getCategoryById(expense.categoryId)
             return (
-              <TableRow key={expense.id}>
-                <TableCell>{format(new Date(expense.date), 'PPP')}</TableCell>
-                <TableCell>{expense.description}</TableCell>
-                <TableCell>{expense.location}</TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-2">
-                    <div
-                      className="w-3 h-3 rounded-full"
-                      style={{ backgroundColor: category?.color }}
-                    />
-                    {category?.name}
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <div className="flex flex-col">
-                    <span>
-                      {safeFormatCurrency(expense.amount, expense.currency)}
-                    </span>
-                    {settings?.displayCurrency?.code !== expense.currency && (
-                      <span className="text-sm text-muted-foreground">
-                        ({formatCurrency(expense.amount, expense.currency)})
+              <ExpenseReceiptDialog key={expense.id} expense={expense}>
+                <TableRow className="cursor-pointer hover:bg-muted/50">
+                  <TableCell>
+                    {format(new Date(expense.date), 'MMM d, yyyy')}
+                  </TableCell>
+                  <TableCell>{expense.description}</TableCell>
+                  <TableCell>{expense.location}</TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      <div
+                        className="w-3 h-3 rounded-full"
+                        style={{ backgroundColor: category?.color }}
+                      />
+                      {category?.name}
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex flex-col">
+                      <span>
+                        {safeFormatCurrency(expense.amount, expense.currency)}
                       </span>
-                    )}
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <Button variant="ghost" size="sm">
-                    Edit
-                  </Button>
-                </TableCell>
-              </TableRow>
+                      {settings?.displayCurrency?.code !== expense.currency && (
+                        <span className="text-sm text-muted-foreground">
+                          ({formatCurrency(expense.amount, expense.currency)})
+                        </span>
+                      )}
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <Button variant="ghost" size="sm">
+                      Edit
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              </ExpenseReceiptDialog>
             )
           })}
         </TableBody>

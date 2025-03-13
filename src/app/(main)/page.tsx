@@ -1,6 +1,6 @@
 import { CategoryTrendChart } from '@/components/dashboard/CategoryTrendChart'
 import { DashboardStats } from '@/components/dashboard/DashboardStats'
-import { RecentExpenses } from '@/components/expenses/RecentExpenses'
+import { RecentExpenses } from '@/components/dashboard/RecentExpenses'
 import { DashboardSkeleton } from '@/components/skeletons/DashboardSkeleton'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { auth } from '@clerk/nextjs/server'

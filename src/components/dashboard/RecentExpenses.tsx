@@ -1,5 +1,6 @@
 'use client'
 
+import { ExpenseReceiptDialog } from '@/components/expenses/ExpenseReceiptDialog'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
@@ -56,18 +57,20 @@ export function RecentExpenses() {
           </TableHeader>
           <TableBody>
             {recentExpenses.map((expense) => (
-              <TableRow key={expense.id}>
-                <TableCell>
-                  {format(new Date(expense.date), 'MMM d, yyyy')}
-                </TableCell>
-                <TableCell>{expense.description}</TableCell>
-                <TableCell>
-                  {getCategoryById(expense.categoryId)?.name}
-                </TableCell>
-                <TableCell>
-                  {safeFormatCurrency(expense.amount, expense.currency)}
-                </TableCell>
-              </TableRow>
+              <ExpenseReceiptDialog key={expense.id} expense={expense}>
+                <TableRow className="cursor-pointer hover:bg-muted/50">
+                  <TableCell>
+                    {format(new Date(expense.date), 'MMM d, yyyy')}
+                  </TableCell>
+                  <TableCell>{expense.description}</TableCell>
+                  <TableCell>
+                    {getCategoryById(expense.categoryId)?.name}
+                  </TableCell>
+                  <TableCell>
+                    {safeFormatCurrency(expense.amount, expense.currency)}
+                  </TableCell>
+                </TableRow>
+              </ExpenseReceiptDialog>
             ))}
           </TableBody>
         </Table>

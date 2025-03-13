@@ -6,6 +6,7 @@ export interface Expense {
   currency: string
   categoryId: string
   location: string
+  notes?: string
 }
 
 export const expenses: Expense[] = [
