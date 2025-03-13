@@ -16,72 +16,91 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { createWorker } from 'tesseract.js'
 
+// Types
+interface ReceiptParams {
+  amount: string
+  currency: string
+  date: string
+  description: string
+  location: string
+}
+
 export default function UploadReceiptPage() {
   const router = useRouter()
   const [isProcessing, setIsProcessing] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const { settings } = useSettings()
 
+  // Helper function to navigate to add-expense page with params
+  const navigateToAddExpense = (params: ReceiptParams) => {
+    const url = `/add-expense?data=${encodeURIComponent(
+      JSON.stringify(params)
+    )}`
+    router.push(url)
+  }
+
+  // Process receipt using Gemini AI
+  const processWithGeminiAI = async (file: File) => {
+    const base64Image = await convertImageToBase64(file)
+    const imageData = prepareImageData(base64Image, file.type)
+
+    const genAI = new GoogleGenerativeAI(
+      process.env.NEXT_PUBLIC_GOOGLE_AI_API_KEY!
+    )
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
+    const result = await model.generateContent([GEMINI_PROMPT, imageData])
+    const response = await result.response
+    const text = response.text()
+
+    const cleanedResponse = cleanGeminiResponse(text)
+    const parsedData = JSON.parse(cleanedResponse)
+    const processedData = validateAndFormatData(parsedData)
+
+    return {
+      amount: processedData.amount.toString(),
+      currency: processedData.currency,
+      date: processedData.date,
+      description: processedData.description,
+      location: processedData.location,
+    }
+  }
+
+  // Process receipt using Tesseract.js
+  const processWithTesseract = async (file: File) => {
+    const worker = await createWorker('eng')
+    const {
+      data: { text },
+    } = await worker.recognize(file)
+    await worker.terminate()
+
+    const extractedData = extractReceiptData(text)
+    console.log('Tesseract extracted data:', extractedData)
+
+    if (!extractedData.amount) {
+      throw new Error('Could not extract amount from receipt')
+    }
+
+    return {
+      amount: extractedData.amount.toString(),
+      currency: extractedData.currency,
+      date: extractedData.date || new Date().toISOString(),
+      description: extractedData.description,
+      location: extractedData.location || 'Unknown location',
+    }
+  }
+
+  // Main file upload handler
   const handleFileUpload = async (file: File) => {
     try {
       setIsProcessing(true)
       setError(null)
 
-      if (settings?.useGeminiAI) {
-        // Existing Gemini AI implementation
-        const base64Image = await convertImageToBase64(file)
-        const imageData = prepareImageData(base64Image, file.type)
+      const params = await (settings?.useGeminiAI
+        ? processWithGeminiAI(file)
+        : processWithTesseract(file))
 
-        const genAI = new GoogleGenerativeAI(
-          process.env.NEXT_PUBLIC_GOOGLE_AI_API_KEY!
-        )
-        const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
-        const result = await model.generateContent([GEMINI_PROMPT, imageData])
-        const response = await result.response
-        const text = response.text()
-
-        const cleanedResponse = cleanGeminiResponse(text)
-        const parsedData = JSON.parse(cleanedResponse)
-        const processedData = validateAndFormatData(parsedData)
-        const params = {
-          amount: processedData.amount.toString(),
-          currency: processedData.currency,
-          date: processedData.date,
-          description: processedData.description,
-          location: processedData.location,
-        }
-        router.push(
-          `/add-expense?data=${encodeURIComponent(JSON.stringify(params))}`
-        )
-      } else {
-        // Tesseract.js implementation
-        const worker = await createWorker('eng')
-        const {
-          data: { text },
-        } = await worker.recognize(file)
-        await worker.terminate()
-
-        const extractedData = extractReceiptData(text)
-        console.log('Tesseract extracted data:', extractedData)
-
-        if (!extractedData.amount) {
-          throw new Error('Could not extract amount from receipt')
-        }
-
-        const params = {
-          amount: extractedData.amount.toString(),
-          currency: extractedData.currency,
-          date: extractedData.date || new Date().toISOString(),
-          description: extractedData.description,
-          location: extractedData.location || 'Unknown location',
-        }
-        console.log('Tesseract params to be sent:', params)
-        const url = `/add-expense?data=${encodeURIComponent(
-          JSON.stringify(params)
-        )}`
-        console.log('Tesseract URL:', url)
-        router.push(url)
-      }
+      console.log('Processed params:', params)
+      navigateToAddExpense(params)
     } catch (error) {
       setError(
         error instanceof Error ? error.message : 'Failed to process receipt'
