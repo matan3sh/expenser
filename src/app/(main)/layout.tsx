@@ -9,13 +9,5 @@ export default async function Layout({
 }) {
   const { userId } = await auth()
 
-  return userId ? (
-    <MainLayout>{children}</MainLayout>
-  ) : (
-    <div className="flex min-h-screen">
-      <main className="flex-1">
-        <SignInForm />
-      </main>
-    </div>
-  )
+  return <MainLayout>{userId ? children : <SignInForm />}</MainLayout>
 }

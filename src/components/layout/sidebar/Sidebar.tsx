@@ -9,6 +9,7 @@ import { LogOut, X } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { toast } from 'sonner'
 import { actionMenuItems, mainMenuItems } from './config'
 import { MenuSection } from './MenuSection'
 import { MonthSelector } from './MonthSelector'
@@ -53,6 +54,13 @@ export function Sidebar({ className, isOpen, onClose }: SidebarProps) {
     router.push('/sign-in')
   }
 
+  const handleMenuClick = (e: React.MouseEvent) => {
+    if (!user) {
+      e.preventDefault()
+      toast.error('Please sign in to access this feature')
+    }
+  }
+
   if (!mounted) return null
 
   return (
@@ -70,24 +78,29 @@ export function Sidebar({ className, isOpen, onClose }: SidebarProps) {
           ${isOpen ? 'translate-x-0' : '-translate-x-full'} 
           lg:translate-x-0 w-64 ${className}`}
       >
-        <div className="p-4 flex items-center justify-between">
-          <UserProfile user={user} isLoaded={isLoaded} />
-          {onClose && (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="lg:hidden"
-              onClick={onClose}
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          )}
-        </div>
-
-        <Separator />
+        {/* Only show user profile section when authenticated */}
+        {user && (
+          <>
+            <div className="p-4 flex items-center justify-between">
+              <UserProfile user={user} isLoaded={isLoaded} />
+              {onClose && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="lg:hidden"
+                  onClick={onClose}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
+            <Separator />
+          </>
+        )}
 
         <ScrollArea className="flex-1">
           <div className="p-4">
+            {/* Only show month selector when authenticated */}
             {user && (
               <div className="mb-6">
                 <MonthSelector
@@ -98,8 +111,17 @@ export function Sidebar({ className, isOpen, onClose }: SidebarProps) {
               </div>
             )}
 
-            <MenuSection title="Menu" items={mainMenuItems} />
-            {user && <MenuSection title="Actions" items={actionMenuItems} />}
+            {/* Show all menu items but handle clicks for unauthenticated users */}
+            <MenuSection
+              title="Menu"
+              items={mainMenuItems}
+              onItemClick={handleMenuClick}
+            />
+            <MenuSection
+              title="Actions"
+              items={actionMenuItems}
+              onItemClick={handleMenuClick}
+            />
           </div>
         </ScrollArea>
 

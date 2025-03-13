@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { MenuSectionProps } from './types'
 
-export function MenuSection({ title, items }: MenuSectionProps) {
+export function MenuSection({ title, items, onItemClick }: MenuSectionProps) {
   return (
     <div className="mb-4">
       <span className="text-xs font-medium mb-2 block text-muted-foreground">
@@ -18,7 +18,7 @@ export function MenuSection({ title, items }: MenuSectionProps) {
             className="w-full justify-start"
             asChild
           >
-            <Link href={item.href}>
+            <Link href={item.href} onClick={onItemClick}>
               <span className="mr-2">{item.icon()}</span>
               {item.label}
             </Link>

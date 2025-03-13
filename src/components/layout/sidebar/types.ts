@@ -22,6 +22,7 @@ export interface MonthSelectorProps {
 export interface MenuSectionProps {
   title: string
   items: MenuItem[]
+  onItemClick?: (e: React.MouseEvent) => void
 }
 
 export interface UserProfileProps {
