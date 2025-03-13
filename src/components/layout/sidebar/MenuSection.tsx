@@ -1,28 +1,43 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 import Link from 'next/link'
-import { MenuSectionProps } from './types'
+import { usePathname } from 'next/navigation'
+
+interface MenuSectionProps {
+  title: string
+  items: Array<{
+    href: string
+    icon: React.ElementType
+    label: string
+  }>
+  onItemClick: (e: React.MouseEvent) => void
+}
 
 export function MenuSection({ title, items, onItemClick }: MenuSectionProps) {
+  const pathname = usePathname()
+
   return (
-    <div className="mb-4">
-      <span className="text-xs font-medium mb-2 block text-muted-foreground">
+    <div className="mb-6">
+      <h4 className="px-2 mb-2 text-sm font-semibold text-muted-foreground">
         {title}
-      </span>
+      </h4>
       <div className="space-y-1">
         {items.map((item) => (
-          <Button
+          <Link
             key={item.href}
-            variant="ghost"
-            className="w-full justify-start"
-            asChild
+            href={item.href}
+            onClick={onItemClick}
+            className={cn(
+              'flex items-center gap-3 rounded-lg px-2 py-1.5 text-sm font-medium hover:bg-accent hover:text-accent-foreground',
+              pathname === item.href
+                ? 'bg-accent text-accent-foreground'
+                : 'text-muted-foreground'
+            )}
           >
-            <Link href={item.href} onClick={onItemClick}>
-              <span className="mr-2">{item.icon()}</span>
-              {item.label}
-            </Link>
-          </Button>
+            <item.icon className="h-4 w-4" />
+            {item.label}
+          </Link>
         ))}
       </div>
     </div>
