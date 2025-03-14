@@ -15,10 +15,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { useSettings } from '@/contexts/SettingsContext'
+import { useTheme } from 'next-themes'
 
 export function ThemeSettings() {
-  const { settings, updateTheme } = useSettings()
+  const { theme, setTheme } = useTheme()
 
   return (
     <Card>
@@ -32,9 +32,9 @@ export function ThemeSettings() {
         <div className="space-y-2">
           <Label htmlFor="theme">Color Theme</Label>
           <Select
-            value={settings?.theme || 'system'}
+            value={theme}
             onValueChange={(value: 'light' | 'dark' | 'system') => {
-              updateTheme(value)
+              setTheme(value)
             }}
           >
             <SelectTrigger>
