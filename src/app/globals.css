@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @plugin "tailwindcss-animate";
 
@@ -65,11 +65,26 @@
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
+  --chart-1: oklch(0.65 0.25 40); /* Warm Red */
+  --chart-2: oklch(0.6 0.25 80); /* Orange */
+  --chart-3: oklch(0.7 0.25 120); /* Green */
+  --chart-4: oklch(0.65 0.25 200); /* Blue */
+  --chart-5: oklch(0.6 0.25 280); /* Purple */
+  --chart-6: oklch(0.75 0.25 0); /* Red */
+  --chart-7: oklch(0.7 0.25 160); /* Teal */
+  --chart-8: oklch(0.65 0.25 240); /* Indigo */
+  --chart-9: oklch(0.6 0.25 320); /* Pink */
+  --chart-10: oklch(0.75 0.25 60); /* Yellow */
+  --chart-11: oklch(0.7 0.2 100); /* Light Green */
+  --chart-12: oklch(0.65 0.2 180); /* Light Blue */
+  --chart-13: oklch(0.6 0.2 260); /* Light Purple */
+  --chart-14: oklch(0.75 0.2 20); /* Coral */
+  --chart-15: oklch(0.7 0.2 140); /* Sea Green */
+  --chart-16: oklch(0.65 0.2 220); /* Sky Blue */
+  --chart-17: oklch(0.6 0.2 300); /* Magenta */
+  --chart-18: oklch(0.75 0.2 40); /* Peach */
+  --chart-19: oklch(0.7 0.2 160); /* Turquoise */
+  --chart-20: oklch(0.65 0.2 340); /* Rose */
   --radius: 0.625rem;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
@@ -101,11 +116,26 @@
   --border: oklch(0.269 0 0);
   --input: oklch(0.269 0 0);
   --ring: oklch(0.439 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
+  --chart-1: oklch(0.7 0.25 40); /* Warm Red */
+  --chart-2: oklch(0.65 0.25 80); /* Orange */
+  --chart-3: oklch(0.75 0.25 120); /* Green */
+  --chart-4: oklch(0.7 0.25 200); /* Blue */
+  --chart-5: oklch(0.65 0.25 280); /* Purple */
+  --chart-6: oklch(0.8 0.25 0); /* Red */
+  --chart-7: oklch(0.75 0.25 160); /* Teal */
+  --chart-8: oklch(0.7 0.25 240); /* Indigo */
+  --chart-9: oklch(0.65 0.25 320); /* Pink */
+  --chart-10: oklch(0.8 0.25 60); /* Yellow */
+  --chart-11: oklch(0.75 0.2 100); /* Light Green */
+  --chart-12: oklch(0.7 0.2 180); /* Light Blue */
+  --chart-13: oklch(0.65 0.2 260); /* Light Purple */
+  --chart-14: oklch(0.8 0.2 20); /* Coral */
+  --chart-15: oklch(0.75 0.2 140); /* Sea Green */
+  --chart-16: oklch(0.7 0.2 220); /* Sky Blue */
+  --chart-17: oklch(0.65 0.2 300); /* Magenta */
+  --chart-18: oklch(0.8 0.2 40); /* Peach */
+  --chart-19: oklch(0.75 0.2 160); /* Turquoise */
+  --chart-20: oklch(0.65 0.2 340); /* Rose */
   --sidebar: oklch(0.205 0 0);
   --sidebar-foreground: oklch(0.985 0 0);
   --sidebar-primary: oklch(0.488 0.243 264.376);
