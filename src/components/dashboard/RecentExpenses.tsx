@@ -54,7 +54,16 @@ export function RecentExpenses() {
               <TableCell>{expense.description}</TableCell>
               <TableCell>{getCategoryById(expense.categoryId)?.name}</TableCell>
               <TableCell>
-                {safeFormatCurrency(expense.amount, expense.currency)}
+                <div className="flex flex-col">
+                  <span>
+                    {safeFormatCurrency(expense.amount, expense.currency)}
+                  </span>
+                  {settings?.displayCurrency?.code !== expense.currency && (
+                    <span className="text-[10px] text-muted-foreground">
+                      ({formatCurrency(expense.amount, expense.currency)})
+                    </span>
+                  )}
+                </div>
               </TableCell>
             </TableRow>
           </ExpenseReceiptDialog>

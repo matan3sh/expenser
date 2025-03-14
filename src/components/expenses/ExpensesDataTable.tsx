@@ -177,7 +177,7 @@ export function ExpensesDataTable() {
                       {safeFormatCurrency(expense.amount, expense.currency)}
                     </span>
                     {settings?.displayCurrency?.code !== expense.currency && (
-                      <span className="text-sm text-muted-foreground">
+                      <span className="text-[12px] text-muted-foreground">
                         ({formatCurrency(expense.amount, expense.currency)})
                       </span>
                     )}
