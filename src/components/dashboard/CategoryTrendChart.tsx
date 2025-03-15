@@ -48,16 +48,21 @@ const CustomTooltip = ({ active, payload, label }: TooltipProps) => {
   )
 }
 
+interface ActiveCategoriesState {
+  [key: string]: boolean
+}
+
 export function CategoryTrendChart() {
-  const [activeCategories, setActiveCategories] = useState(
-    categories.reduce(
-      (acc, category) => ({
-        ...acc,
-        [category.id]: true,
-      }),
-      {}
+  const [activeCategories, setActiveCategories] =
+    useState<ActiveCategoriesState>(
+      categories.reduce(
+        (acc, category) => ({
+          ...acc,
+          [category.id]: true,
+        }),
+        {}
+      )
     )
-  )
 
   const monthlyData = getMonthlyExpenses()
   const chartData = monthlyData.map((month) => {
