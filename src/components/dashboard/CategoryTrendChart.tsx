@@ -3,10 +3,10 @@
 import { categories } from '@/data/categories'
 import { formatCurrency } from '@/data/currencies'
 import { getCategoryTotals, getMonthlyExpenses } from '@/data/expenses'
+import { useState } from 'react'
 import {
-  Legend,
-  Line,
-  LineChart,
+  Area,
+  AreaChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -49,8 +49,17 @@ const CustomTooltip = ({ active, payload, label }: TooltipProps) => {
 }
 
 export function CategoryTrendChart() {
-  const monthlyData = getMonthlyExpenses()
+  const [activeCategories, setActiveCategories] = useState(
+    categories.reduce(
+      (acc, category) => ({
+        ...acc,
+        [category.id]: true,
+      }),
+      {}
+    )
+  )
 
+  const monthlyData = getMonthlyExpenses()
   const chartData = monthlyData.map((month) => {
     const categoryTotals = getCategoryTotals(month.expenses, (amount) => amount)
 
@@ -66,62 +75,118 @@ export function CategoryTrendChart() {
     }
   })
 
+  const toggleCategory = (categoryId: string) => {
+    setActiveCategories((prev) => {
+      // Count how many categories are currently active
+      const activeCount = Object.values(prev).filter(Boolean).length
+
+      // If trying to deactivate and it's the last active category, prevent the change
+      if (prev[categoryId] && activeCount === 1) {
+        return prev
+      }
+
+      // Otherwise, proceed with the toggle
+      return {
+        ...prev,
+        [categoryId]: !prev[categoryId],
+      }
+    })
+  }
+
   return (
-    <div className="h-full w-full">
-      <ResponsiveContainer width="100%" height={400}>
-        <LineChart
-          data={chartData}
-          margin={{ top: 20, right: 5, left: 5, bottom: 5 }}
-        >
-          <XAxis
-            dataKey="month"
-            className="text-muted-foreground text-xs"
-            tickLine={false}
-            axisLine={false}
-          />
-          <YAxis
-            className="text-muted-foreground text-xs"
-            tickLine={false}
-            axisLine={false}
-            tickFormatter={(value) => formatCurrency(value, 'ILS')}
-          />
-          <Tooltip
-            content={<CustomTooltip />}
-            cursor={{
-              stroke: 'hsl(var(--muted))',
-              strokeWidth: 1,
-              strokeDasharray: '4 4',
-            }}
-          />
-          <Legend
-            verticalAlign="top"
-            height={36}
-            iconType="circle"
-            wrapperStyle={{
-              paddingBottom: '20px',
-              marginTop: '-15px',
-            }}
-            formatter={(value) => (
-              <span className="text-sm text-muted-foreground">{value}</span>
-            )}
-          />
-          {categories.map((category) => (
-            <Line
-              key={category.id}
-              type="monotone"
-              dataKey={category.name}
-              stroke={category.color}
-              strokeWidth={2}
-              dot={false}
-              activeDot={{
-                r: 4,
-                strokeWidth: 2,
-                fill: 'hsl(var(--background))',
+    <div className="space-y-4">
+      <div className="flex flex-wrap gap-2">
+        {categories.map((category) => (
+          <button
+            key={category.id}
+            onClick={() => toggleCategory(category.id)}
+            className={`inline-flex items-center gap-2 rounded-lg border px-3 py-1 text-sm transition-colors
+              ${
+                activeCategories[category.id]
+                  ? 'bg-secondary'
+                  : 'bg-background hover:bg-secondary/50'
+              }`}
+          >
+            <div
+              className="h-2 w-2 rounded-full"
+              style={{ backgroundColor: category.color }}
+            />
+            {category.name}
+          </button>
+        ))}
+      </div>
+
+      <div className="h-full w-full">
+        <ResponsiveContainer width="100%" height={400}>
+          <AreaChart
+            data={chartData}
+            margin={{ top: 20, right: 5, left: 5, bottom: 5 }}
+          >
+            <defs>
+              {categories.map((category) => (
+                <linearGradient
+                  key={`gradient-${category.id}`}
+                  id={`gradient-${category.id}`}
+                  x1="0"
+                  y1="0"
+                  x2="0"
+                  y2="1"
+                >
+                  <stop
+                    offset="5%"
+                    stopColor={category.color}
+                    stopOpacity={0.3}
+                  />
+                  <stop
+                    offset="95%"
+                    stopColor={category.color}
+                    stopOpacity={0.05}
+                  />
+                </linearGradient>
+              ))}
+            </defs>
+            <XAxis
+              dataKey="month"
+              className="text-muted-foreground text-xs"
+              tickLine={false}
+              axisLine={false}
+            />
+            <YAxis
+              className="text-muted-foreground text-xs"
+              tickLine={false}
+              axisLine={false}
+              tickFormatter={(value) => formatCurrency(value, 'ILS')}
+            />
+            <Tooltip
+              content={<CustomTooltip />}
+              cursor={{
+                stroke: 'hsl(var(--muted))',
+                strokeWidth: 1,
+                strokeDasharray: '4 4',
               }}
             />
-          ))}
-        </LineChart>
-      </ResponsiveContainer>
+            {categories.map(
+              (category) =>
+                activeCategories[category.id] && (
+                  <Area
+                    key={category.id}
+                    type="monotone"
+                    dataKey={category.name}
+                    stroke={category.color}
+                    strokeWidth={2}
+                    fill={`url(#gradient-${category.id})`}
+                    dot={false}
+                    activeDot={{
+                      r: 4,
+                      strokeWidth: 2,
+                      fill: 'hsl(var(--background))',
+                    }}
+                  />
+                )
+            )}
+          </AreaChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   )
 }
