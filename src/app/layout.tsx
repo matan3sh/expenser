@@ -1,3 +1,4 @@
+import { UserInitializer } from '@/components/auth/UserInitializer'
 import { ThemeProvider } from '@/components/theme/theme-provider'
 import { SettingsProvider } from '@/contexts/SettingsContext'
 import { ClerkProvider } from '@clerk/nextjs'
@@ -18,6 +19,7 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
+      <UserInitializer />
       <html lang="en" suppressHydrationWarning={true}>
         <body className={inter.className}>
           <SettingsProvider>

@@ -9,14 +9,26 @@ export default clerkMiddleware(async (auth, req) => {
   // Only protect routes that aren't the root path or sign-in
   if (isProtectedRoute(req)) {
     await auth.protect()
+
+    const { userId } = await auth()
+
+    if (userId) {
+      try {
+        // Call the init API route
+        await fetch(`${req.nextUrl.origin}/api/auth/init`, {
+          method: 'POST',
+          body: JSON.stringify({ userId }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+      } catch (error) {
+        console.error('Error calling init API:', error)
+      }
+    }
   }
 })
 
 export const config = {
-  matcher: [
-    // Skip Next.js internals and all static files
-    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
-    // Always run for API routes
-    '/(api|trpc)(.*)',
-  ],
+  matcher: ['/((?!.*\\..*|_next).*)', '/', '/(api|trpc)(.*)'],
 }
