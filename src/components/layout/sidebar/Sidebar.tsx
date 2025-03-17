@@ -15,7 +15,6 @@ import { MenuSection } from './MenuSection'
 import { MonthSelector } from './MonthSelector'
 import { UserProfile } from './UserProfile'
 
-// Remove isOpen and onClose from props since we don't need them anymore
 interface SidebarProps {
   className?: string
 }

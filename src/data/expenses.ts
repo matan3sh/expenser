@@ -12,8 +12,8 @@ export interface Expense {
 export const expenses: Expense[] = [
   {
     id: 'exp_1',
-    date: '2024-03-15',
-    description: 'Weekly Groceries',
+    date: new Date().toISOString(), // Today
+    description: 'Groceries',
     amount: 150.75,
     currency: 'ILS',
     categoryId: 'groceries',
@@ -21,16 +21,16 @@ export const expenses: Expense[] = [
   },
   {
     id: 'exp_2',
-    date: '2024-03-14',
+    date: new Date(Date.now() - 86400000).toISOString(), // Yesterday
     description: 'Electricity Bill',
-    amount: 85.5,
+    amount: 285.5,
     currency: 'ILS',
     categoryId: 'utilities',
     location: 'Electric Company',
   },
   {
     id: 'exp_3',
-    date: '2024-03-13',
+    date: new Date(Date.now() - 2 * 86400000).toISOString(), // 2 days ago
     description: 'Movie Night',
     amount: 120.0,
     currency: 'ILS',
@@ -39,16 +39,43 @@ export const expenses: Expense[] = [
   },
   {
     id: 'exp_4',
-    date: '2024-03-12',
+    date: new Date(Date.now() - 3 * 86400000).toISOString(), // 3 days ago
     description: 'Gas',
-    amount: 250.0,
+    amount: 350.0,
     currency: 'ILS',
     categoryId: 'transport',
     location: 'Paz Gas Station',
   },
-  // February Data
   {
     id: 'exp_5',
+    date: new Date(Date.now() - 4 * 86400000).toISOString(), // 4 days ago
+    description: 'Restaurant',
+    amount: 220.3,
+    currency: 'ILS',
+    categoryId: 'entertainment',
+    location: 'Local Restaurant',
+  },
+  {
+    id: 'exp_6',
+    date: new Date(Date.now() - 5 * 86400000).toISOString(), // 5 days ago
+    description: 'Water Bill',
+    amount: 195.0,
+    currency: 'ILS',
+    categoryId: 'utilities',
+    location: 'Water Corp',
+  },
+  {
+    id: 'exp_7',
+    date: new Date(Date.now() - 6 * 86400000).toISOString(), // 6 days ago
+    description: 'Groceries',
+    amount: 180.0,
+    currency: 'ILS',
+    categoryId: 'groceries',
+    location: 'Rami Levy',
+  },
+  // February Data
+  {
+    id: 'exp_8',
     date: '2024-02-28',
     description: 'Monthly Groceries',
     amount: 420.3,
@@ -57,7 +84,7 @@ export const expenses: Expense[] = [
     location: 'Rami Levy',
   },
   {
-    id: 'exp_6',
+    id: 'exp_9',
     date: '2024-02-25',
     description: 'Water Bill',
     amount: 95.0,
@@ -66,7 +93,7 @@ export const expenses: Expense[] = [
     location: 'Water Corp',
   },
   {
-    id: 'exp_7',
+    id: 'exp_10',
     date: '2024-02-20',
     description: 'Concert Tickets',
     amount: 180.0,
@@ -75,7 +102,7 @@ export const expenses: Expense[] = [
     location: 'Ticketmaster',
   },
   {
-    id: 'exp_8',
+    id: 'exp_11',
     date: '2024-02-15',
     description: 'Bus Pass',
     amount: 200.0,
@@ -85,7 +112,7 @@ export const expenses: Expense[] = [
   },
   // January Data
   {
-    id: 'exp_9',
+    id: 'exp_12',
     date: '2024-01-30',
     description: 'Groceries Shopping',
     amount: 380.25,
@@ -94,7 +121,7 @@ export const expenses: Expense[] = [
     location: 'Victory',
   },
   {
-    id: 'exp_10',
+    id: 'exp_13',
     date: '2024-01-25',
     description: 'Internet Bill',
     amount: 110.0,
@@ -103,7 +130,7 @@ export const expenses: Expense[] = [
     location: 'Internet Provider',
   },
   {
-    id: 'exp_11',
+    id: 'exp_14',
     date: '2024-01-20',
     description: 'Gaming Subscription',
     amount: 60.0,
@@ -112,7 +139,7 @@ export const expenses: Expense[] = [
     location: 'Steam',
   },
   {
-    id: 'exp_12',
+    id: 'exp_15',
     date: '2024-01-15',
     description: 'Taxi Rides',
     amount: 150.0,
@@ -122,7 +149,7 @@ export const expenses: Expense[] = [
   },
   // December 2023 Data
   {
-    id: 'exp_13',
+    id: 'exp_16',
     date: '2023-12-30',
     description: 'Holiday Groceries',
     amount: 550.8,
@@ -131,7 +158,7 @@ export const expenses: Expense[] = [
     location: 'Mega',
   },
   {
-    id: 'exp_14',
+    id: 'exp_17',
     date: '2023-12-25',
     description: 'Heating Bill',
     amount: 180.0,
@@ -140,7 +167,7 @@ export const expenses: Expense[] = [
     location: 'Gas Company',
   },
   {
-    id: 'exp_15',
+    id: 'exp_18',
     date: '2023-12-20',
     description: 'New Year Party',
     amount: 300.0,
@@ -149,7 +176,7 @@ export const expenses: Expense[] = [
     location: 'Event Hall',
   },
   {
-    id: 'exp_16',
+    id: 'exp_19',
     date: '2023-12-15',
     description: 'Car Maintenance',
     amount: 800.0,
@@ -159,7 +186,7 @@ export const expenses: Expense[] = [
   },
   // November 2023 Data
   {
-    id: 'exp_17',
+    id: 'exp_20',
     date: '2023-11-30',
     description: 'Thanksgiving Groceries',
     amount: 480.9,
@@ -168,7 +195,7 @@ export const expenses: Expense[] = [
     location: 'Shufersal',
   },
   {
-    id: 'exp_18',
+    id: 'exp_21',
     date: '2023-11-25',
     description: 'Phone Bill',
     amount: 90.0,
@@ -177,7 +204,7 @@ export const expenses: Expense[] = [
     location: 'Cellcom',
   },
   {
-    id: 'exp_19',
+    id: 'exp_22',
     date: '2023-11-20',
     description: 'Theater Show',
     amount: 200.0,
@@ -186,7 +213,7 @@ export const expenses: Expense[] = [
     location: 'Habima',
   },
   {
-    id: 'exp_20',
+    id: 'exp_23',
     date: '2023-11-15',
     description: 'Fuel',
     amount: 280.0,
