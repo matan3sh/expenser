@@ -4,6 +4,8 @@ export interface Category {
   description: string
   color: string // Hex color code
   icon: string // Lucide icon name
+  createdAt: Date
+  updatedAt: Date
 }
 
 export const categories: Category[] = [
@@ -13,6 +15,8 @@ export const categories: Category[] = [
     description: 'Food and household items',
     color: 'var(--chart-1)',
     icon: 'shopping-cart',
+    createdAt: new Date(),
+    updatedAt: new Date(),
   },
   {
     id: 'utilities',
@@ -20,6 +24,8 @@ export const categories: Category[] = [
     description: 'Bills and utilities',
     color: 'var(--chart-2)',
     icon: 'zap',
+    createdAt: new Date(),
+    updatedAt: new Date(),
   },
   {
     id: 'entertainment',
@@ -27,6 +33,8 @@ export const categories: Category[] = [
     description: 'Movies, games, and fun activities',
     color: 'var(--chart-3)',
     icon: 'film',
+    createdAt: new Date(),
+    updatedAt: new Date(),
   },
   {
     id: 'transport',
@@ -34,6 +42,8 @@ export const categories: Category[] = [
     description: 'Public transport and fuel',
     color: 'var(--chart-4)',
     icon: 'car',
+    createdAt: new Date(),
+    updatedAt: new Date(),
   },
   {
     id: 'other',
@@ -41,6 +51,8 @@ export const categories: Category[] = [
     description: 'Miscellaneous expenses',
     color: 'var(--chart-5)',
     icon: 'more-horizontal',
+    createdAt: new Date(),
+    updatedAt: new Date(),
   },
 ]
 

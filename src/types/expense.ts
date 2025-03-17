@@ -1,10 +1,8 @@
-export type Expense = {
+export interface Expense {
   id: string
   amount: number
-  currency: string
-  date: string
   description: string
-  location: string
+  date: Date
   categoryId: string
 }
 

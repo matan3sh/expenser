@@ -1,18 +1,23 @@
-import { CategoriesManager } from '@/components/categories/CategoriesManager'
+import { CategoryList } from '@/components/categories/CategoryList'
+import { CreateCategoryButton } from '@/components/categories/CreateCategoryButton'
+import { categories } from '@/data/categories'
 
 export default function CategoriesPage() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Categories</h1>
-        <p className="text-muted-foreground">Manage your expense categories.</p>
-      </div>
-      <div className="grid gap-4">
-        <div className="rounded-lg border bg-card p-6">
-          <h2 className="text-lg font-medium mb-4">Your Categories</h2>
-          <CategoriesManager />
+    <>
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-6">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight md:text-3xl">
+            Categories
+          </h1>
+          <p className="text-sm text-muted-foreground md:text-base">
+            Manage your expense categories
+          </p>
         </div>
+        <CreateCategoryButton />
       </div>
-    </div>
+
+      <CategoryList categories={categories} />
+    </>
   )
 }
