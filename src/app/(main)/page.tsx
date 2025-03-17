@@ -1,4 +1,3 @@
-import { CategoryTrendChart } from '@/components/dashboard/CategoryTrendChart'
 import { DashboardStats } from '@/components/dashboard/DashboardStats'
 import { MobileExpenseList } from '@/components/dashboard/MobileExpenseList'
 import { RecentExpenses } from '@/components/dashboard/RecentExpenses'
@@ -36,7 +35,7 @@ function MobileDashboard() {
 // Desktop Dashboard Cards Component
 function DesktopDashboardCards() {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mt-6">
+    <div className="grid grid-cols-1 gap-4 md:gap-6 mt-6">
       <Card className="flex flex-col h-[400px] md:h-[500px]">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-base font-medium">
@@ -48,17 +47,6 @@ function DesktopDashboardCards() {
         </CardHeader>
         <CardContent className="flex-1 overflow-hidden">
           <RecentExpenses />
-        </CardContent>
-      </Card>
-
-      <Card className="flex flex-col h-[400px] md:h-[500px]">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-base font-medium">
-            Category Trends
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="flex-1 overflow-hidden">
-          <CategoryTrendChart />
         </CardContent>
       </Card>
     </div>
