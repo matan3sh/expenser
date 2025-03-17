@@ -5,7 +5,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
 import { useSettings } from '@/contexts/SettingsContext'
 import { useClerk, useUser } from '@clerk/nextjs'
-import { LogOut } from 'lucide-react'
+import { Calendar, LogOut } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -85,11 +85,17 @@ export function Sidebar({ className }: SidebarProps) {
         <div className="p-4">
           {user && (
             <div className="mb-6">
-              <MonthSelector
-                handleMonthChange={handleMonthChange}
-                isCurrentMonth={isCurrentMonth}
-                getFormattedDate={getFormattedDate}
-              />
+              <div className="rounded-lg border bg-card p-3">
+                <div className="flex items-center gap-2 mb-2">
+                  <Calendar className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-xs font-medium">Month</span>
+                </div>
+                <MonthSelector
+                  handleMonthChange={handleMonthChange}
+                  isCurrentMonth={isCurrentMonth}
+                  getFormattedDate={getFormattedDate}
+                />
+              </div>
             </div>
           )}
 

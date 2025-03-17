@@ -268,7 +268,7 @@ export const BottomNavigation = () => {
 
       <nav className="fixed bottom-0 w-full bg-background/80 backdrop-blur-md border-t border-border lg:hidden z-40 transform-gpu">
         <div className="flex justify-around items-center h-16 relative">
-          {navigationItems.map((item, index) => {
+          {navigationItems.map((item) => {
             if (item === null) {
               return (
                 <button
