@@ -21,14 +21,24 @@ interface StatCardProps {
 
 function StatCard({ title, amount, trend, icon, subtitle }: StatCardProps) {
   const isPositive = trend >= 0
+  const gradients: Record<string, string> = {
+    'Monthly Spending': 'from-blue-500 to-blue-600',
+    'Year to Date': 'from-violet-500 to-violet-600',
+    'Average Monthly': 'from-emerald-500 to-emerald-600',
+    'Largest Expense': 'from-amber-500 to-amber-600',
+  }
 
   return (
-    <Card className="p-6 hover:shadow-md transition-shadow">
+    <Card
+      className={`p-6 hover:shadow-lg transition-all bg-gradient-to-br ${
+        gradients[title] || 'from-blue-500 to-blue-600'
+      } text-white`}
+    >
       <div className="flex items-center justify-between mb-4">
-        <div className="p-2 rounded-lg bg-primary/10">{icon}</div>
+        <div className="p-3 rounded-xl bg-white/10">{icon}</div>
         <div
           className={`flex items-center gap-1 text-sm ${
-            isPositive ? 'text-green-500' : 'text-red-500'
+            isPositive ? 'text-emerald-300' : 'text-red-300'
           }`}
         >
           {isPositive ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
@@ -36,11 +46,9 @@ function StatCard({ title, amount, trend, icon, subtitle }: StatCardProps) {
         </div>
       </div>
 
-      <h3 className="text-sm text-muted-foreground font-medium mb-1">
-        {title}
-      </h3>
+      <h3 className="text-sm text-white/70 font-medium mb-1">{title}</h3>
       <p className="text-2xl font-semibold mb-1">{amount}</p>
-      {subtitle && <p className="text-xs text-muted-foreground">{subtitle}</p>}
+      {subtitle && <p className="text-xs text-white/70">{subtitle}</p>}
     </Card>
   )
 }
