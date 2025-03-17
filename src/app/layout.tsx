@@ -1,6 +1,8 @@
 import { UserInitializer } from '@/components/auth/UserInitializer'
-import { ThemeProvider } from '@/components/theme/theme-provider'
+import { ClientMobileLayout } from '@/components/mobile/layout/ClientMobileLayout'
+import { ThemeProvider } from '@/components/providers/theme-provider'
 import { SettingsProvider } from '@/contexts/SettingsContext'
+import { cn } from '@/lib/utils'
 import { ClerkProvider } from '@clerk/nextjs'
 import { Inter } from 'next/font/google'
 import './globals.css'
@@ -20,18 +22,24 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <UserInitializer />
-      <html lang="en" suppressHydrationWarning={true}>
-        <body className={inter.className}>
-          <SettingsProvider>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="system"
-              enableSystem
-              disableTransitionOnChange
-            >
-              {children}
-            </ThemeProvider>
-          </SettingsProvider>
+      <html lang="en" suppressHydrationWarning>
+        <body
+          className={cn(
+            'min-h-screen bg-background antialiased',
+            inter.className
+          )}
+        >
+          <ThemeProvider>
+            <SettingsProvider>
+              {/* Desktop version */}
+              <div className="hidden lg:block">{children}</div>
+
+              {/* Mobile version */}
+              <div className="lg:hidden">
+                <ClientMobileLayout>{children}</ClientMobileLayout>
+              </div>
+            </SettingsProvider>
+          </ThemeProvider>
         </body>
       </html>
     </ClerkProvider>

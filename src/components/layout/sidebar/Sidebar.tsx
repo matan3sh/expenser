@@ -5,7 +5,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
 import { useSettings } from '@/contexts/SettingsContext'
 import { useClerk, useUser } from '@clerk/nextjs'
-import { LogOut, X } from 'lucide-react'
+import { LogOut } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -13,10 +13,14 @@ import { toast } from 'sonner'
 import { actionMenuItems, mainMenuItems } from './config'
 import { MenuSection } from './MenuSection'
 import { MonthSelector } from './MonthSelector'
-import { SidebarProps } from './types'
 import { UserProfile } from './UserProfile'
 
-export function Sidebar({ className, isOpen, onClose }: SidebarProps) {
+// Remove isOpen and onClose from props since we don't need them anymore
+interface SidebarProps {
+  className?: string
+}
+
+export function Sidebar({ className }: SidebarProps) {
   const { settings, updateSelectedMonth, isCurrentMonth } = useSettings()
   const [mounted, setMounted] = useState(false)
   const { user, isLoaded } = useUser()
@@ -64,89 +68,65 @@ export function Sidebar({ className, isOpen, onClose }: SidebarProps) {
   if (!mounted) return null
 
   return (
-    <>
-      {isOpen && (
-        <div
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
-          onClick={onClose}
-        />
+    // Hide on mobile, show on md and up screens
+    <div
+      className={`hidden lg:flex flex-col bg-background border-r w-64 ${className}`}
+    >
+      {user && (
+        <>
+          <div className="p-4">
+            <UserProfile user={user} isLoaded={isLoaded} />
+          </div>
+          <Separator />
+        </>
       )}
 
-      <div
-        className={`fixed lg:static inset-y-0 left-0 z-50 flex flex-col bg-background border-r 
-          transform transition-transform duration-200 ease-in-out 
-          ${isOpen ? 'translate-x-0' : '-translate-x-full'} 
-          lg:translate-x-0 w-64 ${className}`}
-      >
-        {/* Only show user profile section when authenticated */}
-        {user && (
-          <>
-            <div className="p-4 flex items-center justify-between">
-              <UserProfile user={user} isLoaded={isLoaded} />
-              {onClose && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="lg:hidden"
-                  onClick={onClose}
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              )}
-            </div>
-            <Separator />
-          </>
-        )}
-
-        <ScrollArea className="flex-1">
-          <div className="p-4">
-            {/* Only show month selector when authenticated */}
-            {user && (
-              <div className="mb-6">
-                <MonthSelector
-                  handleMonthChange={handleMonthChange}
-                  isCurrentMonth={isCurrentMonth}
-                  getFormattedDate={getFormattedDate}
-                />
-              </div>
-            )}
-
-            {/* Show all menu items but handle clicks for unauthenticated users */}
-            <MenuSection
-              title="Menu"
-              items={mainMenuItems}
-              onItemClick={handleMenuClick}
-            />
-            <MenuSection
-              title="Actions"
-              items={actionMenuItems}
-              onItemClick={handleMenuClick}
-            />
-          </div>
-        </ScrollArea>
-
-        <Separator />
-
+      <ScrollArea className="flex-1">
         <div className="p-4">
-          {user ? (
-            <Button
-              variant="outline"
-              className="w-full justify-start text-red-500 hover:text-red-600 hover:bg-red-50"
-              onClick={handleSignOut}
-            >
-              <LogOut className="mr-2 h-4 w-4" />
-              Sign Out
-            </Button>
-          ) : (
-            <Button variant="outline" className="w-full justify-start" asChild>
-              <Link href="/sign-in">
-                <LogOut className="mr-2 h-4 w-4" />
-                Sign In
-              </Link>
-            </Button>
+          {user && (
+            <div className="mb-6">
+              <MonthSelector
+                handleMonthChange={handleMonthChange}
+                isCurrentMonth={isCurrentMonth}
+                getFormattedDate={getFormattedDate}
+              />
+            </div>
           )}
+
+          <MenuSection
+            title="Menu"
+            items={mainMenuItems}
+            onItemClick={handleMenuClick}
+          />
+          <MenuSection
+            title="Actions"
+            items={actionMenuItems}
+            onItemClick={handleMenuClick}
+          />
         </div>
+      </ScrollArea>
+
+      <Separator />
+
+      <div className="p-4">
+        {user ? (
+          <Button
+            variant="outline"
+            className="w-full justify-start text-red-500 hover:text-red-600 hover:bg-red-50"
+            onClick={handleSignOut}
+          >
+            <LogOut className="mr-2 h-4 w-4" />
+            Sign Out
+          </Button>
+        ) : (
+          <Button variant="outline" className="w-full justify-start" asChild>
+            <Link href="/sign-in">
+              <LogOut className="mr-2 h-4 w-4" />
+              Sign In
+            </Link>
+          </Button>
+        )}
       </div>
-    </>
+    </div>
   )
 }
