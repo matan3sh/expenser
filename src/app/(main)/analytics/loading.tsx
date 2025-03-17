@@ -3,12 +3,27 @@ import { Skeleton } from '@/components/ui/skeleton'
 export default function AnalyticsLoading() {
   return (
     <div className="h-[calc(100vh-theme(spacing.16))] p-6">
-      <div className="mb-4">
-        <Skeleton className="h-9 w-32" />
-        <Skeleton className="h-5 w-64 mt-2" />
+      {/* Header Section */}
+      <div className="mb-6">
+        <Skeleton className="h-8 w-48" />
+        <div className="flex gap-4 mt-4">
+          <Skeleton className="h-9 w-32" />
+          <Skeleton className="h-9 w-32" />
+        </div>
       </div>
-      <div className="grid h-[calc(100%-theme(spacing.24))] gap-6">
-        {/* Monthly Comparison Skeleton */}
+
+      <div className="grid gap-6">
+        {/* Summary Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="p-4 border rounded-lg">
+              <Skeleton className="h-4 w-24 mb-2" />
+              <Skeleton className="h-7 w-16" />
+            </div>
+          ))}
+        </div>
+
+        {/* Main Chart */}
         <div className="rounded-lg border p-6">
           <Skeleton className="h-6 w-48 mb-4" />
           <div className="h-[300px]">
@@ -17,19 +32,24 @@ export default function AnalyticsLoading() {
         </div>
 
         <div className="grid gap-6 md:grid-cols-2">
-          {/* Daily Patterns Skeleton */}
+          {/* Secondary Charts */}
           <div className="rounded-lg border p-6">
             <Skeleton className="h-6 w-40 mb-4" />
-            <div className="h-[300px]">
+            <div className="h-[250px]">
               <Skeleton className="h-full w-full" />
             </div>
           </div>
 
-          {/* Top Locations Skeleton */}
+          {/* Stats/Table */}
           <div className="rounded-lg border p-6">
             <Skeleton className="h-6 w-40 mb-4" />
-            <div className="h-[300px]">
-              <Skeleton className="h-full w-full" />
+            <div className="space-y-3">
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className="flex justify-between items-center">
+                  <Skeleton className="h-4 w-32" />
+                  <Skeleton className="h-4 w-16" />
+                </div>
+              ))}
             </div>
           </div>
         </div>
