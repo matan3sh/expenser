@@ -1,5 +1,6 @@
 'use client'
 
+import { BudgetCard } from '@/components/categories/BudgetCard'
 import { CategoryList } from '@/components/categories/CategoryList'
 import { CreateCategoryButton } from '@/components/categories/CreateCategoryButton'
 import { useSettings } from '@/contexts/SettingsContext'
@@ -72,6 +73,9 @@ export default function CategoriesPage() {
           </div>
           <CreateCategoryButton />
         </div>
+        <div className="mb-6">
+          <BudgetCard />
+        </div>
         <CategoryList
           categories={categoriesWithTotals}
           expenses={monthlyExpenses}
@@ -83,6 +87,9 @@ export default function CategoriesPage() {
         <div className="flex-1 overflow-y-auto px-4 pb-32 pt-4">
           <div className="mb-4">
             <CreateCategoryButton />
+          </div>
+          <div className="mb-6">
+            <BudgetCard />
           </div>
           <CategoryList
             categories={categoriesWithTotals}

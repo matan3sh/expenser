@@ -1,15 +1,33 @@
+import { useSettings } from '@/contexts/SettingsContext'
 import { ArrowDownCircle, ArrowUpCircle } from 'lucide-react'
-import React from 'react'
+import { ReactNode } from 'react'
 
 export interface BudgetStatus {
-  icon: React.ReactNode
+  icon: ReactNode
   text: string
   textColor: string
 }
 
-export const useBudgetProgress = (totalAmount: number, budget: number = 0) => {
-  const progressPercentage =
-    budget > 0 ? Math.min((totalAmount / budget) * 100, 100) : 0
+interface BudgetProgressReturn {
+  progressPercentage: number
+  progressColor: string
+  status: BudgetStatus
+  remaining: number
+}
+
+export function useBudgetProgress(
+  totalAmount: number,
+  budget: number
+): BudgetProgressReturn {
+  const { settings, convertAmount } = useSettings()
+  const displayCurrency = settings?.displayCurrency?.code || 'USD'
+
+  // Convert budget to display currency if needed
+  const convertedBudget = convertAmount(budget, displayCurrency)
+  const convertedTotal = convertAmount(totalAmount, displayCurrency)
+
+  const progressPercentage = (convertedTotal / convertedBudget) * 100
+  const remaining = convertedBudget - convertedTotal
 
   const getProgressColor = () => {
     if (progressPercentage >= 90) return 'bg-red-500'
@@ -38,10 +56,11 @@ export const useBudgetProgress = (totalAmount: number, budget: number = 0) => {
       textColor: 'text-emerald-500',
     }
   }
+
   return {
     progressPercentage,
     progressColor: getProgressColor(),
     status: getBudgetStatus(),
-    remaining: Math.max(budget - totalAmount, 0),
+    remaining,
   }
 }
