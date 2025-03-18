@@ -18,19 +18,12 @@ export default function CategoriesPage() {
           </div>
           <CreateCategoryButton />
         </div>
-
         <CategoryList categories={categories} />
       </div>
 
       {/* Mobile View */}
       <div className="lg:hidden flex flex-col h-full">
-        <div className="px-4 py-3">
-          <h1 className="text-2xl font-bold tracking-tight">Categories</h1>
-          <p className="text-sm text-muted-foreground">
-            Manage your expense categories
-          </p>
-        </div>
-        <div className="flex-1 overflow-y-auto px-4">
+        <div className="flex-1 overflow-y-auto px-4 pb-32 pt-4">
           <div className="mb-4">
             <CreateCategoryButton />
           </div>

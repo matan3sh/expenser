@@ -26,18 +26,14 @@ function DashboardHeader() {
 function MobileDashboard() {
   return (
     <div className="lg:hidden flex flex-col h-full">
-      <div className="px-4 py-3">
-        <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
-        <p className="text-sm text-muted-foreground">
-          Welcome to your expense tracking dashboard
-        </p>
-      </div>
-      <div className="px-4">
-        <WeeklyVolumeChart />
-      </div>
-      <h2 className="px-4 mt-4 text-lg font-semibold">Recent Expenses</h2>
-      <div className="flex-1 overflow-y-auto px-4 pb-32 mt-4">
-        <MobileExpenseList />
+      <div className="px-4 pb-32 pt-4">
+        <div className="mb-4">
+          <WeeklyVolumeChart />
+        </div>
+        <h2 className="text-lg font-semibold mb-4">Recent Expenses</h2>
+        <div className="space-y-4">
+          <MobileExpenseList />
+        </div>
       </div>
     </div>
   )
@@ -67,7 +63,7 @@ function DesktopDashboardCards() {
 // Desktop Dashboard Component
 function DesktopDashboard() {
   return (
-    <div className="hidden lg:block p-6">
+    <div className="hidden lg:block p-6 space-y-6">
       <DashboardHeader />
       <div className="mt-6">
         <DashboardStats />

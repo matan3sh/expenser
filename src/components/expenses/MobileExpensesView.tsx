@@ -195,8 +195,8 @@ export function MobileExpensesView() {
         </div>
 
         {/* Fixed Pagination */}
-        <div className="flex-none border-t bg-background pb-4">
-          <div className="flex items-center justify-between py-2.5 px-4">
+        <div className="flex-none border-t bg-background mt-2">
+          <div className="flex items-center justify-between mt-2 px-4">
             <Button
               variant="outline"
               size="sm"

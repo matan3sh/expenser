@@ -34,6 +34,7 @@ export const MobileHeader = () => {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex h-14 items-center justify-between px-4">
+        {/* Left side - MonthSelector */}
         <div className="flex items-center gap-2">
           <MonthSelector
             handleMonthChange={handleMonthChange}
@@ -42,6 +43,7 @@ export const MobileHeader = () => {
           />
         </div>
 
+        {/* Right side - Actions */}
         <div className="flex items-center gap-3">
           <Link
             href="/settings"
