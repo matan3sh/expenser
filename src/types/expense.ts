@@ -2,16 +2,22 @@ export interface Expense {
   id: string
   amount: number
   description: string
-  date: Date
+  date: string
   categoryId: string
+  currency: string
+  location: string
+  notes?: string
 }
 
 export interface ExpenseWithCategory {
   id: string
   description: string
   amount: number
-  date: Date
+  date: string
   category: Category
+  currency: string
+  location: string
+  notes?: string
 }
 
 export interface Category {
@@ -22,5 +28,11 @@ export interface Category {
 }
 
 export interface ExpensesByCategory extends Category {
+  total: number
+}
+
+export interface MonthlyExpense {
+  month: string
+  expenses: Expense[]
   total: number
 }

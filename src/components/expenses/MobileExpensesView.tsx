@@ -1,6 +1,5 @@
 'use client'
 
-import { ExpenseAmount } from '@/components/expenses/ExpenseAmount'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import { Card } from '@/components/ui/card'
@@ -16,19 +15,17 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import { useSettings } from '@/contexts/SettingsContext'
 import { categories, getCategoryById } from '@/data/categories'
-import { formatCurrency } from '@/data/currencies'
 import { expenses } from '@/data/expenses'
 import { cn } from '@/lib/utils'
 import { format } from 'date-fns'
 import { Calendar as CalendarIcon, Filter } from 'lucide-react'
 import { useState } from 'react'
+import { ExpenseAmount } from './ExpenseAmount'
 import { ExpenseEditDialog } from './ExpenseEditDialog'
 import { ExpenseReceiptDialog } from './ExpenseReceiptDialog'
 
 export function MobileExpensesView() {
-  const { convertAmount, settings } = useSettings()
   const [filters, setFilters] = useState({
     search: '',
     category: '',
@@ -43,17 +40,6 @@ export function MobileExpensesView() {
     (page - 1) * pageSize,
     page * pageSize
   )
-
-  // Helper function to safely format currency
-  const safeFormatCurrency = (amount: number, currency: string = 'USD') => {
-    if (!settings?.displayCurrency?.code) {
-      return formatCurrency(amount, currency)
-    }
-    return formatCurrency(
-      convertAmount(amount, currency),
-      settings.displayCurrency.code
-    )
-  }
 
   return (
     <div className="flex flex-col h-[calc(100vh-12rem)]">

@@ -1,13 +1,4 @@
-export interface Expense {
-  id: string
-  date: string
-  description: string
-  amount: number
-  currency: string
-  categoryId: string
-  location: string
-  notes?: string
-}
+import { Expense, MonthlyExpense } from '@/types/expense'
 
 export const expenses: Expense[] = [
   {
@@ -227,12 +218,6 @@ export function getRecentExpenses(limit: number = 5): Expense[] {
   return [...expenses]
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, limit)
-}
-
-export interface MonthlyExpense {
-  month: string
-  expenses: Expense[]
-  total: number
 }
 
 export function getMonthlyExpenses(): MonthlyExpense[] {
