@@ -9,6 +9,7 @@ export const expenses: Expense[] = [
     currency: 'ILS',
     categoryId: 'groceries',
     location: 'Shufersal',
+    userIds: ['default_user_id'],
   },
   {
     id: 'exp_2',
@@ -18,6 +19,7 @@ export const expenses: Expense[] = [
     currency: 'ILS',
     categoryId: 'utilities',
     location: 'Electric Company',
+    userIds: ['default_user_id'],
   },
   {
     id: 'exp_3',
@@ -27,6 +29,7 @@ export const expenses: Expense[] = [
     currency: 'ILS',
     categoryId: 'entertainment',
     location: 'Cinema City',
+    userIds: ['default_user_id'],
   },
   {
     id: 'exp_4',
@@ -36,6 +39,7 @@ export const expenses: Expense[] = [
     currency: 'ILS',
     categoryId: 'transport',
     location: 'Paz Gas Station',
+    userIds: ['default_user_id'],
   },
   {
     id: 'exp_5',
@@ -45,6 +49,7 @@ export const expenses: Expense[] = [
     currency: 'ILS',
     categoryId: 'entertainment',
     location: 'Local Restaurant',
+    userIds: ['default_user_id'],
   },
   {
     id: 'exp_6',
@@ -54,6 +59,7 @@ export const expenses: Expense[] = [
     currency: 'ILS',
     categoryId: 'utilities',
     location: 'Water Corp',
+    userIds: ['default_user_id'],
   },
   {
     id: 'exp_7',
@@ -63,6 +69,7 @@ export const expenses: Expense[] = [
     currency: 'ILS',
     categoryId: 'groceries',
     location: 'Rami Levy',
+    userIds: ['default_user_id'],
   },
   // February Data
   {
@@ -73,6 +80,7 @@ export const expenses: Expense[] = [
     currency: 'ILS',
     categoryId: 'groceries',
     location: 'Rami Levy',
+    userIds: ['default_user_id'],
   },
   {
     id: 'exp_9',
@@ -82,6 +90,7 @@ export const expenses: Expense[] = [
     currency: 'ILS',
     categoryId: 'utilities',
     location: 'Water Corp',
+    userIds: ['default_user_id'],
   },
   {
     id: 'exp_10',
@@ -91,6 +100,7 @@ export const expenses: Expense[] = [
     currency: 'ILS',
     categoryId: 'entertainment',
     location: 'Ticketmaster',
+    userIds: ['default_user_id'],
   },
   {
     id: 'exp_11',
@@ -100,6 +110,7 @@ export const expenses: Expense[] = [
     currency: 'ILS',
     categoryId: 'transport',
     location: 'Public Transport',
+    userIds: ['default_user_id'],
   },
   // January Data
   {
@@ -110,6 +121,7 @@ export const expenses: Expense[] = [
     currency: 'ILS',
     categoryId: 'groceries',
     location: 'Victory',
+    userIds: ['default_user_id'],
   },
   {
     id: 'exp_13',
@@ -119,6 +131,7 @@ export const expenses: Expense[] = [
     currency: 'ILS',
     categoryId: 'utilities',
     location: 'Internet Provider',
+    userIds: ['default_user_id'],
   },
   {
     id: 'exp_14',
@@ -128,6 +141,7 @@ export const expenses: Expense[] = [
     currency: 'ILS',
     categoryId: 'entertainment',
     location: 'Steam',
+    userIds: ['default_user_id'],
   },
   {
     id: 'exp_15',
@@ -137,6 +151,7 @@ export const expenses: Expense[] = [
     currency: 'ILS',
     categoryId: 'transport',
     location: 'Gett',
+    userIds: ['default_user_id'],
   },
   // December 2023 Data
   {
@@ -147,6 +162,7 @@ export const expenses: Expense[] = [
     currency: 'ILS',
     categoryId: 'groceries',
     location: 'Mega',
+    userIds: ['default_user_id'],
   },
   {
     id: 'exp_17',
@@ -156,6 +172,7 @@ export const expenses: Expense[] = [
     currency: 'ILS',
     categoryId: 'utilities',
     location: 'Gas Company',
+    userIds: ['default_user_id'],
   },
   {
     id: 'exp_18',
@@ -165,6 +182,7 @@ export const expenses: Expense[] = [
     currency: 'ILS',
     categoryId: 'entertainment',
     location: 'Event Hall',
+    userIds: ['default_user_id'],
   },
   {
     id: 'exp_19',
@@ -174,6 +192,7 @@ export const expenses: Expense[] = [
     currency: 'ILS',
     categoryId: 'transport',
     location: 'Auto Shop',
+    userIds: ['default_user_id'],
   },
   // November 2023 Data
   {
@@ -184,6 +203,7 @@ export const expenses: Expense[] = [
     currency: 'ILS',
     categoryId: 'groceries',
     location: 'Shufersal',
+    userIds: ['default_user_id'],
   },
   {
     id: 'exp_21',
@@ -193,6 +213,7 @@ export const expenses: Expense[] = [
     currency: 'ILS',
     categoryId: 'utilities',
     location: 'Cellcom',
+    userIds: ['default_user_id'],
   },
   {
     id: 'exp_22',
@@ -202,6 +223,7 @@ export const expenses: Expense[] = [
     currency: 'ILS',
     categoryId: 'entertainment',
     location: 'Habima',
+    userIds: ['default_user_id'],
   },
   {
     id: 'exp_23',
@@ -211,6 +233,7 @@ export const expenses: Expense[] = [
     currency: 'ILS',
     categoryId: 'transport',
     location: 'Delek',
+    userIds: ['default_user_id'],
   },
 ]
 

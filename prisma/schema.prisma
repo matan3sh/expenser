@@ -8,14 +8,15 @@ datasource db {
 }
 
 model User {
-  id         String     @id @default(uuid())
-  userId     String     @unique // Clerk user ID
+  id         String        @id @default(uuid())
+  userId     String        @unique // Clerk user ID
   email      String
   avatar     String?
-  credits    Int        @default(0)
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
-  expenses   Expense[]
+  credits    Int           @default(0)
+  budget     Int           @default(0) // Added budget field
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+  expenses   ExpenseUser[]
   categories Category[]
   currencies Currency[]
 
@@ -25,6 +26,7 @@ model User {
 model Category {
   id        String    @id @default(uuid())
   title     String
+  budget    Int       @default(0) // Added budget field
   user      User      @relation(fields: [userId], references: [userId], onDelete: Cascade)
   userId    String
   expenses  Expense[]
@@ -45,20 +47,29 @@ model Currency {
 }
 
 model Expense {
-  id          String    @id @default(uuid())
+  id          String        @id @default(uuid())
   date        DateTime
   description String
-  amount      Decimal   @db.Decimal(10, 2)
+  amount      Decimal       @db.Decimal(10, 2)
   currency    String
   location    String
   notes       String?
-  receipt     String? // New field for receipt
-  category    Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  receipt     String?
+  category    Category?     @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   categoryId  String?
-  user        User      @relation(fields: [userId], references: [userId], onDelete: Cascade)
-  userId      String
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  users       ExpenseUser[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
 
   @@map("expenses")
+}
+
+model ExpenseUser {
+  user      User    @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  userId    String
+  expense   Expense @relation(fields: [expenseId], references: [id], onDelete: Cascade)
+  expenseId String
+
+  @@id([userId, expenseId])
+  @@map("expense_users")
 }

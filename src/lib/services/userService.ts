@@ -2,6 +2,7 @@ import { categories } from '@/data/categories'
 import { currencies } from '@/data/currencies'
 import { prisma } from '@/lib/prisma'
 import { clerkClient } from '@clerk/nextjs/server'
+import { Prisma } from '@prisma/client'
 
 export class UserService {
   static async initializeUser(userId: string) {
@@ -23,11 +24,13 @@ export class UserService {
           email: clerkUser.emailAddresses[0].emailAddress,
           avatar: clerkUser.imageUrl,
           credits: 0,
+          budget: 1500, // Added default budget
           // Create categories and currencies in the same transaction
           categories: {
             createMany: {
               data: categories.map((category) => ({
                 title: category.name,
+                budget: category.budget, // Added budget field
               })),
             },
           },
@@ -46,6 +49,11 @@ export class UserService {
         },
       })
 
+      // Fetch categories for creating expenses
+      const createdCategories = await tx.category.findMany({
+        where: { userId: user.userId },
+      })
+
       // Add sample expenses
       const sampleExpenses = [
         {
@@ -54,8 +62,8 @@ export class UserService {
           amount: 150.75,
           currency: 'USD',
           location: 'Whole Foods',
-          categoryId: user.categories.find((c) => c.title === 'Groceries')?.id,
-          userId: user.userId,
+          categoryId: createdCategories.find((c) => c.title === 'Groceries')
+            ?.id,
         },
         {
           date: new Date('2024-03-14'),
@@ -63,8 +71,8 @@ export class UserService {
           amount: 85.5,
           currency: 'USD',
           location: 'Electric Company',
-          categoryId: user.categories.find((c) => c.title === 'Utilities')?.id,
-          userId: user.userId,
+          categoryId: createdCategories.find((c) => c.title === 'Utilities')
+            ?.id,
         },
         {
           date: new Date('2024-03-13'),
@@ -72,9 +80,8 @@ export class UserService {
           amount: 120.0,
           currency: 'USD',
           location: 'AMC Theater',
-          categoryId: user.categories.find((c) => c.title === 'Entertainment')
+          categoryId: createdCategories.find((c) => c.title === 'Entertainment')
             ?.id,
-          userId: user.userId,
         },
         {
           date: new Date('2024-03-12'),
@@ -82,8 +89,8 @@ export class UserService {
           amount: 250.0,
           currency: 'USD',
           location: 'Shell Gas Station',
-          categoryId: user.categories.find((c) => c.title === 'Transport')?.id,
-          userId: user.userId,
+          categoryId: createdCategories.find((c) => c.title === 'Transport')
+            ?.id,
         },
         {
           date: new Date('2024-02-28'),
@@ -91,15 +98,29 @@ export class UserService {
           amount: 420.3,
           currency: 'USD',
           location: 'Costco',
-          categoryId: user.categories.find((c) => c.title === 'Groceries')?.id,
-          userId: user.userId,
+          categoryId: createdCategories.find((c) => c.title === 'Groceries')
+            ?.id,
         },
       ]
 
-      // Create all expenses in bulk
-      await tx.expense.createMany({
-        data: sampleExpenses,
-      })
+      // Create expenses and establish user relationships through the join table
+      for (const expenseData of sampleExpenses) {
+        await tx.expense.create({
+          data: {
+            date: expenseData.date,
+            description: expenseData.description,
+            amount: new Prisma.Decimal(expenseData.amount),
+            currency: expenseData.currency,
+            location: expenseData.location,
+            categoryId: expenseData.categoryId,
+            users: {
+              create: {
+                userId: user.userId,
+              },
+            },
+          },
+        })
+      }
 
       return user
     })

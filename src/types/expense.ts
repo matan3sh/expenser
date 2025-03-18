@@ -7,6 +7,7 @@ export interface Expense {
   currency: string
   location: string
   notes?: string
+  userIds?: string[]
 }
 
 export interface ExpenseWithCategory {
@@ -18,6 +19,7 @@ export interface ExpenseWithCategory {
   currency: string
   location: string
   notes?: string
+  userIds?: string[]
 }
 
 export interface Category {
@@ -25,6 +27,7 @@ export interface Category {
   name: string
   color: string
   icon: string
+  budget?: number
 }
 
 export interface ExpensesByCategory extends Category {

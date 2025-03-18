@@ -13,6 +13,7 @@ async function main() {
       userId: 'test_clerk_user_id',
       email: 'test@example.com',
       credits: 100,
+      budget: 2000,
     },
   })
 
@@ -26,6 +27,7 @@ async function main() {
       create: {
         id: category.id,
         title: category.name,
+        budget: category.budget,
         userId: testUser.userId,
       },
     })
@@ -56,7 +58,11 @@ async function main() {
       currency: 'USD',
       location: 'Local Supermarket',
       categoryId: 'groceries',
-      userId: testUser.userId,
+      users: {
+        create: {
+          userId: testUser.userId,
+        },
+      },
     },
   })
 }
