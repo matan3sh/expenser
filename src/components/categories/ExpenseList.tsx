@@ -2,7 +2,6 @@
 
 import { useSettings } from '@/contexts/SettingsContext'
 import { getCurrencyByCode } from '@/data/currencies'
-import { useCurrencyFormat } from '@/hooks/useCurrencyFormat'
 import type { Expense } from '@/types/expense'
 import { format } from 'date-fns'
 
@@ -15,7 +14,6 @@ interface ExpenseListProps {
 interface ExpenseItemProps {
   expense: Expense
   displayCurrency: string | undefined
-  formatAmount: (amount: number, currency?: string) => string
 }
 
 // Empty state component
@@ -50,11 +48,7 @@ const EmptyState = ({ month, year }: { month: number; year: number }) => (
 )
 
 // Amount display component
-const ExpenseAmount = ({
-  expense,
-  displayCurrency,
-  formatAmount,
-}: ExpenseItemProps) => {
+const ExpenseAmount = ({ expense, displayCurrency }: ExpenseItemProps) => {
   const isDisplayCurrency = expense.currency === displayCurrency
   const currencySymbol = getCurrencyByCode(expense.currency)?.symbol
 
@@ -63,7 +57,9 @@ const ExpenseAmount = ({
       <p className="text-base font-medium text-right">
         {isDisplayCurrency
           ? `${expense.amount.toFixed(2)} ${currencySymbol}`
-          : formatAmount(expense.amount, displayCurrency)}
+          : `${expense.converted?.amount.toFixed(2)} ${
+              expense.converted?.symbol
+            }`}
       </p>
       {!isDisplayCurrency && (
         <p className="text-xs text-gray-500">
@@ -75,22 +71,14 @@ const ExpenseAmount = ({
 }
 
 // Individual expense item component
-const ExpenseItem = ({
-  expense,
-  displayCurrency,
-  formatAmount,
-}: ExpenseItemProps) => (
+const ExpenseItem = ({ expense, displayCurrency }: ExpenseItemProps) => (
   <div className="receipt-item px-2 py-3 border-b border-gray-100 last:border-b-0">
     <div className="flex justify-between items-start mb-2">
       <div className="flex-1">
         <p className="text-base font-medium">{expense.description}</p>
         <p className="text-xs text-gray-500">{expense.location}</p>
       </div>
-      <ExpenseAmount
-        expense={expense}
-        displayCurrency={displayCurrency}
-        formatAmount={formatAmount}
-      />
+      <ExpenseAmount expense={expense} displayCurrency={displayCurrency} />
     </div>
     <div className="flex justify-between items-center text-xs text-gray-500">
       <span>{format(new Date(expense.date), 'MMM dd, yyyy')}</span>
@@ -103,7 +91,6 @@ export const ExpenseList: React.FC<ExpenseListProps> = ({
   categoryId,
   expenses: providedExpenses = [],
 }) => {
-  const { formatAmount } = useCurrencyFormat()
   const { settings } = useSettings()
   const displayCurrency = settings.displayCurrency?.code
 
@@ -128,7 +115,6 @@ export const ExpenseList: React.FC<ExpenseListProps> = ({
           key={expense.id}
           expense={expense}
           displayCurrency={displayCurrency}
-          formatAmount={formatAmount}
         />
       ))}
     </div>

@@ -8,6 +8,11 @@ export interface Expense {
   location: string
   notes?: string
   userIds?: string[]
+  converted?: {
+    amount: number
+    currency: string
+    symbol: string
+  }
 }
 
 export interface ExpenseWithCategory {

@@ -4,25 +4,13 @@ import { CategoryList } from '@/components/categories/CategoryList'
 import { CreateCategoryButton } from '@/components/categories/CreateCategoryButton'
 import { useSettings } from '@/contexts/SettingsContext'
 import { categories } from '@/data/categories'
-import { expenses } from '@/data/expenses'
-import { useCurrencyFormat } from '@/hooks/useCurrencyFormat'
+import { useExpenses } from '@/hooks/useExpenses'
 import { useMemo } from 'react'
 
 export default function CategoriesPage() {
   const { settings } = useSettings()
-  const { convertToDisplayCurrency } = useCurrencyFormat()
 
-  const parsedExpenses = useMemo(() => {
-    return expenses.map((expense) => {
-      return {
-        ...expense,
-        amount:
-          expense.currency === settings.displayCurrency?.code
-            ? expense.amount
-            : expense.amount / settings.exchangeRates[expense.currency],
-      }
-    })
-  }, [settings.displayCurrency?.code, settings.exchangeRates])
+  const parsedExpenses = useExpenses()
 
   const categoriesWithTotals = useMemo(() => {
     return categories.map((category) => {
@@ -36,7 +24,7 @@ export default function CategoriesPage() {
       })
 
       const total = monthlyExpenses.reduce((sum, expense) => {
-        return sum + convertToDisplayCurrency(expense.amount, expense.currency)
+        return sum + expense.amount
       }, 0)
 
       return {
@@ -48,7 +36,6 @@ export default function CategoriesPage() {
     parsedExpenses,
     settings.selectedMonth.month,
     settings.selectedMonth.year,
-    convertToDisplayCurrency,
   ])
 
   const monthlyExpenses = useMemo(() => {

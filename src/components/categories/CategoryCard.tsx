@@ -31,7 +31,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
   categories,
 }) => {
   const [isOpen, setIsOpen] = useState(false)
-  const { formatAmount, convertToDisplayCurrency } = useCurrencyFormat()
+  const { formatAmount } = useCurrencyFormat()
   const { settings } = useSettings()
   const categoryColor = category.color || '#64748b'
 
@@ -49,10 +49,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
       const currentExpense =
         expense.currency === settings.displayCurrency?.code
           ? expense.amount
-          : convertToDisplayCurrency(
-              expense.amount,
-              settings.displayCurrency?.code
-            )
+          : expense.converted?.amount || 0
       return sum + currentExpense
     }, 0)
   }, [
@@ -61,7 +58,6 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
     settings.selectedMonth.month,
     settings.selectedMonth.year,
     settings.displayCurrency?.code,
-    convertToDisplayCurrency,
   ])
 
   const budget = category.budget || 0
