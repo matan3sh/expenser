@@ -34,6 +34,16 @@ export default function CategoriesPage() {
     })
   }, [settings.selectedMonth, convertToDisplayCurrency])
 
+  const monthlyExpenses = useMemo(() => {
+    return expenses.filter((expense) => {
+      const expenseDate = new Date(expense.date)
+      return (
+        expenseDate.getMonth() === settings.selectedMonth.month &&
+        expenseDate.getFullYear() === settings.selectedMonth.year
+      )
+    })
+  }, [settings.selectedMonth])
+
   return (
     <div className="flex flex-col h-full">
       {/* Desktop View */}
@@ -49,7 +59,10 @@ export default function CategoriesPage() {
           </div>
           <CreateCategoryButton />
         </div>
-        <CategoryList categories={categoriesWithTotals} />
+        <CategoryList
+          categories={categoriesWithTotals}
+          expenses={monthlyExpenses}
+        />
       </div>
 
       {/* Mobile View */}
@@ -58,7 +71,10 @@ export default function CategoriesPage() {
           <div className="mb-4">
             <CreateCategoryButton />
           </div>
-          <CategoryList categories={categoriesWithTotals} />
+          <CategoryList
+            categories={categoriesWithTotals}
+            expenses={monthlyExpenses}
+          />
         </div>
       </div>
     </div>

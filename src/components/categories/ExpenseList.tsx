@@ -1,29 +1,26 @@
 'use client'
 
 import { useSettings } from '@/contexts/SettingsContext'
-import { expenses } from '@/data/expenses'
 import { useCurrencyFormat } from '@/hooks/useCurrencyFormat'
+import type { Expense } from '@/types/expense'
 import { format } from 'date-fns'
 
 interface ExpenseListProps {
   categoryId: string
+  expenses?: Expense[]
 }
 
-export const ExpenseList: React.FC<ExpenseListProps> = ({ categoryId }) => {
+export const ExpenseList: React.FC<ExpenseListProps> = ({
+  categoryId,
+  expenses: providedExpenses,
+}) => {
   const { formatAmount } = useCurrencyFormat()
   const { settings } = useSettings()
 
   // Filter expenses for the current category and selected month
-  const categoryExpenses = expenses
-    .filter((expense) => {
-      const expenseDate = new Date(expense.date)
-      return (
-        expense.categoryId === categoryId &&
-        expenseDate.getMonth() === settings.selectedMonth.month &&
-        expenseDate.getFullYear() === settings.selectedMonth.year
-      )
-    })
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+  const categoryExpenses = providedExpenses
+    ? providedExpenses.filter((expense) => expense.categoryId === categoryId)
+    : []
 
   if (categoryExpenses.length === 0) {
     return (
@@ -62,7 +59,7 @@ export const ExpenseList: React.FC<ExpenseListProps> = ({ categoryId }) => {
 
   return (
     <div className="space-y-4">
-      {categoryExpenses.map((expense, index) => (
+      {categoryExpenses.map((expense) => (
         <div
           key={expense.id}
           className="receipt-item px-2 py-3 border-b border-gray-100 last:border-b-0"
@@ -78,71 +75,10 @@ export const ExpenseList: React.FC<ExpenseListProps> = ({ categoryId }) => {
           </div>
 
           <div className="flex justify-between items-center text-xs text-gray-500">
-            <div className="flex items-center">
-              <svg
-                className="w-3 h-3 mr-1"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M12 8V12L14 14M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              <span>{format(new Date(expense.date), 'MMM d, yyyy')}</span>
-            </div>
-
-            {expense.notes && (
-              <div className="flex items-center">
-                <svg
-                  className="w-3 h-3 mr-1"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M8 8H16M8 12H13M12 20L4 16.5V3.5L12 3L20 3.5V16.5L12 20Z"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-                <span>{expense.notes}</span>
-              </div>
-            )}
-          </div>
-
-          {/* Item number on receipt */}
-          <div className="text-[10px] text-right text-gray-300 mt-1">
-            #{index + 1}
+            <span>{format(new Date(expense.date), 'MMM dd, yyyy')}</span>
           </div>
         </div>
       ))}
-
-      {/* Summary section */}
-      <div className="mt-6 pt-4 border-t border-dashed border-gray-200">
-        <div className="flex justify-between text-sm mb-2">
-          <span className="text-gray-500">Items</span>
-          <span>{categoryExpenses.length}</span>
-        </div>
-        <div className="flex justify-between text-sm mb-2">
-          <span className="text-gray-500">Period</span>
-          <span>
-            {format(
-              new Date(
-                settings.selectedMonth.year,
-                settings.selectedMonth.month
-              ),
-              'MMMM yyyy'
-            )}
-          </span>
-        </div>
-      </div>
     </div>
   )
 }

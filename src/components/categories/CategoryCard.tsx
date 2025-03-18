@@ -9,19 +9,29 @@ import {
 } from '@/components/ui/sheet'
 import { useCurrencyFormat } from '@/hooks/useCurrencyFormat'
 import type { Category } from '@/types/category'
+import type { Expense } from '@/types/expense'
 import { useState } from 'react'
-import { EditCategoryDialog } from './EditCategoryDialog'
+import { CategoryMenu } from './CategoryMenu'
 import { ExpenseList } from './ExpenseList'
 
 interface CategoryCardProps {
-  category: Category & { totalExpenses?: number }
+  category: Category
+  expenses: Expense[]
+  categories: Category[]
 }
 
-export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
+export const CategoryCard: React.FC<CategoryCardProps> = ({
+  category,
+  expenses,
+  categories,
+}) => {
   const [isOpen, setIsOpen] = useState(false)
   const { formatAmount } = useCurrencyFormat()
   const categoryColor = category.color || '#64748b'
-  const formattedTotal = formatAmount(category.totalExpenses || 0)
+
+  // Use the pre-calculated totalExpenses if it exists
+  const totalAmount = category.totalExpenses || 0
+  const formattedTotal = formatAmount(totalAmount)
 
   return (
     <>
@@ -45,7 +55,11 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
                 </p>
               </div>
               <div onClick={(e) => e.stopPropagation()}>
-                <EditCategoryDialog category={category} />
+                <CategoryMenu
+                  category={category}
+                  categories={categories}
+                  expenses={expenses}
+                />
               </div>
             </CardHeader>
           </div>
@@ -86,7 +100,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
                   <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-3 px-2">
                     Expense Details
                   </h3>
-                  <ExpenseList categoryId={category.id} />
+                  <ExpenseList categoryId={category.id} expenses={expenses} />
                 </div>
               </div>
             </div>

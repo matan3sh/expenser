@@ -4,5 +4,6 @@ export interface Category {
   description: string
   color: string
   icon: string
+  budget?: number
   totalExpenses?: number
 }

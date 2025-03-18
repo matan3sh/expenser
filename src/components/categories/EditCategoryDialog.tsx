@@ -4,43 +4,45 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import type { Category } from '@/types/category'
-import { PencilIcon } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 interface EditCategoryDialogProps {
   category: Category
+  open: boolean
+  onOpenChange: (open: boolean) => void
 }
 
 export const EditCategoryDialog: React.FC<EditCategoryDialogProps> = ({
   category,
+  open,
+  onOpenChange,
 }) => {
-  const [open, setOpen] = useState(false)
   const [name, setName] = useState(category.name)
+
+  // Reset name when dialog opens with a new category
+  useEffect(() => {
+    if (open) {
+      setName(category.name)
+    }
+  }, [open, category.name])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
       // Add your update logic here
       // await updateCategory(category.id, { name })
-      setOpen(false)
+      onOpenChange(false)
     } catch (error) {
       console.error('Failed to update category:', error)
     }
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant="ghost" size="icon">
-          <PencilIcon className="h-4 w-4" />
-          <span className="sr-only">Edit category</span>
-        </Button>
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Edit Category</DialogTitle>
@@ -59,7 +61,7 @@ export const EditCategoryDialog: React.FC<EditCategoryDialogProps> = ({
             <Button
               type="button"
               variant="outline"
-              onClick={() => setOpen(false)}
+              onClick={() => onOpenChange(false)}
             >
               Cancel
             </Button>
