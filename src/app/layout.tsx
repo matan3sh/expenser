@@ -35,7 +35,7 @@ export default function RootLayout({
               <div className="hidden lg:block">{children}</div>
 
               {/* Mobile version */}
-              <div className="lg:hidden">
+              <div className="lg:hidden h-screen flex flex-col">
                 <ClientMobileLayout>{children}</ClientMobileLayout>
               </div>
             </SettingsProvider>
