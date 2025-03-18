@@ -12,9 +12,21 @@ export default function CategoriesPage() {
   const { settings } = useSettings()
   const { convertToDisplayCurrency } = useCurrencyFormat()
 
+  const parsedExpenses = useMemo(() => {
+    return expenses.map((expense) => {
+      return {
+        ...expense,
+        amount:
+          expense.currency === settings.displayCurrency?.code
+            ? expense.amount
+            : expense.amount / settings.exchangeRates[expense.currency],
+      }
+    })
+  }, [settings.displayCurrency?.code, settings.exchangeRates])
+
   const categoriesWithTotals = useMemo(() => {
     return categories.map((category) => {
-      const monthlyExpenses = expenses.filter((expense) => {
+      const monthlyExpenses = parsedExpenses.filter((expense) => {
         const expenseDate = new Date(expense.date)
         return (
           expense.categoryId === category.id &&
@@ -35,7 +47,7 @@ export default function CategoriesPage() {
   }, [settings.selectedMonth, convertToDisplayCurrency])
 
   const monthlyExpenses = useMemo(() => {
-    return expenses.filter((expense) => {
+    return parsedExpenses.filter((expense) => {
       const expenseDate = new Date(expense.date)
       return (
         expenseDate.getMonth() === settings.selectedMonth.month &&
