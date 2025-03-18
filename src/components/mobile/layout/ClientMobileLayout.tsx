@@ -12,7 +12,7 @@ export const ClientMobileLayout = ({ children }: ClientMobileLayoutProps) => {
   return (
     <div className="flex flex-col h-screen">
       <MobileHeader />
-      <main className="flex-1 overflow-y-auto pb-16">{children}</main>
+      <main className="flex-1 overflow-hidden">{children}</main>
       <BottomNavigation />
     </div>
   )
