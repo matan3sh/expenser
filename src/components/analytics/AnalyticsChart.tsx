@@ -1,6 +1,7 @@
 'use client'
 
 import { Card } from '@/components/ui/card'
+import { useSettings } from '@/contexts/SettingsContext'
 import { getMonthlyExpenses } from '@/data/expenses'
 import { useCurrencyFormat } from '@/hooks/useCurrencyFormat'
 import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/react/24/solid'
@@ -61,7 +62,8 @@ const CHART_COLORS = {
 
 export function AnalyticsChart() {
   const { formatAmount, convertToDisplayCurrency } = useCurrencyFormat()
-  const monthlyData = getMonthlyExpenses()
+  const { settings } = useSettings()
+  const monthlyData = getMonthlyExpenses(settings)
 
   // Calculate stats
   const currentMonth = monthlyData[monthlyData.length - 1]

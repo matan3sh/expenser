@@ -89,7 +89,7 @@ const CustomPieChartTooltip = ({ active, payload }: CustomTooltipProps) => {
 export function ExpensesCharts() {
   const { formatAmount, convertToDisplayCurrency } = useCurrencyFormat()
   const { settings } = useSettings()
-  const monthlyData = getMonthlyExpenses()
+  const monthlyData = getMonthlyExpenses(settings)
 
   // Transform monthly data for the line chart
   const monthlyChartData = monthlyData.map((month) => ({

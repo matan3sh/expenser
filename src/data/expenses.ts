@@ -1,3 +1,4 @@
+import { Settings } from '@/contexts/SettingsContext'
 import { Expense, MonthlyExpense } from '@/types/expense'
 
 export const expenses: Expense[] = [
@@ -243,7 +244,7 @@ export function getRecentExpenses(limit: number = 5): Expense[] {
     .slice(0, limit)
 }
 
-export function getMonthlyExpenses(): MonthlyExpense[] {
+export function getMonthlyExpenses(settings?: Settings): MonthlyExpense[] {
   // Group expenses by month
   const monthlyGroups = expenses.reduce((acc, expense) => {
     const month = new Date(expense.date).toLocaleString('default', {
@@ -260,12 +261,23 @@ export function getMonthlyExpenses(): MonthlyExpense[] {
     return acc
   }, {} as Record<string, MonthlyExpense>)
 
-  // Sort months chronologically
-  return Object.values(monthlyGroups).sort((a, b) => {
-    const monthA = new Date(a.expenses[0].date)
-    const monthB = new Date(b.expenses[0].date)
-    return monthA.getTime() - monthB.getTime()
-  })
+  // Sort months chronologically and calculate totals
+  return Object.values(monthlyGroups)
+    .sort((a, b) => {
+      const monthA = new Date(a.expenses[0].date)
+      const monthB = new Date(b.expenses[0].date)
+      return monthA.getTime() - monthB.getTime()
+    })
+    .map((month) => ({
+      ...month,
+      total: month.expenses.reduce((sum, expense) => {
+        const amount =
+          expense.currency !== settings?.displayCurrency?.code
+            ? expense.converted?.amount || 0
+            : expense.amount
+        return sum + amount
+      }, 0),
+    }))
 }
 
 // Helper function to get category totals with currency conversion
@@ -275,9 +287,10 @@ export function getCategoryTotals(
   displayCurrencyCode?: string
 ): Record<string, number> {
   return expenses.reduce((acc, expense) => {
-    const amount = displayCurrencyCode
-      ? convertAmount(expense.amount, expense.currency)
-      : expense.amount
+    const amount =
+      expense.currency !== displayCurrencyCode
+        ? expense.converted?.amount || 0
+        : expense.amount
     acc[expense.categoryId] = (acc[expense.categoryId] || 0) + amount
     return acc
   }, {} as Record<string, number>)

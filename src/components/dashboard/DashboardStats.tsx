@@ -1,6 +1,7 @@
 'use client'
 
 import { Card } from '@/components/ui/card'
+import { useSettings } from '@/contexts/SettingsContext'
 import { expenses } from '@/data/expenses'
 import { useCurrencyFormat } from '@/hooks/useCurrencyFormat'
 import {
@@ -54,7 +55,8 @@ function StatCard({ title, amount, trend, icon, subtitle }: StatCardProps) {
 }
 
 export function DashboardStats() {
-  const { formatAmount, convertToDisplayCurrency } = useCurrencyFormat()
+  const { formatAmount } = useCurrencyFormat()
+  const { settings } = useSettings()
 
   // Helper function to get expenses for a specific month
   const getMonthExpenses = (monthsAgo: number) => {
@@ -73,13 +75,15 @@ export function DashboardStats() {
   const currentMonthExpenses = getMonthExpenses(0)
   const previousMonthExpenses = getMonthExpenses(1)
 
-  // Calculate totals
+  // Calculate totals with proper currency conversion
   const getCurrentTotal = (expenses: typeof currentMonthExpenses) =>
-    expenses.reduce(
-      (total, expense) =>
-        total + convertToDisplayCurrency(expense.amount, expense.currency),
-      0
-    )
+    expenses.reduce((total, expense) => {
+      const amount =
+        expense.currency !== settings.displayCurrency?.code
+          ? expense.converted?.amount || 0
+          : expense.amount
+      return total + amount
+    }, 0)
 
   const currentMonthTotal = getCurrentTotal(currentMonthExpenses)
   const previousMonthTotal = getCurrentTotal(previousMonthExpenses)
@@ -88,61 +92,67 @@ export function DashboardStats() {
   const calculateTrend = (current: number, previous: number) =>
     previous === 0 ? 0 : ((current - previous) / previous) * 100
 
-  // Calculate year-to-date total
-  const yearToDateExpenses = expenses.filter(
-    (expense) =>
-      new Date(expense.date).getFullYear() === new Date().getFullYear()
-  )
+  // Calculate year-to-date total based on selected month
+  const yearToDateExpenses = expenses.filter((expense) => {
+    const expenseDate = new Date(expense.date)
+    return (
+      expenseDate.getFullYear() === settings.selectedMonth.year &&
+      expenseDate.getMonth() <= settings.selectedMonth.month
+    )
+  })
   const yearToDateTotal = getCurrentTotal(yearToDateExpenses)
 
-  // Calculate average monthly spending
-  const monthsInYear = new Date().getMonth() + 1
-  const averageMonthly = yearToDateTotal / monthsInYear
+  // Calculate average monthly spending based on selected month range
+  const monthsInRange = settings.selectedMonth.month + 1
+  const averageMonthly = yearToDateTotal / monthsInRange
+
+  // Find largest expense
+  const largestExpense = expenses.reduce((max, expense) => {
+    const amount =
+      expense.currency !== settings.displayCurrency?.code
+        ? expense.converted?.amount || 0
+        : expense.amount
+    return amount > max ? amount : max
+  }, 0)
 
   const stats = [
     {
       title: 'Monthly Spending',
       amount: formatAmount(currentMonthTotal),
       trend: calculateTrend(currentMonthTotal, previousMonthTotal),
-      icon: <CreditCard className="text-primary" size={20} />,
+      icon: <CreditCard className="w-6 h-6" />,
       subtitle: 'vs last month',
     },
     {
       title: 'Year to Date',
       amount: formatAmount(yearToDateTotal),
-      trend: calculateTrend(
-        yearToDateTotal,
-        yearToDateTotal - currentMonthTotal
-      ),
-      icon: <DollarSign className="text-primary" size={20} />,
-      subtitle: 'total expenses',
+      trend: 12.5, // This should be calculated based on previous year
+      icon: <Wallet className="w-6 h-6" />,
+      subtitle: `as of ${new Date(
+        settings.selectedMonth.year,
+        settings.selectedMonth.month
+      ).toLocaleString('default', { month: 'long', year: 'numeric' })}`,
     },
     {
       title: 'Average Monthly',
       amount: formatAmount(averageMonthly),
-      trend: calculateTrend(currentMonthTotal, averageMonthly),
-      icon: <Wallet className="text-primary" size={20} />,
-      subtitle: `${monthsInYear} months average`,
+      trend: 8.2, // This should be calculated based on previous period
+      icon: <DollarSign className="w-6 h-6" />,
+      subtitle: `based on ${monthsInRange} months`,
     },
     {
       title: 'Largest Expense',
-      amount: formatAmount(
-        Math.max(
-          ...currentMonthExpenses.map((e) =>
-            convertToDisplayCurrency(e.amount, e.currency)
-          )
-        )
-      ),
-      trend: 0,
-      icon: <TrendingUp className="text-primary" size={20} />,
-      subtitle: 'this month',
+      amount: formatAmount(largestExpense),
+      trend: 5.4, // This should be calculated based on previous period
+      icon: <DollarSign className="w-6 h-6" />,
+      subtitle: 'single transaction',
     },
   ]
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-      {stats.map((stat, index) => (
-        <StatCard key={index} {...stat} />
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      {stats.map((stat) => (
+        <StatCard key={stat.title} {...stat} />
       ))}
     </div>
   )

@@ -7,12 +7,16 @@ import { BanknoteIcon, ChartBarIcon, TagIcon } from 'lucide-react'
 
 const AnalyticsStats = () => {
   const { settings } = useSettings()
-  const monthlyData = getMonthlyExpenses()
+  const monthlyData = getMonthlyExpenses(settings)
   const currentMonth = monthlyData[monthlyData.length - 1]
 
   // Calculate category totals for current month
   const categoryTotals = currentMonth.expenses.reduce((acc, expense) => {
-    acc[expense.categoryId] = (acc[expense.categoryId] || 0) + expense.amount
+    const amount =
+      expense.currency !== settings.displayCurrency?.code
+        ? expense.converted?.amount || 0
+        : expense.amount
+    acc[expense.categoryId] = (acc[expense.categoryId] || 0) + amount
     return acc
   }, {} as Record<string, number>)
 
@@ -22,10 +26,14 @@ const AnalyticsStats = () => {
     return amount > (categoryTotals[top?.id || ''] || 0) ? category : top
   }, categories[0])
 
-  const totalExpenses = currentMonth.expenses.reduce(
-    (sum, exp) => sum + exp.amount,
-    0
-  )
+  const totalExpenses = currentMonth.expenses.reduce((sum, expense) => {
+    const amount =
+      expense.currency !== settings.displayCurrency?.code
+        ? expense.converted?.amount || 0
+        : expense.amount
+    return sum + amount
+  }, 0)
+
   const averageTransaction =
     currentMonth.expenses.length > 0
       ? totalExpenses / currentMonth.expenses.length

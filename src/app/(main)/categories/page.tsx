@@ -24,7 +24,11 @@ export default function CategoriesPage() {
       })
 
       const total = monthlyExpenses.reduce((sum, expense) => {
-        return sum + expense.amount
+        const amount =
+          expense.currency !== settings.displayCurrency?.code
+            ? expense.converted?.amount || 0
+            : expense.amount
+        return sum + amount
       }, 0)
 
       return {
@@ -36,6 +40,7 @@ export default function CategoriesPage() {
     parsedExpenses,
     settings.selectedMonth.month,
     settings.selectedMonth.year,
+    settings.displayCurrency?.code,
   ])
 
   const monthlyExpenses = useMemo(() => {
