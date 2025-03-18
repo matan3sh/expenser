@@ -22,7 +22,7 @@ export default async function ExpensesPage() {
 
       {/* Mobile View */}
       <div className="lg:hidden flex flex-col h-full">
-        <div className="px-4 py-3 mt-14">
+        <div className="px-4 py-3">
           <h1 className="text-2xl font-bold tracking-tight">Expenses</h1>
         </div>
         <MobileExpensesView />

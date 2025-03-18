@@ -26,7 +26,7 @@ function DashboardHeader() {
 function MobileDashboard() {
   return (
     <div className="lg:hidden flex flex-col h-full">
-      <div className="px-4 py-3 mt-14">
+      <div className="px-4 py-3">
         <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
         <p className="text-sm text-muted-foreground">
           Welcome to your expense tracking dashboard
