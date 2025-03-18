@@ -1,6 +1,8 @@
-import { Card } from '@/components/ui/card'
+import { ExpenseAmount } from '@/components/expenses/ExpenseAmount'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { categories } from '@/data/categories'
 import { getMonthlyExpenses } from '@/data/expenses'
+import { BanknoteIcon, ChartBarIcon, TagIcon } from 'lucide-react'
 
 const AnalyticsStats = () => {
   const monthlyData = getMonthlyExpenses()
@@ -18,91 +20,88 @@ const AnalyticsStats = () => {
     return amount > (categoryTotals[top?.id || ''] || 0) ? category : top
   }, categories[0])
 
+  const totalExpenses = currentMonth.expenses.reduce(
+    (sum, exp) => sum + exp.amount,
+    0
+  )
+  const averageTransaction =
+    currentMonth.expenses.length > 0
+      ? totalExpenses / currentMonth.expenses.length
+      : 0
+
+  const stats = [
+    {
+      name: 'Monthly Transactions',
+      value: currentMonth.expenses.length,
+      isNumeric: true,
+      currency: 'USD',
+      icon: BanknoteIcon,
+      gradient: 'from-blue-500/10 to-blue-500/5',
+      borderColor: 'border-blue-500/20',
+    },
+    {
+      name: 'Top Category',
+      value: topCategory.name,
+      isNumeric: false,
+      icon: TagIcon,
+      gradient: 'from-purple-500/10 to-purple-500/5',
+      borderColor: 'border-purple-500/20',
+    },
+    {
+      name: 'Average Transaction',
+      value: averageTransaction,
+      isNumeric: true,
+      currency: 'USD',
+      icon: ChartBarIcon,
+      gradient: 'from-green-500/10 to-green-500/5',
+      borderColor: 'border-green-500/20',
+    },
+  ]
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      <Card className="p-6 bg-gradient-to-br from-blue-500 to-blue-600 text-white">
-        <div className="flex items-center gap-4">
-          <div className="p-3 rounded-xl bg-white/10">
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-          </div>
-          <div>
-            <p className="text-sm text-white/70">Monthly Transactions</p>
-            <h3 className="text-2xl font-bold">
-              {currentMonth.expenses.length}
-            </h3>
-          </div>
-        </div>
-      </Card>
+    <div className="grid gap-4 grid-cols-1 lg:grid-cols-3 w-full">
+      {stats.map((stat) => {
+        const Icon = stat.icon
+        return (
+          <Card
+            key={stat.name}
+            className={`relative overflow-hidden bg-gradient-to-br ${stat.gradient} border ${stat.borderColor} w-full`}
+          >
+            <div className="absolute top-0 right-0 w-24 h-24 bg-white/5 rounded-full -translate-y-12 translate-x-12" />
+            <div className="absolute bottom-0 left-0 w-16 h-16 bg-black/5 rounded-full translate-y-8 -translate-x-8" />
 
-      <Card className="p-6 bg-gradient-to-br from-violet-500 to-violet-600 text-white">
-        <div className="flex items-center gap-4">
-          <div className="p-3 rounded-xl bg-white/10">
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-              />
-            </svg>
-          </div>
-          <div>
-            <p className="text-sm text-white/70">Top Category</p>
-            <h3 className="text-2xl font-bold">{topCategory.name}</h3>
-          </div>
-        </div>
-      </Card>
-
-      <Card className="p-6 bg-gradient-to-br from-emerald-500 to-emerald-600 text-white">
-        <div className="flex items-center gap-4">
-          <div className="p-3 rounded-xl bg-white/10">
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M20 12H4M20 12a8 8 0 01-8 8m8-8a8 8 0 00-8-8m8 8h4m-4-8a8 8 0 00-8 8"
-              />
-            </svg>
-          </div>
-          <div>
-            <p className="text-sm text-white/70">Average Transaction</p>
-            <h3 className="text-2xl font-bold">
-              {new Intl.NumberFormat('en-US', {
-                style: 'currency',
-                currency: 'USD',
-              }).format(
-                currentMonth.expenses.reduce(
-                  (sum, exp) => sum + exp.amount,
-                  0
-                ) / currentMonth.expenses.length
+            <CardHeader className="pb-2">
+              <div className="flex items-center gap-2">
+                <div
+                  className={`p-2 rounded-lg ${stat.gradient.replace(
+                    '/10',
+                    '/20'
+                  )}`}
+                >
+                  <Icon className="w-4 h-4 text-foreground/70" />
+                </div>
+                <CardTitle className="text-sm font-medium text-foreground/70">
+                  {stat.name}
+                </CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {stat.isNumeric ? (
+                <ExpenseAmount
+                  amount={stat.value as number}
+                  currency={stat.currency}
+                  className="text-2xl font-bold tracking-tight"
+                  originalAmountClassName="text-sm text-muted-foreground"
+                />
+              ) : (
+                <div className="text-2xl font-bold tracking-tight">
+                  {stat.value}
+                </div>
               )}
-            </h3>
-          </div>
-        </div>
-      </Card>
+            </CardContent>
+          </Card>
+        )
+      })}
     </div>
   )
 }

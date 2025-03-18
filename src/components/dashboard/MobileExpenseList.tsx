@@ -1,8 +1,8 @@
 'use client'
 
+import { ExpenseAmount } from '@/components/expenses/ExpenseAmount'
 import { useSettings } from '@/contexts/SettingsContext'
 import { getCategoryById } from '@/data/categories'
-import { formatCurrency } from '@/data/currencies'
 import { getRecentExpenses } from '@/data/expenses'
 import { format } from 'date-fns'
 import { ExpenseReceiptDialog } from '../expenses/ExpenseReceiptDialog'
@@ -12,7 +12,7 @@ export function MobileExpenseList() {
   const recentExpenses = getRecentExpenses(5)
 
   return (
-    <div className="space-y-4 overflow-y-auto pb-4">
+    <div className="space-y-4 overflow-y-auto px-4 pb-4">
       <div className="space-y-3">
         {recentExpenses.map((expense) => {
           const category = getCategoryById(expense.categoryId)
@@ -33,12 +33,12 @@ export function MobileExpenseList() {
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="font-semibold">
-                      {formatCurrency(
-                        convertAmount(expense.amount, expense.currency),
-                        settings?.displayCurrency?.code || 'USD'
-                      )}
-                    </p>
+                    <ExpenseAmount
+                      amount={expense.amount}
+                      currency={expense.currency}
+                      className="font-semibold"
+                      originalAmountClassName="text-[10px] text-muted-foreground"
+                    />
                     <p className="text-xs text-muted-foreground">
                       {format(new Date(expense.date), 'MMM d')}
                     </p>

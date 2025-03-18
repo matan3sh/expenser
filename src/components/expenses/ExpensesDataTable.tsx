@@ -1,5 +1,6 @@
 'use client'
 
+import { ExpenseAmount } from '@/components/expenses/ExpenseAmount'
 import { ExpenseEditDialog } from '@/components/expenses/ExpenseEditDialog'
 import { ExpenseReceiptDialog } from '@/components/expenses/ExpenseReceiptDialog'
 import { Button } from '@/components/ui/button'
@@ -61,6 +62,86 @@ export function ExpensesDataTable() {
       settings.displayCurrency.code
     )
   }
+
+  const columns = [
+    {
+      accessorKey: 'date',
+      header: 'Date',
+      cell: ({ row }) => {
+        const expense = row.original
+        return <div>{format(new Date(expense.date), 'MMM d, yyyy')}</div>
+      },
+    },
+    {
+      accessorKey: 'description',
+      header: 'Description',
+      cell: ({ row }) => {
+        const expense = row.original
+        return <div>{expense.description}</div>
+      },
+    },
+    {
+      accessorKey: 'location',
+      header: 'Location',
+      cell: ({ row }) => {
+        const expense = row.original
+        return <div>{expense.location}</div>
+      },
+    },
+    {
+      accessorKey: 'category',
+      header: 'Category',
+      cell: ({ row }) => {
+        const expense = row.original
+        const category = getCategoryById(expense.categoryId)
+        return (
+          <div className="flex items-center gap-2">
+            <div
+              className="w-3 h-3 rounded-full"
+              style={{ backgroundColor: category?.color }}
+            />
+            {category?.name}
+          </div>
+        )
+      },
+    },
+    {
+      accessorKey: 'amount',
+      header: 'Amount',
+      cell: ({ row }) => {
+        const expense = row.original
+        return (
+          <ExpenseAmount
+            amount={expense.amount}
+            currency={expense.currency}
+            className="font-medium"
+            originalAmountClassName="text-xs text-muted-foreground"
+          />
+        )
+      },
+    },
+    {
+      accessorKey: 'actions',
+      header: 'Actions',
+      cell: ({ row }) => {
+        const expense = row.original
+        return (
+          <div className="flex items-center gap-2">
+            <ExpenseReceiptDialog expense={expense}>
+              <Button variant="ghost" size="sm">
+                View
+              </Button>
+            </ExpenseReceiptDialog>
+            <ExpenseEditDialog expense={expense}>
+              <Button variant="ghost" size="sm">
+                Edit
+              </Button>
+            </ExpenseEditDialog>
+          </div>
+        )
+      },
+    },
+  ]
 
   return (
     <Card className="p-4">
@@ -144,59 +225,20 @@ export function ExpensesDataTable() {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Date</TableHead>
-            <TableHead>Description</TableHead>
-            <TableHead>Location</TableHead>
-            <TableHead>Category</TableHead>
-            <TableHead>Amount</TableHead>
-            <TableHead>Actions</TableHead>
+            {columns.map((column) => (
+              <TableHead key={column.accessorKey}>{column.header}</TableHead>
+            ))}
           </TableRow>
         </TableHeader>
         <TableBody>
           {paginatedExpenses.map((expense) => {
-            const category = getCategoryById(expense.categoryId)
             return (
               <TableRow key={expense.id}>
-                <TableCell>
-                  {format(new Date(expense.date), 'MMM d, yyyy')}
-                </TableCell>
-                <TableCell>{expense.description}</TableCell>
-                <TableCell>{expense.location}</TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-2">
-                    <div
-                      className="w-3 h-3 rounded-full"
-                      style={{ backgroundColor: category?.color }}
-                    />
-                    {category?.name}
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <div className="flex flex-col">
-                    <span>
-                      {safeFormatCurrency(expense.amount, expense.currency)}
-                    </span>
-                    {settings?.displayCurrency?.code !== expense.currency && (
-                      <span className="text-[12px] text-muted-foreground">
-                        ({formatCurrency(expense.amount, expense.currency)})
-                      </span>
-                    )}
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-2">
-                    <ExpenseReceiptDialog expense={expense}>
-                      <Button variant="ghost" size="sm">
-                        View
-                      </Button>
-                    </ExpenseReceiptDialog>
-                    <ExpenseEditDialog expense={expense}>
-                      <Button variant="ghost" size="sm">
-                        Edit
-                      </Button>
-                    </ExpenseEditDialog>
-                  </div>
-                </TableCell>
+                {columns.map((column) => (
+                  <TableCell key={column.accessorKey}>
+                    {column.cell({ row: { original: expense } })}
+                  </TableCell>
+                ))}
               </TableRow>
             )
           })}

@@ -1,5 +1,6 @@
 'use client'
 
+import { ExpenseAmount } from '@/components/expenses/ExpenseAmount'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import { Card } from '@/components/ui/card'
@@ -155,14 +156,12 @@ export function MobileExpensesView() {
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="font-medium text-sm">
-                        {safeFormatCurrency(expense.amount, expense.currency)}
-                      </p>
-                      {settings?.displayCurrency?.code !== expense.currency && (
-                        <p className="text-[10px] text-muted-foreground">
-                          ({formatCurrency(expense.amount, expense.currency)})
-                        </p>
-                      )}
+                      <ExpenseAmount
+                        amount={expense.amount}
+                        currency={expense.currency}
+                        className="font-medium text-sm"
+                        originalAmountClassName="text-[10px] text-muted-foreground"
+                      />
                     </div>
                   </div>
 

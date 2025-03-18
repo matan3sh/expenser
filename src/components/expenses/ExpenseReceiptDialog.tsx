@@ -1,5 +1,6 @@
 'use client'
 
+import { ExpenseAmount } from '@/components/expenses/ExpenseAmount'
 import {
   Dialog,
   DialogContent,
@@ -114,6 +115,13 @@ export function ExpenseReceiptDialog({
               </div>
             </div>
           </div>
+
+          <ExpenseAmount
+            amount={expense.amount}
+            currency={expense.currency}
+            className="text-xl font-bold"
+            originalAmountClassName="text-sm text-muted-foreground"
+          />
         </div>
       </DialogContent>
     </Dialog>

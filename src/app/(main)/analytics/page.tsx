@@ -10,16 +10,20 @@ export default function AnalyticsPage() {
   return (
     <div className="flex flex-col h-full">
       {/* Desktop View */}
-      <div className="hidden lg:block p-6 space-y-6">
-        <div className="mb-4">
+      <div className="hidden lg:block space-y-6">
+        <div className="px-6 mb-4">
           <h1 className="text-3xl font-bold tracking-tight">Analytics</h1>
           <p className="text-muted-foreground">Financial overview and trends</p>
         </div>
-        <ExpenseCard
-          getCurrentMonthTotal={getCurrentMonthTotal}
-          getPreviousMonthTotal={getPreviousMonthTotal}
-        />
-        <AnalyticsStats />
+        <div className="px-6">
+          <ExpenseCard
+            getCurrentMonthTotal={getCurrentMonthTotal}
+            getPreviousMonthTotal={getPreviousMonthTotal}
+          />
+        </div>
+        <div className="px-6">
+          <AnalyticsStats />
+        </div>
       </div>
 
       {/* Mobile View */}
