@@ -7,32 +7,21 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet'
-import { expenses } from '@/data/expenses'
 import { useCurrencyFormat } from '@/hooks/useCurrencyFormat'
 import type { Category } from '@/types/category'
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { EditCategoryDialog } from './EditCategoryDialog'
 import { ExpenseList } from './ExpenseList'
 
 interface CategoryCardProps {
-  category: Category
+  category: Category & { totalExpenses?: number }
 }
 
 export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
   const [isOpen, setIsOpen] = useState(false)
-  const { formatAmount, convertToDisplayCurrency } = useCurrencyFormat()
-
-  // Calculate total expenses for this category
-  const totalExpenses = useMemo(() => {
-    return expenses
-      .filter((expense) => expense.categoryId === category.id)
-      .reduce((sum, expense) => {
-        return sum + convertToDisplayCurrency(expense.amount, expense.currency)
-      }, 0)
-  }, [category.id, convertToDisplayCurrency])
-
-  const formattedTotal = formatAmount(totalExpenses)
+  const { formatAmount } = useCurrencyFormat()
   const categoryColor = category.color || '#64748b'
+  const formattedTotal = formatAmount(category.totalExpenses || 0)
 
   return (
     <>

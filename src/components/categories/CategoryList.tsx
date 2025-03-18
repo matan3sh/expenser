@@ -2,7 +2,7 @@ import type { Category } from '@/types/category'
 import { CategoryCard } from './CategoryCard'
 
 interface CategoryListProps {
-  categories: Category[]
+  categories: (Category & { totalExpenses?: number })[]
 }
 
 export const CategoryList: React.FC<CategoryListProps> = ({ categories }) => {
