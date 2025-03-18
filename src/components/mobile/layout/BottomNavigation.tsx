@@ -5,9 +5,9 @@ import {
   BanknotesIcon,
   CameraIcon,
   ChartBarIcon,
-  Cog6ToothIcon,
   HomeIcon,
   PlusIcon,
+  TagIcon,
 } from '@heroicons/react/24/outline'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import Link from 'next/link'
@@ -32,9 +32,9 @@ const navigationItems = [
     Icon: BanknotesIcon,
   },
   {
-    name: 'Settings',
-    href: '/settings',
-    Icon: Cog6ToothIcon,
+    name: 'Categories',
+    href: '/categories',
+    Icon: TagIcon,
   },
 ]
 

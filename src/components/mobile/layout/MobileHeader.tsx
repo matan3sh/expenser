@@ -3,6 +3,8 @@
 import { MonthSelector } from '@/components/layout/sidebar/MonthSelector'
 import { useSettings } from '@/contexts/SettingsContext'
 import { UserButton } from '@clerk/nextjs'
+import { Cog6ToothIcon } from '@heroicons/react/24/outline'
+import Link from 'next/link'
 
 export const MobileHeader = () => {
   const { settings, updateSelectedMonth, isCurrentMonth } = useSettings()
@@ -40,14 +42,23 @@ export const MobileHeader = () => {
           />
         </div>
 
-        <UserButton
-          afterSignOutUrl="/"
-          appearance={{
-            elements: {
-              avatarBox: 'h-8 w-8',
-            },
-          }}
-        />
+        <div className="flex items-center gap-3">
+          <Link
+            href="/settings"
+            className="flex items-center justify-center p-2 rounded-full text-muted-foreground hover:text-primary hover:bg-muted transition-colors"
+            aria-label="Settings"
+          >
+            <Cog6ToothIcon className="w-5 h-5" />
+          </Link>
+          <UserButton
+            afterSignOutUrl="/"
+            appearance={{
+              elements: {
+                avatarBox: 'h-8 w-8',
+              },
+            }}
+          />
+        </div>
       </div>
     </header>
   )
