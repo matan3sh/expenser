@@ -25,9 +25,19 @@ function DashboardHeader() {
 // Mobile Dashboard Component
 function MobileDashboard() {
   return (
-    <div className="md:hidden space-y-4">
-      <WeeklyVolumeChart />
-      <MobileExpenseList />
+    <div className="lg:hidden flex flex-col h-full">
+      <div className="px-4 py-3 mt-14">
+        <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
+        <p className="text-sm text-muted-foreground">
+          Welcome to your expense tracking dashboard
+        </p>
+      </div>
+      <div className="flex-1 overflow-y-auto px-4">
+        <WeeklyVolumeChart />
+        <div className="mt-4">
+          <MobileExpenseList />
+        </div>
+      </div>
     </div>
   )
 }
@@ -56,9 +66,12 @@ function DesktopDashboardCards() {
 // Desktop Dashboard Component
 function DesktopDashboard() {
   return (
-    <div className="hidden md:block">
-      <DashboardStats />
-      <DesktopDashboardCards />
+    <div className="hidden lg:block p-6">
+      <DashboardHeader />
+      <div className="mt-6">
+        <DashboardStats />
+        <DesktopDashboardCards />
+      </div>
     </div>
   )
 }
@@ -67,10 +80,10 @@ function DesktopDashboard() {
 function DashboardLoading() {
   return (
     <>
-      <div className="md:hidden">
+      <div className="lg:hidden">
         <MobileDashboardSkeleton />
       </div>
-      <div className="hidden md:block">
+      <div className="hidden lg:block">
         <DashboardSkeleton />
       </div>
     </>
@@ -86,9 +99,7 @@ export default async function DashboardPage() {
   }
 
   return (
-    <div className="flex flex-col gap-4 p-4 min-h-[calc(100vh-3rem)]">
-      <DashboardHeader />
-
+    <div className="flex flex-col h-full">
       <Suspense fallback={<DashboardLoading />}>
         <MobileDashboard />
         <DesktopDashboard />
