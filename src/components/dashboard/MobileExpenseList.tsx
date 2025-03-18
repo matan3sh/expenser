@@ -1,14 +1,12 @@
 'use client'
 
 import { ExpenseAmount } from '@/components/expenses/ExpenseAmount'
-import { useSettings } from '@/contexts/SettingsContext'
 import { getCategoryById } from '@/data/categories'
 import { getRecentExpenses } from '@/data/expenses'
 import { format } from 'date-fns'
 import { ExpenseReceiptDialog } from '../expenses/ExpenseReceiptDialog'
 
 export function MobileExpenseList() {
-  const { convertAmount, settings } = useSettings()
   const recentExpenses = getRecentExpenses(5)
 
   return (

@@ -1,10 +1,12 @@
 import { ExpenseAmount } from '@/components/expenses/ExpenseAmount'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { useSettings } from '@/contexts/SettingsContext'
 import { categories } from '@/data/categories'
 import { getMonthlyExpenses } from '@/data/expenses'
 import { BanknoteIcon, ChartBarIcon, TagIcon } from 'lucide-react'
 
 const AnalyticsStats = () => {
+  const { settings } = useSettings()
   const monthlyData = getMonthlyExpenses()
   const currentMonth = monthlyData[monthlyData.length - 1]
 
@@ -29,12 +31,14 @@ const AnalyticsStats = () => {
       ? totalExpenses / currentMonth.expenses.length
       : 0
 
+  const displayCurrency = settings?.displayCurrency?.code || 'USD'
+
   const stats = [
     {
       name: 'Monthly Transactions',
       value: currentMonth.expenses.length,
       isNumeric: true,
-      currency: 'USD',
+      currency: displayCurrency,
       icon: BanknoteIcon,
       gradient: 'from-blue-500/10 to-blue-500/5',
       borderColor: 'border-blue-500/20',
@@ -51,7 +55,7 @@ const AnalyticsStats = () => {
       name: 'Average Transaction',
       value: averageTransaction,
       isNumeric: true,
-      currency: 'USD',
+      currency: displayCurrency,
       icon: ChartBarIcon,
       gradient: 'from-green-500/10 to-green-500/5',
       borderColor: 'border-green-500/20',
@@ -89,7 +93,7 @@ const AnalyticsStats = () => {
               {stat.isNumeric ? (
                 <ExpenseAmount
                   amount={stat.value as number}
-                  currency={stat.currency}
+                  currency={stat.currency ?? 'USD'}
                   className="text-2xl font-bold tracking-tight"
                   originalAmountClassName="text-sm text-muted-foreground"
                 />

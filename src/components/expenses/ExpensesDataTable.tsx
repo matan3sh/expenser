@@ -26,17 +26,26 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { useSettings } from '@/contexts/SettingsContext'
 import { categories, getCategoryById } from '@/data/categories'
-import { formatCurrency } from '@/data/currencies'
 import { expenses } from '@/data/expenses'
 import { cn } from '@/lib/utils'
 import { format } from 'date-fns'
 import { Calendar as CalendarIcon } from 'lucide-react'
 import { useState } from 'react'
 
+interface TableRow {
+  original: {
+    id: string
+    date: string
+    description: string
+    amount: number
+    currency: string
+    categoryId: string
+    location: string
+  }
+}
+
 export function ExpensesDataTable() {
-  const { convertAmount, settings } = useSettings()
   const [filters, setFilters] = useState({
     search: '',
     category: '',
@@ -52,22 +61,11 @@ export function ExpensesDataTable() {
     page * pageSize
   )
 
-  // Helper function to safely format currency
-  const safeFormatCurrency = (amount: number, currency: string = 'USD') => {
-    if (!settings?.displayCurrency?.code) {
-      return formatCurrency(amount, currency)
-    }
-    return formatCurrency(
-      convertAmount(amount, currency),
-      settings.displayCurrency.code
-    )
-  }
-
   const columns = [
     {
       accessorKey: 'date',
       header: 'Date',
-      cell: ({ row }) => {
+      cell: ({ row }: { row: TableRow }) => {
         const expense = row.original
         return <div>{format(new Date(expense.date), 'MMM d, yyyy')}</div>
       },
@@ -75,7 +73,7 @@ export function ExpensesDataTable() {
     {
       accessorKey: 'description',
       header: 'Description',
-      cell: ({ row }) => {
+      cell: ({ row }: { row: TableRow }) => {
         const expense = row.original
         return <div>{expense.description}</div>
       },
@@ -83,7 +81,7 @@ export function ExpensesDataTable() {
     {
       accessorKey: 'location',
       header: 'Location',
-      cell: ({ row }) => {
+      cell: ({ row }: { row: TableRow }) => {
         const expense = row.original
         return <div>{expense.location}</div>
       },
@@ -91,7 +89,7 @@ export function ExpensesDataTable() {
     {
       accessorKey: 'category',
       header: 'Category',
-      cell: ({ row }) => {
+      cell: ({ row }: { row: TableRow }) => {
         const expense = row.original
         const category = getCategoryById(expense.categoryId)
         return (
@@ -108,7 +106,7 @@ export function ExpensesDataTable() {
     {
       accessorKey: 'amount',
       header: 'Amount',
-      cell: ({ row }) => {
+      cell: ({ row }: { row: TableRow }) => {
         const expense = row.original
         return (
           <ExpenseAmount
@@ -123,7 +121,7 @@ export function ExpensesDataTable() {
     {
       accessorKey: 'actions',
       header: 'Actions',
-      cell: ({ row }) => {
+      cell: ({ row }: { row: TableRow }) => {
         const expense = row.original
         return (
           <div className="flex items-center gap-2">
