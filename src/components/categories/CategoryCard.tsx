@@ -133,7 +133,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
                   {category.name}
                 </SheetTitle>
                 <p className="text-xl font-semibold text-gray-700 mt-1">
-                  {formatAmount(totalAmount)}
+                  {formatAmount(totalAmount, settings.displayCurrency?.code)}
                 </p>
 
                 {budget > 0 && (

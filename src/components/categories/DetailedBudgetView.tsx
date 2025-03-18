@@ -1,9 +1,10 @@
+import { useSettings } from '@/contexts/SettingsContext'
 import { useBudgetProgress } from '@/hooks/useBudgetProgress'
 
 interface DetailedBudgetViewProps {
   totalAmount: number
   budget: number
-  formatAmount: (amount: number) => string
+  formatAmount: (amount: number, currency: string) => string
 }
 
 export const DetailedBudgetView = ({
@@ -13,6 +14,7 @@ export const DetailedBudgetView = ({
 }: DetailedBudgetViewProps) => {
   const { progressPercentage, progressColor, status, remaining } =
     useBudgetProgress(totalAmount, budget)
+  const { settings } = useSettings()
 
   return (
     <div className="mt-6 max-w-[250px] mx-auto">
@@ -35,19 +37,23 @@ export const DetailedBudgetView = ({
         />
       </div>
 
-      <div className="flex justify-between items-center mt-2">
-        <div className="space-y-1">
+      <div className="flex justify-between items-center mt-2 gap-4">
+        <div className="space-y-">
           <p className="text-xs text-gray-500">Spent</p>
-          <p className="text-sm font-medium">{formatAmount(totalAmount)}</p>
+          <p className="text-sm font-medium">
+            {formatAmount(totalAmount, settings.displayCurrency?.code || 'USD')}
+          </p>
         </div>
         <div className="text-center space-y-1">
           <p className="text-xs text-gray-500">Budget</p>
-          <p className="text-sm font-medium">{formatAmount(budget)}</p>
+          <p className="text-sm font-medium">
+            {formatAmount(budget, settings.displayCurrency?.code || 'USD')}
+          </p>
         </div>
         <div className="text-right space-y-1">
           <p className="text-xs text-gray-500">Remaining</p>
           <p className={`text-sm font-medium ${status.textColor}`}>
-            {formatAmount(remaining)}
+            {formatAmount(remaining, settings.displayCurrency?.code || 'USD')}
           </p>
         </div>
       </div>
