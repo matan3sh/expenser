@@ -7,31 +7,64 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet'
+import { useSettings } from '@/contexts/SettingsContext'
 import { useCurrencyFormat } from '@/hooks/useCurrencyFormat'
 import type { Category } from '@/types/category'
 import type { Expense } from '@/types/expense'
-import { useState } from 'react'
+import React, { useMemo, useState } from 'react'
+import { BudgetProgress } from './BudgetProgress'
 import { CategoryMenu } from './CategoryMenu'
+import { DetailedBudgetView } from './DetailedBudgetView'
 import { ExpenseList } from './ExpenseList'
 
+// Types
 interface CategoryCardProps {
   category: Category
   expenses: Expense[]
   categories: Category[]
 }
 
+// Main CategoryCard component
 export const CategoryCard: React.FC<CategoryCardProps> = ({
   category,
   expenses,
   categories,
 }) => {
   const [isOpen, setIsOpen] = useState(false)
-  const { formatAmount } = useCurrencyFormat()
+  const { formatAmount, convertToDisplayCurrency } = useCurrencyFormat()
+  const { settings } = useSettings()
   const categoryColor = category.color || '#64748b'
 
-  // Use the pre-calculated totalExpenses if it exists
-  const totalAmount = category.totalExpenses || 0
-  const formattedTotal = formatAmount(totalAmount)
+  // Calculate total amount for the selected month with proper currency conversion
+  const totalAmount = useMemo(() => {
+    const monthlyExpenses = expenses.filter((expense) => {
+      const expenseDate = new Date(expense.date)
+      return (
+        expense.categoryId === category.id &&
+        expenseDate.getMonth() === settings.selectedMonth.month &&
+        expenseDate.getFullYear() === settings.selectedMonth.year
+      )
+    })
+    return monthlyExpenses.reduce((sum, expense) => {
+      const currentExpense =
+        expense.currency === settings.displayCurrency?.code
+          ? expense.amount
+          : convertToDisplayCurrency(
+              expense.amount,
+              settings.displayCurrency?.code
+            )
+      return sum + currentExpense
+    }, 0)
+  }, [
+    expenses,
+    category.id,
+    settings.selectedMonth.month,
+    settings.selectedMonth.year,
+    settings.displayCurrency?.code,
+    convertToDisplayCurrency,
+  ])
+
+  const budget = category.budget || 0
 
   return (
     <>
@@ -51,8 +84,17 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
                   {category.name}
                 </h3>
                 <p className="text-sm text-muted-foreground">
-                  Total: {formattedTotal}
+                  Total:{' '}
+                  {formatAmount(totalAmount, settings.displayCurrency?.code)}
                 </p>
+
+                {budget > 0 && (
+                  <BudgetProgress
+                    totalAmount={totalAmount}
+                    budget={budget}
+                    formatAmount={formatAmount}
+                  />
+                )}
               </div>
               <div onClick={(e) => e.stopPropagation()}>
                 <CategoryMenu
@@ -71,8 +113,11 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
           side="bottom"
           className="max-h-[66vh] h-[66vh] overflow-hidden rounded-t-xl p-0 bg-white"
         >
+          <SheetHeader className="sr-only">
+            <SheetTitle>{category.name} Details</SheetTitle>
+          </SheetHeader>
+
           <div className="receipt-container flex flex-col h-full">
-            {/* Fixed header */}
             <div className="flex-shrink-0">
               <div className="w-full relative overflow-hidden">
                 <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-gray-100 to-gray-100 zigzag"></div>
@@ -88,12 +133,19 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
                   {category.name}
                 </SheetTitle>
                 <p className="text-xl font-semibold text-gray-700 mt-1">
-                  {formattedTotal}
+                  {formatAmount(totalAmount)}
                 </p>
+
+                {budget > 0 && (
+                  <DetailedBudgetView
+                    totalAmount={totalAmount}
+                    budget={budget}
+                    formatAmount={formatAmount}
+                  />
+                )}
               </SheetHeader>
             </div>
 
-            {/* Scrollable expenses list */}
             <div className="flex-1 overflow-y-auto">
               <div className="receipt-body">
                 <div className="receipt-expenses pb-6">
@@ -105,7 +157,6 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
               </div>
             </div>
 
-            {/* Fixed footer */}
             <div className="flex-shrink-0">
               <div className="receipt-footer mt-4 pt-4 border-t border-dashed border-gray-200 flex flex-col items-center">
                 <p className="text-sm text-gray-500 text-center mb-4">
