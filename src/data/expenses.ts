@@ -1,4 +1,5 @@
 import { Settings } from '@/contexts/SettingsContext'
+import { getCurrencyByCode } from '@/data/currencies'
 import { Expense, MonthlyExpense } from '@/types/expense'
 
 export const expenses: Expense[] = [
@@ -245,8 +246,28 @@ export function getRecentExpenses(limit: number = 5): Expense[] {
 }
 
 export function getMonthlyExpenses(settings?: Settings): MonthlyExpense[] {
+  // First, convert all expenses to the display currency
+  const convertedExpenses = expenses.map((expense) => {
+    const displayCurrency = settings?.displayCurrency?.code
+    if (!displayCurrency || expense.currency === displayCurrency) {
+      return expense
+    }
+
+    const rate = settings.exchangeRates[expense.currency]
+    const currency = getCurrencyByCode(displayCurrency)
+
+    return {
+      ...expense,
+      converted: {
+        amount: expense.amount / (rate ?? 1),
+        currency: displayCurrency,
+        symbol: currency?.symbol || '$',
+      },
+    }
+  })
+
   // Group expenses by month
-  const monthlyGroups = expenses.reduce((acc, expense) => {
+  const monthlyGroups = convertedExpenses.reduce((acc, expense) => {
     const month = new Date(expense.date).toLocaleString('default', {
       month: 'short',
     })
@@ -271,10 +292,12 @@ export function getMonthlyExpenses(settings?: Settings): MonthlyExpense[] {
     .map((month) => ({
       ...month,
       total: month.expenses.reduce((sum, expense) => {
+        // If the expense currency matches the display currency, use the original amount
+        // Otherwise, use the converted amount if available
         const amount =
-          expense.currency !== settings?.displayCurrency?.code
-            ? expense.converted?.amount || 0
-            : expense.amount
+          expense.currency === settings?.displayCurrency?.code
+            ? expense.amount
+            : expense.converted?.amount ?? 0
         return sum + amount
       }, 0),
     }))

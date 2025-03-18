@@ -60,7 +60,9 @@ export function ExpenseCard({
   const currentTotal = getCurrentMonthTotal()
   const previousTotal = getPreviousMonthTotal()
   const percentageChange =
-    ((currentTotal - previousTotal) / previousTotal) * 100
+    previousTotal > 0
+      ? ((currentTotal - previousTotal) / previousTotal) * 100
+      : 0
 
   return (
     <Card className="relative overflow-hidden p-6 bg-gradient-to-br from-primary via-primary/90 to-primary/80">

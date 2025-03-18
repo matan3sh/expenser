@@ -13,21 +13,27 @@ export function useExpenseData() {
 
   // Calculate totals with proper currency conversion
   const getCurrentMonthTotal = () => {
+    if (!currentMonth) return 0
     return currentMonth.expenses.reduce((total, expense) => {
+      // If the expense currency matches the display currency, use the original amount
+      // Otherwise, use the converted amount if available
       const amount =
-        expense.currency !== settings.displayCurrency?.code
-          ? expense.converted?.amount || 0
-          : expense.amount
+        expense.currency === settings.displayCurrency?.code
+          ? expense.amount
+          : expense.converted?.amount ?? 0
       return total + amount
     }, 0)
   }
 
   const getPreviousMonthTotal = () => {
+    if (!previousMonth) return 0
     return previousMonth.expenses.reduce((total, expense) => {
+      // If the expense currency matches the display currency, use the original amount
+      // Otherwise, use the converted amount if available
       const amount =
-        expense.currency !== settings.displayCurrency?.code
-          ? expense.converted?.amount || 0
-          : expense.amount
+        expense.currency === settings.displayCurrency?.code
+          ? expense.amount
+          : expense.converted?.amount ?? 0
       return total + amount
     }, 0)
   }
@@ -36,10 +42,12 @@ export function useExpenseData() {
   const chartData = monthlyData.map((month) => ({
     month: month.month,
     amount: month.expenses.reduce((total, expense) => {
+      // If the expense currency matches the display currency, use the original amount
+      // Otherwise, use the converted amount if available
       const amount =
-        expense.currency !== settings.displayCurrency?.code
-          ? expense.converted?.amount || 0
-          : expense.amount
+        expense.currency === settings.displayCurrency?.code
+          ? expense.amount
+          : expense.converted?.amount ?? 0
       return total + amount
     }, 0),
   }))
