@@ -32,11 +32,11 @@ function MobileDashboard() {
           Welcome to your expense tracking dashboard
         </p>
       </div>
-      <div className="flex-1 overflow-y-auto px-4">
+      <div className="px-4">
         <WeeklyVolumeChart />
-        <div className="mt-4">
-          <MobileExpenseList />
-        </div>
+      </div>
+      <div className="flex-1 overflow-y-auto px-4 pb-20 mt-4">
+        <MobileExpenseList />
       </div>
     </div>
   )
