@@ -44,7 +44,12 @@ export default function CategoriesPage() {
         totalExpenses: total,
       }
     })
-  }, [settings.selectedMonth, convertToDisplayCurrency])
+  }, [
+    parsedExpenses,
+    settings.selectedMonth.month,
+    settings.selectedMonth.year,
+    convertToDisplayCurrency,
+  ])
 
   const monthlyExpenses = useMemo(() => {
     return parsedExpenses.filter((expense) => {
@@ -54,7 +59,11 @@ export default function CategoriesPage() {
         expenseDate.getFullYear() === settings.selectedMonth.year
       )
     })
-  }, [settings.selectedMonth])
+  }, [
+    parsedExpenses,
+    settings.selectedMonth.month,
+    settings.selectedMonth.year,
+  ])
 
   return (
     <div className="flex flex-col h-full">
