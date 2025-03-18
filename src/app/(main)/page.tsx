@@ -35,7 +35,8 @@ function MobileDashboard() {
       <div className="px-4">
         <WeeklyVolumeChart />
       </div>
-      <div className="flex-1 overflow-y-auto px-4 pb-20 mt-4">
+      <h2 className="px-4 mt-4 text-lg font-semibold">Recent Expenses</h2>
+      <div className="flex-1 overflow-y-auto px-4 pb-32 mt-4">
         <MobileExpenseList />
       </div>
     </div>

@@ -12,8 +12,7 @@ export function MobileExpenseList() {
   const recentExpenses = getRecentExpenses(5)
 
   return (
-    <div className="space-y-4">
-      <h2 className="text-lg font-semibold">Recent Expenses</h2>
+    <div className="space-y-4 overflow-y-auto px-4 pb-4">
       <div className="space-y-3">
         {recentExpenses.map((expense) => {
           const category = getCategoryById(expense.categoryId)
