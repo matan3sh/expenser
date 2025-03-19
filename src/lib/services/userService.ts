@@ -24,15 +24,25 @@ export class UserService {
           email: clerkUser.emailAddresses[0].emailAddress,
           avatar: clerkUser.imageUrl,
           credits: 0,
-          budget: 1500, // Added default budget
-          // Create categories and currencies in the same transaction
-          categories: {
-            createMany: {
-              data: categories.map((category) => ({
-                title: category.name,
-                budget: category.budget, // Added budget field
-              })),
+          // Create initial user budget
+          budgets: {
+            create: {
+              amount: 1500,
+              currency: 'USD',
+              date: new Date(),
             },
+          },
+          // Create categories in the same transaction
+          categories: {
+            create: categories.map((category) => ({
+              title: category.name,
+              budget: {
+                create: {
+                  amount: category.budget,
+                  currency: 'USD',
+                },
+              },
+            })),
           },
           currencies: {
             createMany: {
@@ -44,8 +54,13 @@ export class UserService {
           },
         },
         include: {
-          categories: true,
+          categories: {
+            include: {
+              budget: true,
+            },
+          },
           currencies: true,
+          budgets: true,
         },
       })
 

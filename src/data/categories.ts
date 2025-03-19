@@ -4,7 +4,7 @@ export interface Category {
   description: string
   color: string // Hex color code
   icon: string // Lucide icon name
-  budget: number // Added budget field
+  budget: number // We'll keep this simple in the source data and transform it in the UserService
   createdAt: Date
   updatedAt: Date
 }

@@ -13,26 +13,51 @@ model User {
   email      String
   avatar     String?
   credits    Int           @default(0)
-  budget     Int           @default(0) // Added budget field
   createdAt  DateTime      @default(now())
   updatedAt  DateTime      @updatedAt
   expenses   ExpenseUser[]
   categories Category[]
   currencies Currency[]
+  budgets    UserBudget[] // New relation to user budgets
 
   @@map("users")
 }
 
+// New model for user budgets
+model UserBudget {
+  id        String   @id @default(uuid())
+  amount    Int
+  currency  String
+  date      DateTime
+  user      User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  userId    String
+  createdAt DateTime @default(now())
+
+  @@map("user_budgets")
+}
+
 model Category {
-  id        String    @id @default(uuid())
+  id        String          @id @default(uuid())
   title     String
-  budget    Int       @default(0) // Added budget field
-  user      User      @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  budget    CategoryBudget? // Changed to reference the CategoryBudget model
+  user      User            @relation(fields: [userId], references: [userId], onDelete: Cascade)
   userId    String
   expenses  Expense[]
-  createdAt DateTime  @default(now())
+  createdAt DateTime        @default(now())
 
   @@map("categories")
+}
+
+// New model for category budgets
+model CategoryBudget {
+  id         String   @id @default(uuid())
+  amount     Int
+  currency   String
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  categoryId String   @unique // One-to-one relationship
+  createdAt  DateTime @default(now())
+
+  @@map("category_budgets")
 }
 
 model Currency {
