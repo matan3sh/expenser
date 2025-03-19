@@ -1,35 +1,71 @@
 'use server'
 
+import { getCurrencyByCode } from '@/data/currencies'
 import { prisma } from '@/db/prisma'
+import { getExchangeRates } from '@/lib/actions/settings.actions'
+import { Expense } from '@/types/expense'
 import { DBSettings } from '@/types/settings'
 import { auth } from '@clerk/nextjs/server'
 import { Prisma } from '@prisma/client'
 
 const PAGE_SIZE = 10
 
-export async function getAllExpenses({
-  userId,
-  query,
-  limit = PAGE_SIZE,
-  page = 1,
-  category,
-  startDate,
-  endDate,
-  minAmount,
-  maxAmount,
-  sort,
-}: {
-  userId: string
-  query?: string
-  limit?: number
-  page?: number
-  category?: string
-  startDate?: string
-  endDate?: string
-  minAmount?: number
-  maxAmount?: number
-  sort?: string
-}) {
+const convertExpense = (
+  expense: Expense,
+  settings: DBSettings,
+  exchangeRates: Record<string, number>
+): Expense => {
+  const isDifferentCurrency =
+    expense.currency !== settings.displayCurrency?.code
+  const targetCurrency = settings.displayCurrency?.code || 'USD'
+
+  if (!isDifferentCurrency) {
+    return expense as Expense
+  }
+
+  const convertedAmount =
+    Number(expense.amount) / (exchangeRates[expense.currency] || 1)
+  const originalCurrencySymbol =
+    getCurrencyByCode(expense.currency || 'USD')?.symbol || '$'
+
+  return {
+    ...expense,
+    converted: {
+      amount: Number(expense.amount),
+      currency: expense.currency,
+      symbol: originalCurrencySymbol,
+    },
+    amount: convertedAmount,
+    currency: targetCurrency,
+  } as Expense
+}
+
+export async function getAllExpenses(
+  {
+    userId,
+    query,
+    limit = PAGE_SIZE,
+    page = 1,
+    category,
+    startDate,
+    endDate,
+    minAmount,
+    maxAmount,
+    sort,
+  }: {
+    userId: string
+    query?: string
+    limit?: number
+    page?: number
+    category?: string
+    startDate?: string
+    endDate?: string
+    minAmount?: number
+    maxAmount?: number
+    sort?: string
+  },
+  exchangeRates: Record<string, number>
+) {
   // Query filter for search by description or notes
   const queryFilter: Prisma.ExpenseWhereInput =
     query && query !== 'all'
@@ -71,6 +107,21 @@ export async function getAllExpenses({
     if (minAmount !== undefined) amountCondition.gte = minAmount
     if (maxAmount !== undefined) amountCondition.lte = maxAmount
     amountFilter.amount = amountCondition
+  }
+
+  // Modify the function to retrieve user settings
+  const userSettings = await prisma.user.findFirst({
+    where: {
+      userId,
+    },
+    select: {
+      settings: true,
+    },
+  })
+
+  const settings = (userSettings?.settings as DBSettings) || {
+    displayCurrency: { code: 'USD' },
+    exchangeRates: {},
   }
 
   // Fetch paginated expenses - now include userId filter
@@ -115,8 +166,13 @@ export async function getAllExpenses({
     },
   })
 
+  // Convert expenses before returning
+  const convertedExpenses = expenses.map((expense) =>
+    convertExpense(expense as unknown as Expense, settings, exchangeRates)
+  )
+
   return {
-    expenses,
+    expenses: convertedExpenses,
     totalPages: Math.ceil(totalExpenses / limit),
     totalExpenses,
   }
@@ -179,14 +235,21 @@ export async function getExpensesForSelectedMonth({
     59
   ).toISOString()
 
+  const exchangeRates = await getExchangeRates(
+    (userSettings?.settings as DBSettings)?.displayCurrency?.code || 'USD'
+  )
+
   // Pass userId to getAllExpenses
-  return getAllExpenses({
-    userId,
-    startDate,
-    endDate,
-    limit,
-    page,
-    category,
-    sort,
-  })
+  return getAllExpenses(
+    {
+      userId,
+      startDate,
+      endDate,
+      limit,
+      page,
+      category,
+      sort,
+    },
+    exchangeRates
+  )
 }
