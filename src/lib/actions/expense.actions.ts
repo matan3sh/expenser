@@ -115,9 +115,6 @@ export async function getAllExpenses({
     },
   })
 
-  console.log('User ID:', userId)
-  console.log('Selected Month:', startDate, endDate)
-
   return {
     expenses,
     totalPages: Math.ceil(totalExpenses / limit),

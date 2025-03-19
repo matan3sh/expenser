@@ -114,7 +114,7 @@ export class UserService {
         // Add sample expenses
         const sampleExpenses = [
           {
-            date: new Date('2024-03-15'),
+            date: new Date('2025-03-15'),
             description: 'Weekly Groceries',
             amount: 150.75,
             currency: 'USD',
@@ -123,7 +123,7 @@ export class UserService {
               ?.id,
           },
           {
-            date: new Date('2024-03-14'),
+            date: new Date('2025-03-14'),
             description: 'Electricity Bill',
             amount: 85.5,
             currency: 'USD',
@@ -132,7 +132,7 @@ export class UserService {
               ?.id,
           },
           {
-            date: new Date('2024-03-13'),
+            date: new Date('2025-03-13'),
             description: 'Movie Night',
             amount: 120.0,
             currency: 'USD',
@@ -142,7 +142,7 @@ export class UserService {
             )?.id,
           },
           {
-            date: new Date('2024-03-12'),
+            date: new Date('2025-03-12'),
             description: 'Gas',
             amount: 250.0,
             currency: 'USD',
@@ -151,7 +151,7 @@ export class UserService {
               ?.id,
           },
           {
-            date: new Date('2024-02-28'),
+            date: new Date('2025-02-28'),
             description: 'Monthly Groceries',
             amount: 420.3,
             currency: 'USD',
