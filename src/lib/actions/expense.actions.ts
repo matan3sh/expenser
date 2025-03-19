@@ -1,7 +1,8 @@
 'use server'
 
 import { prisma } from '@/db/prisma'
-import { settingsService } from '@/lib/services/settingsService'
+import { DBSettings } from '@/types/settings'
+import { auth } from '@clerk/nextjs/server'
 import { Prisma } from '@prisma/client'
 
 const PAGE_SIZE = 10
@@ -18,7 +19,7 @@ export async function getAllExpenses({
   maxAmount,
   sort,
 }: {
-  userId: string // Required userId parameter
+  userId: string
   query?: string
   limit?: number
   page?: number
@@ -114,6 +115,9 @@ export async function getAllExpenses({
     },
   })
 
+  console.log('User ID:', userId)
+  console.log('Selected Month:', startDate, endDate)
+
   return {
     expenses,
     totalPages: Math.ceil(totalExpenses / limit),
@@ -125,23 +129,43 @@ export async function getAllExpenses({
  * Retrieves all expenses for a specific month
  */
 export async function getExpensesForSelectedMonth({
-  userId,
   limit = PAGE_SIZE,
   page = 1,
   category,
   sort,
 }: {
-  userId: string // Required userId parameter
-  selectedMonth: string | Date // Accept date string or Date object
   limit?: number
   page?: number
   category?: string
   sort?: string
 }) {
-  const settings = settingsService.getSettings()
-  const selectedMonth = settings.selectedMonth
+  const { userId } = await auth()
 
-  // Create first day of the month
+  if (!userId) {
+    return {
+      expenses: [],
+      totalPages: 0,
+      totalExpenses: 0,
+    }
+  }
+
+  const userSettings = await prisma.user.findFirst({
+    where: {
+      userId,
+    },
+    select: {
+      settings: true,
+    },
+  })
+
+  // Add fallback to current month if no selectedMonth in settings
+  const settings = userSettings?.settings as DBSettings
+  const selectedMonth = settings?.selectedMonth || {
+    year: new Date().getFullYear(),
+    month: new Date().getMonth(),
+  }
+
+  // Now safely use selectedMonth
   const startDate = new Date(
     selectedMonth.year,
     selectedMonth.month,
