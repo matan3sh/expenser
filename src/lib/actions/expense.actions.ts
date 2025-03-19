@@ -1,6 +1,7 @@
 'use server'
 
 import { prisma } from '@/db/prisma'
+import { settingsService } from '@/lib/services/settingsService'
 import { Prisma } from '@prisma/client'
 
 const PAGE_SIZE = 10
@@ -125,7 +126,6 @@ export async function getAllExpenses({
  */
 export async function getExpensesForSelectedMonth({
   userId,
-  selectedMonth,
   limit = PAGE_SIZE,
   page = 1,
   category,
@@ -138,21 +138,20 @@ export async function getExpensesForSelectedMonth({
   category?: string
   sort?: string
 }) {
-  // Convert selectedMonth to start and end dates
-  const monthDate =
-    typeof selectedMonth === 'string' ? new Date(selectedMonth) : selectedMonth
+  const settings = settingsService.getSettings()
+  const selectedMonth = settings.selectedMonth
 
   // Create first day of the month
   const startDate = new Date(
-    monthDate.getFullYear(),
-    monthDate.getMonth(),
+    selectedMonth.year,
+    selectedMonth.month,
     1
   ).toISOString()
 
   // Create last day of the month
   const endDate = new Date(
-    monthDate.getFullYear(),
-    monthDate.getMonth() + 1,
+    selectedMonth.year,
+    selectedMonth.month + 1,
     0,
     23,
     59,

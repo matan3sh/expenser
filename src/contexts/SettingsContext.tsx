@@ -1,5 +1,6 @@
 'use client'
 
+import { settingsService } from '@/lib/services/settingsService'
 import { createContext, useContext, useEffect, useState } from 'react'
 
 // Types
@@ -95,6 +96,8 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (isInitialized) {
       saveSettingsToStorage(settings)
+      // Sync with service
+      settingsService.updateSettings(settings)
     }
   }, [settings, isInitialized])
 
