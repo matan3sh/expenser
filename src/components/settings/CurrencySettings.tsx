@@ -34,6 +34,7 @@ export function CurrencySettings() {
       updateDisplayCurrency({
         code: currency.code,
         name: currency.name,
+        symbol: currency.symbol,
       })
     }
   }

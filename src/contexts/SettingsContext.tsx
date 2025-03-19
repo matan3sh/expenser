@@ -6,6 +6,7 @@ import { createContext, useContext, useEffect, useState } from 'react'
 type CurrencySelection = {
   code: string
   name: string
+  symbol: string
 }
 
 type MonthSelection = {
@@ -34,7 +35,7 @@ type SettingsContextType = {
 
 // Default values
 const defaultSettings: Settings = {
-  displayCurrency: { code: 'USD', name: 'US Dollar' },
+  displayCurrency: { code: 'USD', name: 'US Dollar', symbol: '$' },
   exchangeRates: { USD: 1, ILS: 3.6 }, // Add default rates
   theme: 'system',
   selectedMonth: {

@@ -8,7 +8,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import { Expense } from '@/data/expenses'
+import type { Expense } from '@/types/expense'
 
 interface ExpenseEditDialogProps {
   expense: Expense
