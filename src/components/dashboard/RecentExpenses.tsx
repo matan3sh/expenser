@@ -9,25 +9,13 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { useSettings } from '@/contexts/SettingsContext'
 import { getCategoryById } from '@/data/categories'
-import { formatCurrency } from '@/data/currencies'
-import { expenses } from '@/data/expenses'
+import { getCurrencyByCode } from '@/data/currencies'
+import { useExpenses } from '@/hooks/useExpenses'
 import { format } from 'date-fns'
 
 export function RecentExpenses() {
-  const { convertAmount, settings } = useSettings()
-
-  // Helper function to safely format currency
-  const safeFormatCurrency = (amount: number, currency: string = 'USD') => {
-    if (!settings?.displayCurrency?.code) {
-      return formatCurrency(amount, currency)
-    }
-    return formatCurrency(
-      convertAmount(amount, currency),
-      settings.displayCurrency.code
-    )
-  }
+  const expenses = useExpenses()
 
   // Get only the 5 most recent expenses
   const recentExpenses = [...expenses]
@@ -56,11 +44,13 @@ export function RecentExpenses() {
               <TableCell>
                 <div className="flex flex-col">
                   <span>
-                    {safeFormatCurrency(expense.amount, expense.currency)}
+                    {getCurrencyByCode(expense.currency)?.symbol}{' '}
+                    {expense.amount.toFixed(2)}
                   </span>
-                  {settings?.displayCurrency?.code !== expense.currency && (
+                  {expense.converted && (
                     <span className="text-[10px] text-muted-foreground">
-                      ({formatCurrency(expense.amount, expense.currency)})
+                      ({expense.converted.symbol}
+                      {expense.converted.amount.toFixed(2)})
                     </span>
                   )}
                 </div>
