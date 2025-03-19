@@ -1,5 +1,6 @@
 'use client'
 
+import { useSettings } from '@/components/providers/settings-provider'
 import { ExchangeRatesDialog } from '@/components/settings/ExchangeRatesDialog'
 import { Button } from '@/components/ui/button'
 import {
@@ -17,7 +18,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { useSettings } from '@/contexts/SettingsContext'
 import { currencies } from '@/data/currencies'
 import { useExchangeRates } from '@/hooks/useExchangeRates'
 import { Info } from 'lucide-react'

@@ -1,9 +1,9 @@
 'use client'
 
+import { useSettings } from '@/components/providers/settings-provider'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
-import { useSettings } from '@/contexts/SettingsContext'
 import { useClerk, useUser } from '@clerk/nextjs'
 import { Calendar, LogOut } from 'lucide-react'
 import Link from 'next/link'

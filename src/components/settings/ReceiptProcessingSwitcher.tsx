@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Switch } from '@/components/ui/switch'
-import { Settings } from '@/contexts/SettingsContext'
+import { Settings } from '../../types/settings'
 
 const ReceiptProcessingSwitcher = ({
   settings,

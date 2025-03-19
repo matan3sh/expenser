@@ -15,10 +15,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { useSettings } from '@/contexts/SettingsContext'
 import { useTheme } from 'next-themes'
 
 export function ThemeSettings() {
-  const { theme, setTheme } = useTheme()
+  const { theme: nextTheme, setTheme: setNextTheme } = useTheme()
+  const { settings, updateTheme } = useSettings()
+
+  // Handle theme change and ensure it's synced with both systems
+  const handleThemeChange = (value: 'light' | 'dark' | 'system') => {
+    // Update next-themes for UI
+    setNextTheme(value)
+
+    // Update our settings context to sync with DB
+    updateTheme(value)
+  }
 
   return (
     <Card>
@@ -32,10 +43,8 @@ export function ThemeSettings() {
         <div className="space-y-2">
           <Label htmlFor="theme">Color Theme</Label>
           <Select
-            value={theme}
-            onValueChange={(value: 'light' | 'dark' | 'system') => {
-              setTheme(value)
-            }}
+            value={nextTheme || settings.theme}
+            onValueChange={handleThemeChange}
           >
             <SelectTrigger>
               <SelectValue placeholder="Select theme" />

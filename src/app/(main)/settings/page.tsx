@@ -1,9 +1,9 @@
 'use client'
 
+import { useSettings } from '@/components/providers/settings-provider'
 import { CurrencySettings } from '@/components/settings/CurrencySettings'
 import ReceiptProcessingSwitcher from '@/components/settings/ReceiptProcessingSwitcher'
 import { ThemeSettings } from '@/components/settings/ThemeSettings'
-import { useSettings } from '@/contexts/SettingsContext'
 
 export default function SettingsPage() {
   const { settings, updateUseGeminiAI } = useSettings()

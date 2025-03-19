@@ -16,6 +16,7 @@ model User {
   createdAt  DateTime      @default(now())
   updatedAt  DateTime      @updatedAt
   expenses   ExpenseUser[]
+  settings   Json? // Adding settings as JSON field
   categories Category[]
   currencies Currency[]
   budgets    UserBudget[] // New relation to user budgets

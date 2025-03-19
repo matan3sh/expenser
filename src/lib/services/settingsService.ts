@@ -1,4 +1,4 @@
-import type { Settings } from '@/contexts/SettingsContext'
+import { Settings } from '../../types/settings'
 
 class SettingsService {
   private static instance: SettingsService
