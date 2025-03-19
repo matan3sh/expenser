@@ -32,7 +32,7 @@ export function ExpenseReceiptDialog({
   expense,
   children,
 }: ExpenseReceiptDialogProps) {
-  const { convertAmount, settings } = useSettings()
+  const { settings } = useSettings()
   const category = getCategoryById(expense.categoryId)
 
   return (
@@ -102,7 +102,7 @@ export function ExpenseReceiptDialog({
                 <div className="font-semibold">
                   {settings?.displayCurrency?.code
                     ? formatCurrency(
-                        convertAmount(expense.amount, expense.currency),
+                        expense.amount,
                         settings.displayCurrency.code
                       )
                     : formatCurrency(expense.amount, expense.currency)}

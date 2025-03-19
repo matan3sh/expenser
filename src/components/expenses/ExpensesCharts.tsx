@@ -95,7 +95,7 @@ export function ExpensesCharts() {
   const monthlyChartData = monthlyData.map((month) => ({
     month: month.month,
     amount: month.expenses.reduce((total, expense) => {
-      return total + convertToDisplayCurrency(expense.amount, expense.currency)
+      return total + expense.amount
     }, 0),
   }))
 

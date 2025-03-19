@@ -61,7 +61,7 @@ const CHART_COLORS = {
 }
 
 export function AnalyticsChart() {
-  const { formatAmount, convertToDisplayCurrency } = useCurrencyFormat()
+  const { formatAmount } = useCurrencyFormat()
   const { settings } = useSettings()
   const monthlyData = getMonthlyExpenses(settings)
 
@@ -70,11 +70,11 @@ export function AnalyticsChart() {
   const previousMonth = monthlyData[monthlyData.length - 2]
 
   const currentMonthTotal = currentMonth?.expenses.reduce(
-    (sum, exp) => sum + convertToDisplayCurrency(exp.amount, exp.currency),
+    (sum, exp) => sum + exp.amount,
     0
   )
   const previousMonthTotal = previousMonth?.expenses.reduce(
-    (sum, exp) => sum + convertToDisplayCurrency(exp.amount, exp.currency),
+    (sum, exp) => sum + exp.amount,
     0
   )
 
@@ -84,10 +84,7 @@ export function AnalyticsChart() {
 
   // Transform data for the bar chart
   const chartData: ChartData[] = monthlyData.slice(-10).map((month) => {
-    const total = month.expenses.reduce(
-      (sum, exp) => sum + convertToDisplayCurrency(exp.amount, exp.currency),
-      0
-    )
+    const total = month.expenses.reduce((sum, exp) => sum + exp.amount, 0)
     return {
       name: month.month,
       activity: total,
