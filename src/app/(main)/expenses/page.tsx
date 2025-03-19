@@ -1,8 +1,13 @@
+'use client'
+
 import { ExpensesCharts } from '@/components/expenses/ExpensesCharts'
 import { ExpensesDataTable } from '@/components/expenses/ExpensesDataTable'
 import { MobileExpensesView } from '@/components/expenses/MobileExpensesView'
+import { useExpenses } from '@/hooks/useExpenses'
 
-export default async function ExpensesPage() {
+export default function ExpensesPage() {
+  const expenses = useExpenses()
+
   return (
     <div className="flex flex-col h-full">
       {/* Desktop View */}
@@ -17,13 +22,13 @@ export default async function ExpensesPage() {
           </p>
         </div>
         <ExpensesCharts />
-        <ExpensesDataTable />
+        <ExpensesDataTable expenses={expenses} />
       </div>
 
       {/* Mobile View */}
       <div className="lg:hidden flex flex-col h-full">
         <div className="px-2 py-4">
-          <MobileExpensesView />
+          <MobileExpensesView expenses={expenses} />
         </div>
       </div>
     </div>

@@ -1,6 +1,5 @@
 'use client'
 
-import { ExpenseAmount } from '@/components/expenses/ExpenseAmount'
 import {
   Dialog,
   DialogContent,
@@ -11,20 +10,12 @@ import {
 import { useSettings } from '@/contexts/SettingsContext'
 import { getCategoryById } from '@/data/categories'
 import { formatCurrency } from '@/data/currencies'
+import { Expense } from '@/types/expense'
 import { format } from 'date-fns'
 import { Receipt } from 'lucide-react'
 
 interface ExpenseReceiptDialogProps {
-  expense: {
-    id: string
-    date: string
-    description: string
-    amount: number
-    currency: string
-    categoryId: string
-    location?: string
-    notes?: string
-  }
+  expense: Expense
   children: React.ReactNode
 }
 
@@ -107,21 +98,15 @@ export function ExpenseReceiptDialog({
                       )
                     : formatCurrency(expense.amount, expense.currency)}
                 </div>
-                {settings?.displayCurrency?.code !== expense.currency && (
+                {expense.converted && (
                   <div className="text-sm text-muted-foreground">
-                    ({formatCurrency(expense.amount, expense.currency)})
+                    ({expense.converted.symbol}
+                    {expense.converted.amount})
                   </div>
                 )}
               </div>
             </div>
           </div>
-
-          <ExpenseAmount
-            amount={expense.amount}
-            currency={expense.currency}
-            className="text-xl font-bold"
-            originalAmountClassName="text-sm text-muted-foreground"
-          />
         </div>
       </DialogContent>
     </Dialog>

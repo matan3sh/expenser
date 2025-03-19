@@ -27,8 +27,8 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { categories, getCategoryById } from '@/data/categories'
-import { expenses } from '@/data/expenses'
 import { cn } from '@/lib/utils'
+import { Expense } from '@/types/expense'
 import { format } from 'date-fns'
 import { Calendar as CalendarIcon } from 'lucide-react'
 import { useState } from 'react'
@@ -42,10 +42,15 @@ interface TableRow {
     currency: string
     categoryId: string
     location: string
+    converted?: {
+      amount: number
+      currency: string
+      symbol: string
+    }
   }
 }
 
-export function ExpensesDataTable() {
+export function ExpensesDataTable({ expenses }: { expenses: Expense[] }) {
   const [filters, setFilters] = useState({
     search: '',
     category: '',
@@ -112,6 +117,7 @@ export function ExpensesDataTable() {
           <ExpenseAmount
             amount={expense.amount}
             currency={expense.currency}
+            converted={expense?.converted}
             className="font-medium"
             originalAmountClassName="text-xs text-muted-foreground"
           />

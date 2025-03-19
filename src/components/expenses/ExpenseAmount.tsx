@@ -1,11 +1,16 @@
 'use client'
 
 import { useSettings } from '@/contexts/SettingsContext'
-import { formatCurrency } from '@/data/currencies'
+import { formatCurrency, getCurrencyByCode } from '@/data/currencies'
 
 interface ExpenseAmountProps {
   amount: number
   currency: string
+  converted?: {
+    amount: number
+    currency: string
+    symbol: string
+  }
   className?: string
   originalAmountClassName?: string
 }
@@ -13,30 +18,27 @@ interface ExpenseAmountProps {
 export function ExpenseAmount({
   amount,
   currency,
+  converted,
   className = 'font-medium',
   originalAmountClassName = 'text-xs text-muted-foreground',
 }: ExpenseAmountProps) {
-  const { convertAmount, settings } = useSettings()
+  const { settings } = useSettings()
   const displayCurrency = settings?.displayCurrency?.code
 
   if (!displayCurrency) {
     return <div className={className}>{formatCurrency(amount, currency)}</div>
   }
 
-  const convertedAmount = convertAmount(amount, currency)
-  const formattedDisplayAmount = formatCurrency(
-    convertedAmount,
-    displayCurrency
-  )
-  const formattedOriginalAmount = formatCurrency(amount, currency)
-  const showOriginal = displayCurrency !== currency
-
   return (
-    <div className="text-right">
-      <div className={className}>{formattedDisplayAmount}</div>
-      {showOriginal && (
+    <div>
+      <div className={className}>
+        {getCurrencyByCode(currency)?.symbol}
+        {amount.toFixed(2)}
+      </div>
+      {converted && (
         <div className={originalAmountClassName}>
-          ({formattedOriginalAmount})
+          ({converted?.symbol}
+          {converted?.amount.toFixed(2)})
         </div>
       )}
     </div>

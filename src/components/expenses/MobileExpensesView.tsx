@@ -16,8 +16,8 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { categories, getCategoryById } from '@/data/categories'
-import { expenses } from '@/data/expenses'
 import { cn } from '@/lib/utils'
+import { Expense } from '@/types/expense'
 import { format } from 'date-fns'
 import { Calendar as CalendarIcon, Filter } from 'lucide-react'
 import { useState } from 'react'
@@ -25,7 +25,11 @@ import { ExpenseAmount } from './ExpenseAmount'
 import { ExpenseEditDialog } from './ExpenseEditDialog'
 import { ExpenseReceiptDialog } from './ExpenseReceiptDialog'
 
-export function MobileExpensesView() {
+interface MobileExpensesViewProps {
+  expenses: Expense[]
+}
+
+export function MobileExpensesView({ expenses }: MobileExpensesViewProps) {
   const [filters, setFilters] = useState({
     search: '',
     category: '',
