@@ -1,5 +1,3 @@
-'use server'
-
 import type { Settings } from '@/contexts/SettingsContext'
 
 class SettingsService {

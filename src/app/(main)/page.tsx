@@ -6,6 +6,7 @@ import { DashboardSkeleton } from '@/components/skeletons/DashboardSkeleton'
 import { MobileDashboardSkeleton } from '@/components/skeletons/MobileDashboardSkeleton'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { getAllExpenses } from '@/lib/actions/expense.actions'
 import { auth } from '@clerk/nextjs/server'
 import Link from 'next/link'
 import { Suspense } from 'react'
@@ -94,6 +95,14 @@ export default async function DashboardPage() {
   if (!userId) {
     return null
   }
+
+  // Fetch recent expenses from the database
+  const { expenses } = await getAllExpenses({
+    userId,
+    limit: 5,
+  })
+
+  console.log({ expenses })
 
   return (
     <div className="flex flex-col h-full">
