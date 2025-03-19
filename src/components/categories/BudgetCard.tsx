@@ -35,7 +35,7 @@ export const BudgetCard = () => {
   }, [monthlyExpenses, settings.displayCurrency?.code])
 
   const { progressPercentage, progressColor, status, remaining } =
-    useBudgetProgress(totalExpenses, 1500) // Using default budget of 1500
+    useBudgetProgress(totalExpenses, 10000) // Using default budget of 1500
 
   return (
     <Card className="relative overflow-hidden p-6 bg-gradient-to-br from-primary/80 via-primary/70 to-primary/60 backdrop-blur-lg border-white/20 shadow-xl">
@@ -63,7 +63,7 @@ export const BudgetCard = () => {
                 {new Intl.NumberFormat('en-US', {
                   style: 'currency',
                   currency: settings.displayCurrency?.code || 'USD',
-                }).format(1500)}
+                }).format(10000)}
               </p>
               <span
                 className={`text-sm px-2 py-1 rounded-full ${
