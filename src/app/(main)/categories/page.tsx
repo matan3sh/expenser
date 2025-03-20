@@ -9,9 +9,9 @@ export default async function CategoriesPage() {
   const budgetStats = calculateBudgetStats(categories)
 
   return (
-    <div className="flex flex-col h-full">
+    <>
       {/* Desktop View */}
-      <div className="hidden lg:block p-6">
+      <div className="hidden lg:block">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-6">
           <div>
             <h1 className="text-2xl font-bold tracking-tight md:text-3xl">
@@ -35,8 +35,8 @@ export default async function CategoriesPage() {
       </div>
 
       {/* Mobile View */}
-      <div className="lg:hidden flex flex-col h-full">
-        <div className="flex-1 overflow-y-auto px-4 pb-32 pt-4">
+      <div className="lg:hidden min-h-full">
+        <div className="px-4 pb-32 pt-4">
           <div className="mb-4">
             <CreateCategoryButton />
           </div>
@@ -51,6 +51,6 @@ export default async function CategoriesPage() {
           <CategoryList categories={categories} />
         </div>
       </div>
-    </div>
+    </>
   )
 }

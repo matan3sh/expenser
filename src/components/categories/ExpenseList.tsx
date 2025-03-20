@@ -53,20 +53,20 @@ const ExpenseAmount = ({ expense, displayCurrency }: ExpenseItemProps) => {
   const currencySymbol = getCurrencyByCode(expense.currency)?.symbol
 
   return (
-    <div>
-      <p className="text-base font-medium text-right">
+    <div className="text-right">
+      <div className="text-base font-medium">
         {isDisplayCurrency
           ? `${currencySymbol}${expense.amount.toFixed(2)}`
           : `${expense.converted?.symbol} ${expense.converted?.amount.toFixed(
               2
             )} `}
-        {expense.converted && (
-          <p className="text-xs text-gray-500">
-            ({expense.converted.symbol}
-            {expense.converted.amount.toFixed(2)})
-          </p>
-        )}
-      </p>
+      </div>
+      {expense.converted && (
+        <div className="text-xs text-gray-500">
+          ({expense.converted.symbol}
+          {expense.converted.amount.toFixed(2)})
+        </div>
+      )}
     </div>
   )
 }
