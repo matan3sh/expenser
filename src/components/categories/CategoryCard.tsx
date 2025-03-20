@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/sheet'
 import { useSettings } from '@/contexts/SettingsContext'
 import { useCurrencyFormat } from '@/hooks/useCurrencyFormat'
-import { CategoryWithBudget } from '@/lib/actions/category.actions'
+import { CategoryWithBudget } from '@/types/category'
 import React, { useMemo, useState } from 'react'
 import { BudgetProgress } from './BudgetProgress'
 import { CategoryMenu } from './CategoryMenu'

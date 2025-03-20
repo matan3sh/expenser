@@ -2,7 +2,7 @@
 
 import { useSettings } from '@/contexts/SettingsContext'
 import { getCurrencyByCode } from '@/data/currencies'
-import { CategoryWithBudget } from '@/lib/actions/category.actions'
+import { CategoryWithBudget } from '@/types/category'
 import { format } from 'date-fns'
 
 // Types

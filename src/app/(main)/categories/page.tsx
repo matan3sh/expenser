@@ -5,7 +5,6 @@ import { getCategories } from '@/lib/actions/category.actions'
 
 export default async function CategoriesPage() {
   const categories = await getCategories()
-  console.log(categories)
 
   return (
     <div className="flex flex-col h-full">

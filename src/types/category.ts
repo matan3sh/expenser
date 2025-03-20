@@ -7,3 +7,33 @@ export interface Category {
   budget?: number
   totalExpenses?: number
 }
+
+export type CategoryWithBudget = {
+  id: string
+  title: string
+  createdAt: string
+  color: string
+  budget: {
+    id: string
+    amount: number
+    currency: string
+    createdAt: string
+  } | null
+  expenses: {
+    id: string
+    date: string
+    description: string
+    amount: number
+    currency: string
+    location: string
+    notes: string | null
+    receipt: string | null
+    categoryId: string
+    createdAt: string
+    updatedAt: string
+    converted?: {
+      amount: number
+      symbol: string
+    }
+  }[]
+}

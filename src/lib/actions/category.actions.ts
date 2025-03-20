@@ -1,39 +1,10 @@
 import { prisma } from '@/db/prisma'
 import { getExchangeRates } from '@/lib/actions/settings.actions'
 import { convertExpense } from '@/lib/utils/expense.utils'
+import { CategoryWithBudget } from '@/types/category'
 import type { Expense } from '@/types/expense'
 import { DBSettings } from '@/types/settings'
 import { auth } from '@clerk/nextjs/server'
-
-export type CategoryWithBudget = {
-  id: string
-  title: string
-  createdAt: string
-  color: string
-  budget: {
-    id: string
-    amount: number
-    currency: string
-    createdAt: string
-  } | null
-  expenses: {
-    id: string
-    date: string
-    description: string
-    amount: number
-    currency: string
-    location: string
-    notes: string | null
-    receipt: string | null
-    categoryId: string
-    createdAt: string
-    updatedAt: string
-    converted?: {
-      amount: number
-      symbol: string
-    }
-  }[]
-}
 
 export async function getCategories(): Promise<CategoryWithBudget[]> {
   const { userId } = await auth()
@@ -116,8 +87,8 @@ export async function getCategories(): Promise<CategoryWithBudget[]> {
         id: expense.id,
         date: expense.date.toISOString(),
         description: expense.description,
-        amount: Number(expense.amount),
-        currency: expense.currency,
+        amount: Number(convertedExpense.amount),
+        currency: convertedExpense.currency,
         location: expense.location || '',
         notes: expense.notes,
         receipt: expense.receipt,
