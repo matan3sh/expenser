@@ -8,6 +8,7 @@ export const CreateCategoryButton: React.FC = () => {
 
   const handleSubmit = async (data: { title: string; budget: number }) => {
     try {
+      console.log(data)
       // Add your create category logic here
       // await createCategory({ name: data.title, budget: data.budget })
       setOpen(false)

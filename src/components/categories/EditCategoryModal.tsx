@@ -16,6 +16,7 @@ export const EditCategoryModal: React.FC<EditCategoryModalProps> = ({
 }) => {
   const handleSubmit = async (data: { title: string; budget: number }) => {
     try {
+      console.log(data)
       // Add your update logic here
       // await updateCategory(category.id, { name: data.title, budget: data.budget })
       onOpenChange(false)
