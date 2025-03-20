@@ -196,7 +196,10 @@ export function ExpenseForm({ initialData }: ExpenseFormProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Category</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={initialData?.category?.id}
+              >
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select a category" />
@@ -213,7 +216,7 @@ export function ExpenseForm({ initialData }: ExpenseFormProps) {
                         className="w-3 h-3 rounded-full"
                         style={{ backgroundColor: category.color }}
                       />
-                      {category.name}
+                      {category.title}
                     </SelectItem>
                   ))}
                 </SelectContent>

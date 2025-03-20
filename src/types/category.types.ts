@@ -31,7 +31,11 @@ export type CategoryWithBudget = {
     location: string
     notes: string | null
     receipt: string | null
-    categoryId: string
+    category: {
+      id: string
+      title: string
+      color: string
+    }
     createdAt: string
     updatedAt: string
     converted?: Convertible

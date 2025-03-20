@@ -127,7 +127,6 @@ export function MobileExpensesView({ expenses }: MobileExpensesViewProps) {
         <div className="flex-1 overflow-y-auto px-4">
           <div className="space-y-2">
             {paginatedExpenses.map((expense) => {
-              const category = getCategoryById(expense.categoryId)
               return (
                 <Card key={expense.id} className="p-2.5">
                   <div className="flex justify-between items-start mb-1">
@@ -135,7 +134,7 @@ export function MobileExpensesView({ expenses }: MobileExpensesViewProps) {
                       <div className="flex items-center gap-2">
                         <div
                           className="w-2 h-2 rounded-full"
-                          style={{ backgroundColor: category?.color }}
+                          style={{ backgroundColor: expense.category?.color }}
                         />
                         <h3 className="font-medium text-sm">
                           {expense.description}

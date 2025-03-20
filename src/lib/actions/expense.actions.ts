@@ -109,6 +109,9 @@ export async function getAllExpenses(
       ...dateFilter,
       ...amountFilter,
     },
+    include: {
+      category: true, // This will include all category fields
+    },
     orderBy:
       sort === 'amount_low'
         ? { amount: 'asc' }

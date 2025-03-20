@@ -27,7 +27,6 @@ const getInitialSettings = cache(async () => {
       // Add default exchangeRates if loaded from DB
       if (user?.settings) {
         const dbSettings = user.settings as DBSettings
-        serverLog('User settings found:', dbSettings)
         initialSettings = {
           ...dbSettings,
           // Always include default exchangeRates since we don't store them in DB

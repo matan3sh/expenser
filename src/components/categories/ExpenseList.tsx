@@ -97,7 +97,7 @@ export const ExpenseList: React.FC<ExpenseListProps> = ({
 
   // Filter expenses for the current category
   const categoryExpenses = providedExpenses.filter(
-    (expense) => expense.categoryId === categoryId
+    (expense) => expense.category?.id === categoryId
   )
 
   if (categoryExpenses.length === 0) {

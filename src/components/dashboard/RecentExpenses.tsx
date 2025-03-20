@@ -9,7 +9,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { getCategoryById } from '@/data/categories'
 import { getCurrencyByCode } from '@/data/currencies'
 import { Expense } from '@/types/expense.types'
 import { format } from 'date-fns'
@@ -38,7 +37,9 @@ export function RecentExpenses({ expenses }: RecentExpensesProps) {
               </TableCell>
               <TableCell>{expense.description}</TableCell>
               <TableCell>
-                {getCategoryById(expense.categoryId ?? 'uncategorized')?.name}
+                <div className="flex items-center gap-2">
+                  {expense.category?.title || 'Uncategorized'}
+                </div>
               </TableCell>
               <TableCell>
                 <div className="flex flex-col">

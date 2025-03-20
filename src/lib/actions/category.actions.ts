@@ -102,6 +102,11 @@ export async function getCategories(): Promise<CategoryWithBudget[]> {
         notes: expense.notes,
         receipt: expense.receipt,
         categoryId: expense.categoryId || category.id,
+        category: {
+          id: category.id,
+          title: category.title,
+          color: `var(--chart-${(index % 5) + 1})`,
+        },
         createdAt: expense.createdAt.toISOString(),
         updatedAt: expense.updatedAt.toISOString(),
         converted: convertedExpense.converted,

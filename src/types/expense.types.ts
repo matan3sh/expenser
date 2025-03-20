@@ -5,7 +5,12 @@ export interface Expense {
   amount: number
   description: string
   date: string
-  categoryId?: string | null
+  category?: {
+    id: string
+    title: string
+    color: string
+    description?: string
+  } | null
   currency: string
   location: string
   notes?: string | null
@@ -55,11 +60,16 @@ export interface DatabaseExpense {
   date: Date
   description: string
   amount: Decimal
-  categoryId?: string | null
   currency: string
   location: string
   notes?: string | null
   receipt?: string | null
+  category?: {
+    id: string
+    title: string
+    color: string
+    description?: string
+  } | null
   userIds?: string[]
   converted?: Convertible
   createdAt: Date

@@ -2,7 +2,6 @@
 
 import { ExpenseAmount } from '@/components/expenses/ExpenseAmount'
 import { Card } from '@/components/ui/card'
-import { getCategoryById } from '@/data/categories'
 import { Expense } from '@/types/expense.types'
 import { format } from 'date-fns'
 import { ExpenseReceiptDialog } from '../expenses/ExpenseReceiptDialog'
@@ -15,7 +14,6 @@ export function MobileExpenseList({ expenses }: MobileExpenseListProps) {
   return (
     <div className="space-y-4">
       {expenses.map((expense) => {
-        const category = getCategoryById(expense.categoryId ?? 'uncategorized')
         return (
           <Card key={expense.id} className="p-4">
             <div className="flex justify-between items-start mb-2">
@@ -23,7 +21,7 @@ export function MobileExpenseList({ expenses }: MobileExpenseListProps) {
                 <div className="flex items-center gap-2">
                   <div
                     className="w-2 h-2 rounded-full"
-                    style={{ backgroundColor: category?.color }}
+                    style={{ backgroundColor: expense.category?.color }}
                   />
                   <h3 className="font-medium">{expense.description}</h3>
                 </div>

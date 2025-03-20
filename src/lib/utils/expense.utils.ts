@@ -66,7 +66,14 @@ export function serializeExpenses(dbExpenses: DatabaseExpense[]): Expense[] {
     location: expense.location,
     notes: expense.notes,
     receipt: expense.receipt,
-    categoryId: expense.categoryId,
+    category: expense.category
+      ? {
+          id: expense.category.id,
+          title: expense.category.title,
+          color: expense.category.color,
+          description: expense.category.description,
+        }
+      : null,
     createdAt: expense.createdAt.toISOString(),
     updatedAt: expense.updatedAt.toISOString(),
     converted: expense.converted,

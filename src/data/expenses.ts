@@ -358,7 +358,10 @@ export function getCategoryTotals(
       expense.currency !== displayCurrencyCode
         ? expense.converted?.amount || 0
         : expense.amount
-    acc[expense.categoryId] = (acc[expense.categoryId] || 0) + amount
+    // Use category.id instead of categoryId
+    if (expense.category) {
+      acc[expense.category.id] = (acc[expense.category.id] || 0) + amount
+    }
     return acc
   }, {} as Record<string, number>)
 }

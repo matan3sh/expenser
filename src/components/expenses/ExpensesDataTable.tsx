@@ -96,14 +96,13 @@ export function ExpensesDataTable({ expenses }: { expenses: Expense[] }) {
       header: 'Category',
       cell: ({ row }: { row: TableRow }) => {
         const expense = row.original
-        const category = getCategoryById(expense.categoryId)
         return (
           <div className="flex items-center gap-2">
             <div
               className="w-3 h-3 rounded-full"
-              style={{ backgroundColor: category?.color }}
+              style={{ backgroundColor: expense.category?.color }}
             />
-            {category?.name}
+            {expense.category?.title || 'Uncategorized'}
           </div>
         )
       },
