@@ -3,32 +3,8 @@ import { CategoryList } from '@/components/categories/CategoryList'
 import { CreateCategoryButton } from '@/components/categories/CreateCategoryButton'
 import { getCategories } from '@/lib/actions/category.actions'
 
-interface Category {
-  id: string
-  name: string
-  description: string
-  budget: number
-  totalExpenses: number
-  color: string
-  icon: string
-  createdAt: Date
-}
-
 export default async function CategoriesPage() {
   const categories = await getCategories()
-
-  const categoriesWithTotals: Category[] = categories.map((category, index) => {
-    return {
-      id: category.id,
-      name: category.title,
-      description: category.title,
-      budget: category.budget?.amount || 0,
-      totalExpenses: 0, // This will be calculated client-side
-      color: `var(--chart-${(index % 5) + 1})`,
-      icon: 'circle',
-      createdAt: category.createdAt,
-    }
-  })
 
   return (
     <div className="flex flex-col h-full">
@@ -48,7 +24,7 @@ export default async function CategoriesPage() {
         <div className="mb-6">
           <BudgetCard />
         </div>
-        <CategoryList initialCategories={categoriesWithTotals} />
+        <CategoryList initialCategories={categories} />
       </div>
 
       {/* Mobile View */}
@@ -60,7 +36,7 @@ export default async function CategoriesPage() {
           <div className="mb-6">
             <BudgetCard />
           </div>
-          <CategoryList initialCategories={categoriesWithTotals} />
+          <CategoryList initialCategories={categories} />
         </div>
       </div>
     </div>

@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/sheet'
 import { useSettings } from '@/contexts/SettingsContext'
 import { useCurrencyFormat } from '@/hooks/useCurrencyFormat'
-import type { Category } from '@/types/category'
+import { CategoryWithBudget } from '@/lib/actions/category.actions'
 import type { Expense } from '@/types/expense'
 import React, { useMemo, useState } from 'react'
 import { BudgetProgress } from './BudgetProgress'
@@ -19,9 +19,9 @@ import { ExpenseList } from './ExpenseList'
 
 // Types
 interface CategoryCardProps {
-  category: Category
+  category: CategoryWithBudget
   expenses: Expense[]
-  categories: Category[]
+  categories: CategoryWithBudget[]
 }
 
 // Main CategoryCard component
@@ -60,8 +60,6 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
     settings.displayCurrency?.code,
   ])
 
-  const budget = category.budget || 0
-
   return (
     <>
       <Card
@@ -77,17 +75,17 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <div className="space-y-1">
                 <h3 className="text-xl font-semibold tracking-tight">
-                  {category.name}
+                  {category.title}
                 </h3>
                 <p className="text-sm text-muted-foreground">
                   Total:{' '}
                   {formatAmount(totalAmount, settings.displayCurrency?.code)}
                 </p>
 
-                {budget > 0 && (
+                {category.budget?.amount && category.budget?.amount > 0 && (
                   <BudgetProgress
                     totalAmount={totalAmount}
-                    budget={budget}
+                    budget={category.budget?.amount}
                     formatAmount={formatAmount}
                   />
                 )}
@@ -110,7 +108,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
           className="max-h-[66vh] h-[66vh] overflow-hidden rounded-t-xl p-0 bg-white"
         >
           <SheetHeader className="sr-only">
-            <SheetTitle>{category.name} Details</SheetTitle>
+            <SheetTitle>{category.title} Details</SheetTitle>
           </SheetHeader>
 
           <div className="receipt-container flex flex-col h-full">
@@ -126,16 +124,16 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
                     className="h-5 w-5 rounded-full"
                     style={{ backgroundColor: categoryColor }}
                   />
-                  {category.name}
+                  {category.title}
                 </SheetTitle>
                 <p className="text-xl font-semibold text-gray-700 mt-1">
                   {formatAmount(totalAmount, settings.displayCurrency?.code)}
                 </p>
 
-                {budget > 0 && (
+                {category.budget?.amount && category.budget?.amount > 0 && (
                   <DetailedBudgetView
                     totalAmount={totalAmount}
-                    budget={budget}
+                    budget={category.budget?.amount}
                     formatAmount={formatAmount}
                   />
                 )}

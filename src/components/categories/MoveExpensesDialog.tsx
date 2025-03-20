@@ -15,13 +15,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import type { Category } from '@/types/category'
+import { CategoryWithBudget } from '@/lib/actions/category.actions'
 import type { Expense } from '@/types/expense'
 import { useState } from 'react'
 
 interface MoveExpensesDialogProps {
-  category: Category
-  categories: Category[]
+  category: CategoryWithBudget
+  categories: CategoryWithBudget[]
   expenses: Expense[]
   open: boolean
   onOpenChange: (open: boolean) => void
@@ -125,7 +125,7 @@ export const MoveExpensesDialog: React.FC<MoveExpensesDialogProps> = ({
                   .filter((c) => c.id !== category.id)
                   .map((c) => (
                     <SelectItem key={c.id} value={c.id}>
-                      {c.name}
+                      {c.title}
                     </SelectItem>
                   ))}
               </SelectContent>

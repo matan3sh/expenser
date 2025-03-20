@@ -10,11 +10,11 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useSettings } from '@/contexts/SettingsContext'
-import type { Category } from '@/types/category'
+import { CategoryWithBudget } from '@/lib/actions/category.actions'
 import { useEffect, useState } from 'react'
 
 interface EditCategoryBudgetDialogProps {
-  category: Category
+  category: CategoryWithBudget
   open: boolean
   onOpenChange: (open: boolean) => void
 }
@@ -39,7 +39,7 @@ export const EditCategoryBudgetDialog: React.FC<
       // Add your update logic here
       const budgetValue = budget ? parseFloat(budget) : undefined
       // await updateCategory(category.id, { budget: budgetValue })
-      console.log(`Updated budget for ${category.name} to ${budgetValue}`)
+      console.log(`Updated budget for ${category.title} to ${budgetValue}`)
       onOpenChange(false)
     } catch (error) {
       console.error('Failed to update category budget:', error)
@@ -71,7 +71,7 @@ export const EditCategoryBudgetDialog: React.FC<
               />
             </div>
             <p className="text-sm text-muted-foreground">
-              Set a monthly budget for {category.name}
+              Set a monthly budget for {category.title}
             </p>
           </div>
           <div className="flex justify-end space-x-2">

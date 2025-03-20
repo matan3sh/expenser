@@ -7,11 +7,11 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import type { Category } from '@/types/category'
+import { CategoryWithBudget } from '@/lib/actions/category.actions'
 import { useEffect, useState } from 'react'
 
 interface EditCategoryDialogProps {
-  category: Category
+  category: CategoryWithBudget
   open: boolean
   onOpenChange: (open: boolean) => void
 }
@@ -21,14 +21,14 @@ export const EditCategoryDialog: React.FC<EditCategoryDialogProps> = ({
   open,
   onOpenChange,
 }) => {
-  const [name, setName] = useState(category.name)
+  const [name, setName] = useState(category.title)
 
   // Reset name when dialog opens with a new category
   useEffect(() => {
     if (open) {
-      setName(category.name)
+      setName(category.title)
     }
-  }, [open, category.name])
+  }, [open, category.title])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

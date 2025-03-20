@@ -5,6 +5,7 @@ export type CategoryWithBudget = {
   id: string
   title: string
   createdAt: Date
+  color: string
   budget: {
     id: string
     amount: number
@@ -32,8 +33,13 @@ export async function getCategories(): Promise<CategoryWithBudget[]> {
     },
   })
 
-  return categories.map((category) => ({
-    ...category,
+  return categories.map((category, index) => ({
+    id: category.id,
+    title: category.title,
+    totalExpenses: 0, // This will be calculated client-side
+    color: `var(--chart-${(index % 5) + 1})`,
+    icon: 'circle',
+    createdAt: category.createdAt,
     budget: category.budget
       ? {
           ...category.budget,

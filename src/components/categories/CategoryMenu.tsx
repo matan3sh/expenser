@@ -7,7 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import type { Category } from '@/types/category'
+import { CategoryWithBudget } from '@/lib/actions/category.actions'
 import type { Expense } from '@/types/expense'
 import {
   ArrowRightLeft,
@@ -21,8 +21,8 @@ import { EditCategoryDialog } from './EditCategoryDialog'
 import { MoveExpensesDialog } from './MoveExpensesDialog'
 
 interface CategoryMenuProps {
-  category: Category
-  categories: Category[]
+  category: CategoryWithBudget
+  categories: CategoryWithBudget[]
   expenses: Expense[]
 }
 

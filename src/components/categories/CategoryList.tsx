@@ -2,22 +2,12 @@
 
 import { useSettings } from '@/contexts/SettingsContext'
 import { useExpenses } from '@/hooks/useExpenses'
+import { CategoryWithBudget } from '@/lib/actions/category.actions'
 import { useMemo } from 'react'
 import { CategoryCard } from './CategoryCard'
 
-interface Category {
-  id: string
-  name: string
-  description: string
-  budget: number
-  totalExpenses: number
-  color: string
-  icon: string
-  createdAt: Date
-}
-
 interface CategoryListProps {
-  initialCategories: Category[]
+  initialCategories: CategoryWithBudget[]
 }
 
 export function CategoryList({ initialCategories }: CategoryListProps) {
@@ -46,7 +36,6 @@ export function CategoryList({ initialCategories }: CategoryListProps) {
       return {
         ...category,
         totalExpenses: total,
-        description: category.description || category.name,
       }
     })
   }, [
