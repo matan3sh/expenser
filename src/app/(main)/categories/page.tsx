@@ -5,6 +5,7 @@ import { getCategories } from '@/lib/actions/category.actions'
 
 export default async function CategoriesPage() {
   const categories = await getCategories()
+  console.log(categories)
 
   return (
     <div className="flex flex-col h-full">
@@ -24,7 +25,7 @@ export default async function CategoriesPage() {
         <div className="mb-6">
           <BudgetCard />
         </div>
-        <CategoryList initialCategories={categories} />
+        <CategoryList categories={categories} />
       </div>
 
       {/* Mobile View */}
@@ -36,7 +37,7 @@ export default async function CategoriesPage() {
           <div className="mb-6">
             <BudgetCard />
           </div>
-          <CategoryList initialCategories={categories} />
+          <CategoryList categories={categories} />
         </div>
       </div>
     </div>

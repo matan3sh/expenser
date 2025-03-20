@@ -2,17 +2,17 @@
 
 import { useSettings } from '@/contexts/SettingsContext'
 import { getCurrencyByCode } from '@/data/currencies'
-import type { Expense } from '@/types/expense'
+import { CategoryWithBudget } from '@/lib/actions/category.actions'
 import { format } from 'date-fns'
 
 // Types
 interface ExpenseListProps {
   categoryId: string
-  expenses?: Expense[]
+  expenses?: CategoryWithBudget['expenses']
 }
 
 interface ExpenseItemProps {
-  expense: Expense
+  expense: CategoryWithBudget['expenses'][number]
   displayCurrency: string | undefined
 }
 
@@ -61,7 +61,7 @@ const ExpenseAmount = ({ expense, displayCurrency }: ExpenseItemProps) => {
               expense.converted?.symbol
             }`}
       </p>
-      {!isDisplayCurrency && (
+      {expense.converted && (
         <p className="text-xs text-gray-500">
           ({expense.amount.toFixed(2)} {currencySymbol})
         </p>

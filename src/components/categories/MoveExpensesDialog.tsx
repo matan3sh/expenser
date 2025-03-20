@@ -16,13 +16,12 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { CategoryWithBudget } from '@/lib/actions/category.actions'
-import type { Expense } from '@/types/expense'
 import { useState } from 'react'
 
 interface MoveExpensesDialogProps {
   category: CategoryWithBudget
   categories: CategoryWithBudget[]
-  expenses: Expense[]
+  expenses: CategoryWithBudget['expenses']
   open: boolean
   onOpenChange: (open: boolean) => void
 }

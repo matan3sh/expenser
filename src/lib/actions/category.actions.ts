@@ -1,4 +1,6 @@
 import { prisma } from '@/db/prisma'
+import { getExchangeRates } from '@/lib/actions/settings.actions'
+import { convertExpense } from '@/lib/utils/expense.utils'
 import type { Expense } from '@/types/expense'
 import { DBSettings } from '@/types/settings'
 import { auth } from '@clerk/nextjs/server'
@@ -14,7 +16,23 @@ export type CategoryWithBudget = {
     currency: string
     createdAt: string
   } | null
-  expenses: Expense[]
+  expenses: {
+    id: string
+    date: string
+    description: string
+    amount: number
+    currency: string
+    location: string
+    notes: string | null
+    receipt: string | null
+    categoryId: string
+    createdAt: string
+    updatedAt: string
+    converted?: {
+      amount: number
+      symbol: string
+    }
+  }[]
 }
 
 export async function getCategories(): Promise<CategoryWithBudget[]> {
@@ -33,12 +51,19 @@ export async function getCategories(): Promise<CategoryWithBudget[]> {
     },
   })
 
-  // Add fallback to current month if no selectedMonth in settings
-  const settings = userSettings?.settings as DBSettings
+  const settings = (userSettings?.settings as DBSettings) || {
+    displayCurrency: { code: 'USD' },
+    exchangeRates: {},
+  }
+
   const selectedMonth = settings?.selectedMonth || {
     year: new Date().getFullYear(),
     month: new Date().getMonth(),
   }
+
+  const exchangeRates = await getExchangeRates(
+    (userSettings?.settings as DBSettings)?.displayCurrency?.code || 'USD'
+  )
 
   const categories = await prisma.category.findMany({
     where: {
@@ -71,12 +96,7 @@ export async function getCategories(): Promise<CategoryWithBudget[]> {
   return categories.map((category, index) => ({
     id: category.id,
     title: category.title,
-    totalExpenses: category.expenses.reduce(
-      (sum, expense) => sum + Number(expense.amount),
-      0
-    ),
     color: `var(--chart-${(index % 5) + 1})`,
-    icon: 'circle',
     createdAt: category.createdAt.toISOString(),
     budget: category.budget
       ? {
@@ -86,18 +106,26 @@ export async function getCategories(): Promise<CategoryWithBudget[]> {
           createdAt: category.budget.createdAt.toISOString(),
         }
       : null,
-    expenses: category.expenses.map((expense) => ({
-      id: expense.id,
-      amount: Number(expense.amount),
-      date: expense.date.toISOString(),
-      description: expense.description,
-      location: expense.location,
-      currency: expense.currency,
-      notes: expense.notes,
-      receipt: expense.receipt,
-      categoryId: expense.categoryId,
-      createdAt: expense.createdAt.toISOString(),
-      updatedAt: expense.updatedAt.toISOString(),
-    })),
+    expenses: category.expenses.map((expense) => {
+      const convertedExpense = convertExpense(
+        expense as unknown as Expense,
+        settings,
+        exchangeRates
+      )
+      return {
+        id: expense.id,
+        date: expense.date.toISOString(),
+        description: expense.description,
+        amount: Number(expense.amount),
+        currency: expense.currency,
+        location: expense.location || '',
+        notes: expense.notes,
+        receipt: expense.receipt,
+        categoryId: expense.categoryId || category.id,
+        createdAt: expense.createdAt.toISOString(),
+        updatedAt: expense.updatedAt.toISOString(),
+        converted: convertedExpense.converted,
+      }
+    }),
   }))
 }

@@ -8,7 +8,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { CategoryWithBudget } from '@/lib/actions/category.actions'
-import type { Expense } from '@/types/expense'
 import {
   ArrowRightLeft,
   DollarSign,
@@ -23,7 +22,7 @@ import { MoveExpensesDialog } from './MoveExpensesDialog'
 interface CategoryMenuProps {
   category: CategoryWithBudget
   categories: CategoryWithBudget[]
-  expenses: Expense[]
+  expenses: CategoryWithBudget['expenses']
 }
 
 export const CategoryMenu: React.FC<CategoryMenuProps> = ({

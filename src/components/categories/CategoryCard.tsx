@@ -10,21 +10,18 @@ import {
 import { useSettings } from '@/contexts/SettingsContext'
 import { useCurrencyFormat } from '@/hooks/useCurrencyFormat'
 import { CategoryWithBudget } from '@/lib/actions/category.actions'
-import type { Expense } from '@/types/expense'
 import React, { useMemo, useState } from 'react'
 import { BudgetProgress } from './BudgetProgress'
 import { CategoryMenu } from './CategoryMenu'
 import { DetailedBudgetView } from './DetailedBudgetView'
 import { ExpenseList } from './ExpenseList'
 
-// Types
 interface CategoryCardProps {
   category: CategoryWithBudget
-  expenses: Expense[]
+  expenses: CategoryWithBudget['expenses']
   categories: CategoryWithBudget[]
 }
 
-// Main CategoryCard component
 export const CategoryCard: React.FC<CategoryCardProps> = ({
   category,
   expenses,
@@ -37,28 +34,14 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
 
   // Calculate total amount for the selected month with proper currency conversion
   const totalAmount = useMemo(() => {
-    const monthlyExpenses = expenses.filter((expense) => {
-      const expenseDate = new Date(expense.date)
-      return (
-        expense.categoryId === category.id &&
-        expenseDate.getMonth() === settings.selectedMonth.month &&
-        expenseDate.getFullYear() === settings.selectedMonth.year
-      )
-    })
-    return monthlyExpenses.reduce((sum, expense) => {
+    return expenses.reduce((sum, expense) => {
       const currentExpense =
         expense.currency === settings.displayCurrency?.code
           ? expense.amount
           : expense.converted?.amount || 0
       return sum + currentExpense
     }, 0)
-  }, [
-    expenses,
-    category.id,
-    settings.selectedMonth.month,
-    settings.selectedMonth.year,
-    settings.displayCurrency?.code,
-  ])
+  }, [expenses, settings.displayCurrency?.code])
 
   return (
     <>
