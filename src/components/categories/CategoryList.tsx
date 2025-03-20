@@ -1,24 +1,77 @@
-import type { Category } from '@/types/category'
-import type { Expense } from '@/types/expense'
+'use client'
+
+import { useSettings } from '@/contexts/SettingsContext'
+import { useExpenses } from '@/hooks/useExpenses'
+import { useMemo } from 'react'
 import { CategoryCard } from './CategoryCard'
 
-interface CategoryListProps {
-  categories: Category[]
-  expenses: Expense[]
+interface Category {
+  id: string
+  name: string
+  description: string
+  budget: number
+  totalExpenses: number
+  color: string
+  icon: string
+  createdAt: Date
 }
 
-export const CategoryList: React.FC<CategoryListProps> = ({
-  categories,
-  expenses,
-}) => {
+interface CategoryListProps {
+  initialCategories: Category[]
+}
+
+export function CategoryList({ initialCategories }: CategoryListProps) {
+  const { settings } = useSettings()
+  const parsedExpenses = useExpenses()
+
+  const categoriesWithTotals = useMemo(() => {
+    return initialCategories.map((category) => {
+      const monthlyExpenses = parsedExpenses.filter((expense) => {
+        const expenseDate = new Date(expense.date)
+        return (
+          expense.categoryId === category.id &&
+          expenseDate.getMonth() === settings.selectedMonth.month &&
+          expenseDate.getFullYear() === settings.selectedMonth.year
+        )
+      })
+
+      const total = monthlyExpenses.reduce((sum, expense) => {
+        const amount =
+          expense.currency !== settings.displayCurrency?.code
+            ? expense.converted?.amount || 0
+            : expense.amount
+        return sum + amount
+      }, 0)
+
+      return {
+        ...category,
+        totalExpenses: total,
+        description: category.description || category.name,
+      }
+    })
+  }, [
+    initialCategories,
+    parsedExpenses,
+    settings.selectedMonth,
+    settings.displayCurrency?.code,
+  ])
+
+  if (categoriesWithTotals.length === 0) {
+    return (
+      <div className="text-center py-8">
+        <p className="text-muted-foreground">No categories found</p>
+      </div>
+    )
+  }
+
   return (
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {categories.map((category) => (
+      {categoriesWithTotals.map((category) => (
         <CategoryCard
           key={category.id}
           category={category}
-          categories={categories}
-          expenses={expenses.filter(
+          categories={categoriesWithTotals}
+          expenses={parsedExpenses.filter(
             (expense) => expense.categoryId === category.id
           )}
         />

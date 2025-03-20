@@ -1,62 +1,34 @@
-'use client'
-
 import { BudgetCard } from '@/components/categories/BudgetCard'
 import { CategoryList } from '@/components/categories/CategoryList'
 import { CreateCategoryButton } from '@/components/categories/CreateCategoryButton'
-import { useSettings } from '@/contexts/SettingsContext'
-import { categories } from '@/data/categories'
-import { useExpenses } from '@/hooks/useExpenses'
-import { useMemo } from 'react'
+import { getCategories } from '@/lib/actions/category.actions'
 
-export default function CategoriesPage() {
-  const { settings } = useSettings()
+interface Category {
+  id: string
+  name: string
+  description: string
+  budget: number
+  totalExpenses: number
+  color: string
+  icon: string
+  createdAt: Date
+}
 
-  const parsedExpenses = useExpenses()
+export default async function CategoriesPage() {
+  const categories = await getCategories()
 
-  const categoriesWithTotals = useMemo(() => {
-    return categories.map((category) => {
-      const monthlyExpenses = parsedExpenses.filter((expense) => {
-        const expenseDate = new Date(expense.date)
-        return (
-          expense.categoryId === category.id &&
-          expenseDate.getMonth() === settings.selectedMonth.month &&
-          expenseDate.getFullYear() === settings.selectedMonth.year
-        )
-      })
-
-      const total = monthlyExpenses.reduce((sum, expense) => {
-        const amount =
-          expense.currency !== settings.displayCurrency?.code
-            ? expense.converted?.amount || 0
-            : expense.amount
-        return sum + amount
-      }, 0)
-
-      return {
-        ...category,
-        totalExpenses: total,
-      }
-    })
-  }, [
-    parsedExpenses,
-    settings.selectedMonth.month,
-    settings.selectedMonth.year,
-    settings.displayCurrency?.code,
-  ])
-
-  const monthlyExpenses = useMemo(() => {
-    return parsedExpenses.filter((expense) => {
-      const expenseDate = new Date(expense.date)
-      return (
-        expenseDate.getMonth() === settings.selectedMonth.month &&
-        expenseDate.getFullYear() === settings.selectedMonth.year
-      )
-    })
-  }, [
-    parsedExpenses,
-    settings.selectedMonth.month,
-    settings.selectedMonth.year,
-  ])
+  const categoriesWithTotals: Category[] = categories.map((category, index) => {
+    return {
+      id: category.id,
+      name: category.title,
+      description: category.title,
+      budget: category.budget?.amount || 0,
+      totalExpenses: 0, // This will be calculated client-side
+      color: `var(--chart-${(index % 5) + 1})`,
+      icon: 'circle',
+      createdAt: category.createdAt,
+    }
+  })
 
   return (
     <div className="flex flex-col h-full">
@@ -76,10 +48,7 @@ export default function CategoriesPage() {
         <div className="mb-6">
           <BudgetCard />
         </div>
-        <CategoryList
-          categories={categoriesWithTotals}
-          expenses={monthlyExpenses}
-        />
+        <CategoryList initialCategories={categoriesWithTotals} />
       </div>
 
       {/* Mobile View */}
@@ -91,10 +60,7 @@ export default function CategoriesPage() {
           <div className="mb-6">
             <BudgetCard />
           </div>
-          <CategoryList
-            categories={categoriesWithTotals}
-            expenses={monthlyExpenses}
-          />
+          <CategoryList initialCategories={categoriesWithTotals} />
         </div>
       </div>
     </div>
