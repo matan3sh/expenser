@@ -2,40 +2,27 @@
 
 import { Card } from '@/components/ui/card'
 import { useSettings } from '@/contexts/SettingsContext'
-import { useBudgetProgress } from '@/hooks/useBudgetProgress'
-import { useExpenses } from '@/hooks/useExpenses'
-import { useMemo } from 'react'
 
-export const BudgetCard = () => {
+interface BudgetCardProps {
+  totalBudget: number
+  totalSpent: number
+  remainingBudget: number
+  progressPercentage: number
+}
+
+export const BudgetCard = ({
+  totalBudget,
+  totalSpent,
+  remainingBudget,
+  progressPercentage,
+}: BudgetCardProps) => {
   const { settings } = useSettings()
-  const parsedExpenses = useExpenses()
 
-  const monthlyExpenses = useMemo(() => {
-    return parsedExpenses.filter((expense) => {
-      const expenseDate = new Date(expense.date)
-      return (
-        expenseDate.getMonth() === settings.selectedMonth.month &&
-        expenseDate.getFullYear() === settings.selectedMonth.year
-      )
-    })
-  }, [
-    parsedExpenses,
-    settings.selectedMonth.month,
-    settings.selectedMonth.year,
-  ])
-
-  const totalExpenses = useMemo(() => {
-    return monthlyExpenses.reduce((sum, expense) => {
-      const amount =
-        expense.currency !== settings.displayCurrency?.code
-          ? expense.converted?.amount || 0
-          : expense.amount
-      return sum + amount
-    }, 0)
-  }, [monthlyExpenses, settings.displayCurrency?.code])
-
-  const { progressPercentage, progressColor, status, remaining } =
-    useBudgetProgress(totalExpenses, 10000) // Using default budget of 1500
+  const getProgressColor = () => {
+    if (progressPercentage >= 90) return 'bg-red-500'
+    if (progressPercentage >= 75) return 'bg-amber-500'
+    return 'bg-emerald-500'
+  }
 
   return (
     <Card className="relative overflow-hidden p-6 bg-gradient-to-br from-primary/80 via-primary/70 to-primary/60 backdrop-blur-lg border-white/20 shadow-xl">
@@ -49,9 +36,8 @@ export const BudgetCard = () => {
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center space-x-2">
             <div className="w-8 h-6 bg-yellow-300/90 rounded-md" />
-            <div className="text-xs text-white/70">****4242</div>
+            <div className="text-xs text-white/70">Total Budget</div>
           </div>
-          <div className="text-white/90">{status.icon}</div>
         </div>
 
         {/* Card Content */}
@@ -63,7 +49,7 @@ export const BudgetCard = () => {
                 {new Intl.NumberFormat('en-US', {
                   style: 'currency',
                   currency: settings.displayCurrency?.code || 'USD',
-                }).format(10000)}
+                }).format(totalBudget)}
               </p>
               <span
                 className={`text-sm px-2 py-1 rounded-full ${
@@ -83,7 +69,7 @@ export const BudgetCard = () => {
           <div className="relative h-2">
             <div className="absolute inset-0 bg-white/10 rounded-full" />
             <div
-              className={`absolute inset-y-0 left-0 ${progressColor} rounded-full transition-all duration-300 ease-out backdrop-blur-sm bg-opacity-80`}
+              className={`absolute inset-y-0 left-0 ${getProgressColor()} rounded-full transition-all duration-300 ease-out backdrop-blur-sm bg-opacity-80`}
               style={{
                 width: `${Math.min(100, progressPercentage)}%`,
                 backgroundImage:
@@ -99,12 +85,17 @@ export const BudgetCard = () => {
           {/* Card Footer */}
           <div className="flex justify-between items-end text-xs">
             <div className="space-y-1">
-              <p className="text-white/70">Remaining</p>
+              <p className="text-white/70">Spent / Remaining</p>
               <p className="font-medium">
                 {new Intl.NumberFormat('en-US', {
                   style: 'currency',
                   currency: settings.displayCurrency?.code || 'USD',
-                }).format(remaining)}
+                }).format(totalSpent)}{' '}
+                /{' '}
+                {new Intl.NumberFormat('en-US', {
+                  style: 'currency',
+                  currency: settings.displayCurrency?.code || 'USD',
+                }).format(remainingBudget)}
               </p>
             </div>
             <div className="text-white/70">

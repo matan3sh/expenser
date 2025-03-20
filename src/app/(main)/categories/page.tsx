@@ -2,9 +2,11 @@ import { BudgetCard } from '@/components/categories/BudgetCard'
 import { CategoryList } from '@/components/categories/CategoryList'
 import { CreateCategoryButton } from '@/components/categories/CreateCategoryButton'
 import { getCategories } from '@/lib/actions/category.actions'
+import { calculateBudgetStats } from '@/lib/utils/categories.utils'
 
 export default async function CategoriesPage() {
   const categories = await getCategories()
+  const budgetStats = calculateBudgetStats(categories)
 
   return (
     <div className="flex flex-col h-full">
@@ -22,7 +24,12 @@ export default async function CategoriesPage() {
           <CreateCategoryButton />
         </div>
         <div className="mb-6">
-          <BudgetCard />
+          <BudgetCard
+            totalBudget={budgetStats.totalBudget}
+            totalSpent={budgetStats.totalSpent}
+            remainingBudget={budgetStats.remainingBudget}
+            progressPercentage={budgetStats.progressPercentage}
+          />
         </div>
         <CategoryList categories={categories} />
       </div>
@@ -34,7 +41,12 @@ export default async function CategoriesPage() {
             <CreateCategoryButton />
           </div>
           <div className="mb-6">
-            <BudgetCard />
+            <BudgetCard
+              totalBudget={budgetStats.totalBudget}
+              totalSpent={budgetStats.totalSpent}
+              remainingBudget={budgetStats.remainingBudget}
+              progressPercentage={budgetStats.progressPercentage}
+            />
           </div>
           <CategoryList categories={categories} />
         </div>

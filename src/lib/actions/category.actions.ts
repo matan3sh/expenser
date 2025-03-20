@@ -1,3 +1,4 @@
+import { getCurrencyByCode } from '@/data/currencies'
 import { prisma } from '@/db/prisma'
 import { getExchangeRates } from '@/lib/actions/settings.actions'
 import { convertAmount, convertExpense } from '@/lib/utils/expense.utils'
@@ -76,6 +77,8 @@ export async function getCategories(): Promise<CategoryWithBudget[]> {
             {
               amount: Number(category.budget.amount),
               currency: category.budget.currency,
+              symbol:
+                getCurrencyByCode(category.budget.currency)?.symbol || '$',
             },
             settings,
             exchangeRates
