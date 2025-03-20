@@ -12,6 +12,8 @@ export const expenses: Expense[] = [
     categoryId: 'groceries',
     location: 'Shufersal',
     userIds: ['default_user_id'],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   },
   {
     id: 'exp_2',
@@ -22,6 +24,8 @@ export const expenses: Expense[] = [
     categoryId: 'utilities',
     location: 'Electric Company',
     userIds: ['default_user_id'],
+    createdAt: new Date(Date.now() - 86400000).toISOString(),
+    updatedAt: new Date(Date.now() - 86400000).toISOString(),
   },
   {
     id: 'exp_3',
@@ -32,6 +36,8 @@ export const expenses: Expense[] = [
     categoryId: 'entertainment',
     location: 'Cinema City',
     userIds: ['default_user_id'],
+    createdAt: new Date(Date.now() - 2 * 86400000).toISOString(),
+    updatedAt: new Date(Date.now() - 2 * 86400000).toISOString(),
   },
   {
     id: 'exp_4',
@@ -42,6 +48,8 @@ export const expenses: Expense[] = [
     categoryId: 'transport',
     location: 'Paz Gas Station',
     userIds: ['default_user_id'],
+    createdAt: new Date(Date.now() - 3 * 86400000).toISOString(),
+    updatedAt: new Date(Date.now() - 3 * 86400000).toISOString(),
   },
   {
     id: 'exp_5',
@@ -52,6 +60,8 @@ export const expenses: Expense[] = [
     categoryId: 'entertainment',
     location: 'Local Restaurant',
     userIds: ['default_user_id'],
+    createdAt: new Date(Date.now() - 4 * 86400000).toISOString(),
+    updatedAt: new Date(Date.now() - 4 * 86400000).toISOString(),
   },
   {
     id: 'exp_6',
@@ -62,6 +72,8 @@ export const expenses: Expense[] = [
     categoryId: 'utilities',
     location: 'Water Corp',
     userIds: ['default_user_id'],
+    createdAt: new Date(Date.now() - 5 * 86400000).toISOString(),
+    updatedAt: new Date(Date.now() - 5 * 86400000).toISOString(),
   },
   {
     id: 'exp_7',
@@ -72,6 +84,8 @@ export const expenses: Expense[] = [
     categoryId: 'groceries',
     location: 'Rami Levy',
     userIds: ['default_user_id'],
+    createdAt: new Date(Date.now() - 6 * 86400000).toISOString(),
+    updatedAt: new Date(Date.now() - 6 * 86400000).toISOString(),
   },
   // February Data
   {
@@ -83,6 +97,8 @@ export const expenses: Expense[] = [
     categoryId: 'groceries',
     location: 'Rami Levy',
     userIds: ['default_user_id'],
+    createdAt: new Date('2024-02-28').toISOString(),
+    updatedAt: new Date('2024-02-28').toISOString(),
   },
   {
     id: 'exp_9',
@@ -93,6 +109,8 @@ export const expenses: Expense[] = [
     categoryId: 'utilities',
     location: 'Water Corp',
     userIds: ['default_user_id'],
+    createdAt: new Date('2024-02-25').toISOString(),
+    updatedAt: new Date('2024-02-25').toISOString(),
   },
   {
     id: 'exp_10',
@@ -103,6 +121,8 @@ export const expenses: Expense[] = [
     categoryId: 'entertainment',
     location: 'Ticketmaster',
     userIds: ['default_user_id'],
+    createdAt: new Date('2024-02-20').toISOString(),
+    updatedAt: new Date('2024-02-20').toISOString(),
   },
   {
     id: 'exp_11',
@@ -113,6 +133,8 @@ export const expenses: Expense[] = [
     categoryId: 'transport',
     location: 'Public Transport',
     userIds: ['default_user_id'],
+    createdAt: new Date('2024-02-15').toISOString(),
+    updatedAt: new Date('2024-02-15').toISOString(),
   },
   // January Data
   {
@@ -124,6 +146,8 @@ export const expenses: Expense[] = [
     categoryId: 'groceries',
     location: 'Victory',
     userIds: ['default_user_id'],
+    createdAt: new Date('2024-01-30').toISOString(),
+    updatedAt: new Date('2024-01-30').toISOString(),
   },
   {
     id: 'exp_13',
@@ -134,6 +158,8 @@ export const expenses: Expense[] = [
     categoryId: 'utilities',
     location: 'Internet Provider',
     userIds: ['default_user_id'],
+    createdAt: new Date('2024-01-25').toISOString(),
+    updatedAt: new Date('2024-01-25').toISOString(),
   },
   {
     id: 'exp_14',
@@ -144,6 +170,8 @@ export const expenses: Expense[] = [
     categoryId: 'entertainment',
     location: 'Steam',
     userIds: ['default_user_id'],
+    createdAt: new Date('2024-01-20').toISOString(),
+    updatedAt: new Date('2024-01-20').toISOString(),
   },
   {
     id: 'exp_15',
@@ -154,6 +182,8 @@ export const expenses: Expense[] = [
     categoryId: 'transport',
     location: 'Gett',
     userIds: ['default_user_id'],
+    createdAt: new Date('2024-01-15').toISOString(),
+    updatedAt: new Date('2024-01-15').toISOString(),
   },
   // December 2023 Data
   {
@@ -165,6 +195,8 @@ export const expenses: Expense[] = [
     categoryId: 'groceries',
     location: 'Mega',
     userIds: ['default_user_id'],
+    createdAt: new Date('2023-12-30').toISOString(),
+    updatedAt: new Date('2023-12-30').toISOString(),
   },
   {
     id: 'exp_17',
@@ -175,6 +207,8 @@ export const expenses: Expense[] = [
     categoryId: 'utilities',
     location: 'Gas Company',
     userIds: ['default_user_id'],
+    createdAt: new Date('2023-12-25').toISOString(),
+    updatedAt: new Date('2023-12-25').toISOString(),
   },
   {
     id: 'exp_18',
@@ -185,6 +219,8 @@ export const expenses: Expense[] = [
     categoryId: 'entertainment',
     location: 'Event Hall',
     userIds: ['default_user_id'],
+    createdAt: new Date('2023-12-20').toISOString(),
+    updatedAt: new Date('2023-12-20').toISOString(),
   },
   {
     id: 'exp_19',
@@ -195,6 +231,8 @@ export const expenses: Expense[] = [
     categoryId: 'transport',
     location: 'Auto Shop',
     userIds: ['default_user_id'],
+    createdAt: new Date('2023-12-15').toISOString(),
+    updatedAt: new Date('2023-12-15').toISOString(),
   },
   // November 2023 Data
   {
@@ -206,6 +244,8 @@ export const expenses: Expense[] = [
     categoryId: 'groceries',
     location: 'Shufersal',
     userIds: ['default_user_id'],
+    createdAt: new Date('2023-11-30').toISOString(),
+    updatedAt: new Date('2023-11-30').toISOString(),
   },
   {
     id: 'exp_21',
@@ -216,6 +256,8 @@ export const expenses: Expense[] = [
     categoryId: 'utilities',
     location: 'Cellcom',
     userIds: ['default_user_id'],
+    createdAt: new Date('2023-11-25').toISOString(),
+    updatedAt: new Date('2023-11-25').toISOString(),
   },
   {
     id: 'exp_22',
@@ -226,6 +268,8 @@ export const expenses: Expense[] = [
     categoryId: 'entertainment',
     location: 'Habima',
     userIds: ['default_user_id'],
+    createdAt: new Date('2023-11-20').toISOString(),
+    updatedAt: new Date('2023-11-20').toISOString(),
   },
   {
     id: 'exp_23',
@@ -236,37 +280,37 @@ export const expenses: Expense[] = [
     categoryId: 'transport',
     location: 'Delek',
     userIds: ['default_user_id'],
+    createdAt: new Date('2023-11-15').toISOString(),
+    updatedAt: new Date('2023-11-15').toISOString(),
   },
 ]
 
-export function getRecentExpenses(limit: number = 5): Expense[] {
-  return [...expenses]
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .slice(0, limit)
-}
-
 export function getMonthlyExpenses(settings?: Settings): MonthlyExpense[] {
-  // First, convert all expenses to the display currency
+  // Convert expenses to display currency if settings are provided
   const convertedExpenses = expenses.map((expense) => {
-    const displayCurrency = settings?.displayCurrency?.code
-    if (!displayCurrency || expense.currency === displayCurrency) {
+    if (!settings?.displayCurrency?.code || !settings.exchangeRates) {
       return expense
     }
 
-    const rate = settings.exchangeRates[expense.currency]
+    const displayCurrency = settings.displayCurrency.code
+    if (expense.currency === displayCurrency) {
+      return expense
+    }
+
+    const rate = settings.exchangeRates[expense.currency] || 1
     const currency = getCurrencyByCode(displayCurrency)
+    if (!currency) {
+      return expense
+    }
 
     return {
       ...expense,
-      converted: {
-        amount: expense.amount / (rate ?? 1),
-        currency: displayCurrency,
-        symbol: currency?.symbol || '$',
-      },
+      amount: expense.amount * rate,
+      currency: displayCurrency,
     }
   })
 
-  // Group expenses by month
+  // Group by month
   const monthlyGroups = convertedExpenses.reduce((acc, expense) => {
     const month = new Date(expense.date).toLocaleString('default', {
       month: 'short',
