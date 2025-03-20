@@ -1,8 +1,7 @@
 'use client'
 
 import { updateUserSettings } from '@/lib/actions/settings.actions'
-import { deepEqual } from '@/lib/utils'
-import { debounce } from '@/lib/utils/debounce'
+import { debounce, deepEqual } from '@/lib/utils'
 import {
   createContext,
   useCallback,

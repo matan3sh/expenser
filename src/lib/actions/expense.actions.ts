@@ -1,44 +1,12 @@
 'use server'
 
-import { getCurrencyByCode } from '@/data/currencies'
 import { prisma } from '@/db/prisma'
 import { getExchangeRates } from '@/lib/actions/settings.actions'
+import { convertExpense, PAGE_SIZE } from '@/lib/utils/expense.utils'
 import { Expense } from '@/types/expense'
 import { DBSettings } from '@/types/settings'
 import { auth } from '@clerk/nextjs/server'
 import { Prisma } from '@prisma/client'
-
-const PAGE_SIZE = 10
-
-const convertExpense = (
-  expense: Expense,
-  settings: DBSettings,
-  exchangeRates: Record<string, number>
-): Expense => {
-  const isDifferentCurrency =
-    expense.currency !== settings.displayCurrency?.code
-  const targetCurrency = settings.displayCurrency?.code || 'USD'
-
-  if (!isDifferentCurrency) {
-    return expense as Expense
-  }
-
-  const convertedAmount =
-    Number(expense.amount) / (exchangeRates[expense.currency] || 1)
-  const originalCurrencySymbol =
-    getCurrencyByCode(expense.currency || 'USD')?.symbol || '$'
-
-  return {
-    ...expense,
-    converted: {
-      amount: Number(expense.amount),
-      currency: expense.currency,
-      symbol: originalCurrencySymbol,
-    },
-    amount: convertedAmount,
-    currency: targetCurrency,
-  } as Expense
-}
 
 export async function getAllExpenses(
   {
