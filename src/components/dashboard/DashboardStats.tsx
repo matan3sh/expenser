@@ -2,8 +2,8 @@
 
 import { Card } from '@/components/ui/card'
 import { useSettings } from '@/contexts/SettingsContext'
-import { expenses } from '@/data/expenses'
 import { useCurrencyFormat } from '@/hooks/useCurrencyFormat'
+import { Expense } from '@/types/expense'
 import {
   CreditCard,
   DollarSign,
@@ -54,7 +54,11 @@ function StatCard({ title, amount, trend, icon, subtitle }: StatCardProps) {
   )
 }
 
-export function DashboardStats() {
+interface DashboardStatsProps {
+  expenses: Expense[]
+}
+
+export function DashboardStats({ expenses }: DashboardStatsProps) {
   const { formatAmount } = useCurrencyFormat()
   const { settings } = useSettings()
 
@@ -76,7 +80,7 @@ export function DashboardStats() {
   const previousMonthExpenses = getMonthExpenses(1)
 
   // Calculate totals with proper currency conversion
-  const getCurrentTotal = (expenses: typeof currentMonthExpenses) =>
+  const getCurrentTotal = (expenses: Expense[]) =>
     expenses.reduce((total, expense) => {
       const amount =
         expense.currency !== settings.displayCurrency?.code

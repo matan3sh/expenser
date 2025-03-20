@@ -1,18 +1,23 @@
+import { Decimal } from '@prisma/client/runtime/library'
+
 export interface Expense {
   id: string
   amount: number
   description: string
   date: string
-  categoryId: string
+  categoryId?: string | null
   currency: string
   location: string
-  notes?: string
+  notes?: string | null
+  receipt?: string | null
   userIds?: string[]
   converted?: {
     amount: number
     currency: string
     symbol: string
   }
+  createdAt: string
+  updatedAt: string
 }
 
 export interface ExpenseWithCategory {
@@ -43,4 +48,24 @@ export interface MonthlyExpense {
   month: string
   expenses: Expense[]
   total: number
+}
+
+export interface DatabaseExpense {
+  id: string
+  date: Date
+  description: string
+  amount: Decimal
+  categoryId?: string | null
+  currency: string
+  location: string
+  notes?: string | null
+  receipt?: string | null
+  userIds?: string[]
+  converted?: {
+    amount: number
+    currency: string
+    symbol: string
+  }
+  createdAt: Date
+  updatedAt: Date
 }

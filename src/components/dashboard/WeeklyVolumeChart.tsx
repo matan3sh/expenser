@@ -9,10 +9,14 @@ import {
 } from '@/components/ui/tooltip'
 import { useSettings } from '@/contexts/SettingsContext'
 import { formatCurrency } from '@/data/currencies'
-import { expenses } from '@/data/expenses'
+import { Expense } from '@/types/expense'
 import { format, subDays } from 'date-fns'
 
-export function WeeklyVolumeChart() {
+interface WeeklyVolumeChartProps {
+  expenses: Expense[]
+}
+
+export function WeeklyVolumeChart({ expenses }: WeeklyVolumeChartProps) {
   const { convertAmount, settings } = useSettings()
 
   // Get last 7 days including today

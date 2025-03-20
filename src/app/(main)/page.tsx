@@ -7,6 +7,7 @@ import { MobileDashboardSkeleton } from '@/components/skeletons/MobileDashboardS
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { getExpensesForSelectedMonth } from '@/lib/actions/expense.actions'
+import { Expense } from '@/types/expense'
 import { auth } from '@clerk/nextjs/server'
 import Link from 'next/link'
 import { Suspense } from 'react'
@@ -23,17 +24,21 @@ function DashboardHeader() {
   )
 }
 
+interface DashboardProps {
+  expenses: Expense[]
+}
+
 // Mobile Dashboard Component
-function MobileDashboard() {
+function MobileDashboard({ expenses }: DashboardProps) {
   return (
     <div className="lg:hidden flex flex-col h-full">
       <div className="px-4 pb-32 pt-4">
         <div className="mb-4">
-          <WeeklyVolumeChart />
+          <WeeklyVolumeChart expenses={expenses} />
         </div>
         <h2 className="text-lg font-semibold mb-4 ml-4">Recent Expenses</h2>
         <div className="space-y-4">
-          <MobileExpenseList />
+          <MobileExpenseList expenses={expenses} />
         </div>
       </div>
     </div>
@@ -41,7 +46,7 @@ function MobileDashboard() {
 }
 
 // Desktop Dashboard Cards Component
-function DesktopDashboardCards() {
+function DesktopDashboardCards({ expenses }: DashboardProps) {
   return (
     <div className="grid grid-cols-1 gap-4 md:gap-6 mt-6">
       <Card className="flex flex-col h-[400px] md:h-[500px]">
@@ -54,7 +59,7 @@ function DesktopDashboardCards() {
           </Button>
         </CardHeader>
         <CardContent className="flex-1 overflow-hidden">
-          <RecentExpenses />
+          <RecentExpenses expenses={expenses} />
         </CardContent>
       </Card>
     </div>
@@ -62,13 +67,13 @@ function DesktopDashboardCards() {
 }
 
 // Desktop Dashboard Component
-function DesktopDashboard() {
+function DesktopDashboard({ expenses }: DashboardProps) {
   return (
     <div className="hidden lg:block p-6 space-y-6">
       <DashboardHeader />
       <div className="mt-6">
-        <DashboardStats />
-        <DesktopDashboardCards />
+        <DashboardStats expenses={expenses} />
+        <DesktopDashboardCards expenses={expenses} />
       </div>
     </div>
   )
@@ -101,13 +106,11 @@ export default async function DashboardPage() {
     limit: 5,
   })
 
-  console.log({ expenses })
-
   return (
     <div className="flex flex-col h-full">
       <Suspense fallback={<DashboardLoading />}>
-        <MobileDashboard />
-        <DesktopDashboard />
+        <MobileDashboard expenses={expenses} />
+        <DesktopDashboard expenses={expenses} />
       </Suspense>
     </div>
   )

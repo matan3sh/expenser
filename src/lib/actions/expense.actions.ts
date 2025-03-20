@@ -2,8 +2,12 @@
 
 import { prisma } from '@/db/prisma'
 import { getExchangeRates } from '@/lib/actions/settings.actions'
-import { convertExpense, PAGE_SIZE } from '@/lib/utils/expense.utils'
-import { Expense } from '@/types/expense'
+import {
+  convertExpense,
+  PAGE_SIZE,
+  serializeExpenses,
+} from '@/lib/utils/expense.utils'
+import { DatabaseExpense, Expense } from '@/types/expense'
 import { DBSettings } from '@/types/settings'
 import { auth } from '@clerk/nextjs/server'
 import { Prisma } from '@prisma/client'
@@ -140,7 +144,9 @@ export async function getAllExpenses(
   )
 
   return {
-    expenses: convertedExpenses,
+    expenses: serializeExpenses(
+      convertedExpenses as unknown as DatabaseExpense[]
+    ),
     totalPages: Math.ceil(totalExpenses / limit),
     totalExpenses,
   }

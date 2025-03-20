@@ -1,5 +1,5 @@
 import { getCurrencyByCode } from '@/data/currencies'
-import { Expense } from '@/types/expense'
+import { DatabaseExpense, Expense } from '@/types/expense'
 import { DBSettings } from '@/types/settings'
 
 export const PAGE_SIZE = 10
@@ -32,4 +32,22 @@ export const convertExpense = (
     amount: convertedAmount,
     currency: targetCurrency,
   } as Expense
+}
+
+// Helper function to serialize dates in expenses
+export function serializeExpenses(dbExpenses: DatabaseExpense[]): Expense[] {
+  return dbExpenses.map((expense) => ({
+    id: expense.id,
+    date: expense.date.toISOString(),
+    description: expense.description,
+    amount: Number(expense.amount),
+    currency: expense.currency,
+    location: expense.location,
+    notes: expense.notes,
+    receipt: expense.receipt,
+    categoryId: expense.categoryId,
+    createdAt: expense.createdAt.toISOString(),
+    updatedAt: expense.updatedAt.toISOString(),
+    converted: expense.converted,
+  }))
 }

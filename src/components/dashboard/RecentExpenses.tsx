@@ -11,17 +11,14 @@ import {
 } from '@/components/ui/table'
 import { getCategoryById } from '@/data/categories'
 import { getCurrencyByCode } from '@/data/currencies'
-import { useExpenses } from '@/hooks/useExpenses'
+import { Expense } from '@/types/expense'
 import { format } from 'date-fns'
 
-export function RecentExpenses() {
-  const expenses = useExpenses()
+interface RecentExpensesProps {
+  expenses: Expense[]
+}
 
-  // Get only the 5 most recent expenses
-  const recentExpenses = [...expenses]
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .slice(0, 5)
-
+export function RecentExpenses({ expenses }: RecentExpensesProps) {
   return (
     <Table>
       <TableHeader>
@@ -33,14 +30,16 @@ export function RecentExpenses() {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {recentExpenses.map((expense) => (
+        {expenses.map((expense) => (
           <ExpenseReceiptDialog key={expense.id} expense={expense}>
             <TableRow className="cursor-pointer hover:bg-muted/50">
               <TableCell>
                 {format(new Date(expense.date), 'MMM d, yyyy')}
               </TableCell>
               <TableCell>{expense.description}</TableCell>
-              <TableCell>{getCategoryById(expense.categoryId)?.name}</TableCell>
+              <TableCell>
+                {getCategoryById(expense.categoryId ?? 'uncategorized')?.name}
+              </TableCell>
               <TableCell>
                 <div className="flex flex-col">
                   <span>
