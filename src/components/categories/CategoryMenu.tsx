@@ -8,15 +8,10 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { CategoryWithBudget } from '@/types/category.types'
-import {
-  ArrowRightLeft,
-  DollarSign,
-  MoreVertical,
-  PencilIcon,
-} from 'lucide-react'
+import { ArrowRightLeft, MoreVertical, Pencil, Trash2 } from 'lucide-react'
 import { useState } from 'react'
-import { EditCategoryBudgetDialog } from './EditCategoryBudgetDialog'
-import { EditCategoryDialog } from './EditCategoryDialog'
+import { DeleteCategoryModal } from './DeleteCategoryModal'
+import { EditCategoryModal } from './EditCategoryModal'
 import { MoveExpensesDialog } from './MoveExpensesDialog'
 
 interface CategoryMenuProps {
@@ -30,56 +25,57 @@ export const CategoryMenu: React.FC<CategoryMenuProps> = ({
   categories,
   expenses,
 }) => {
-  const [editNameOpen, setEditNameOpen] = useState(false)
-  const [editBudgetOpen, setEditBudgetOpen] = useState(false)
+  const [editOpen, setEditOpen] = useState(false)
   const [moveExpensesOpen, setMoveExpensesOpen] = useState(false)
+  const [deleteOpen, setDeleteOpen] = useState(false)
 
   return (
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon">
+          <Button variant="ghost" size="icon" className="h-8 w-8">
             <MoreVertical className="h-4 w-4" />
             <span className="sr-only">Open menu</span>
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => setEditNameOpen(true)}>
-            <PencilIcon className="mr-2 h-4 w-4" />
-            <span>Edit name</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setEditBudgetOpen(true)}>
-            <DollarSign className="mr-2 h-4 w-4" />
-            <span>Edit budget</span>
+        <DropdownMenuContent align="end" className="w-48">
+          <DropdownMenuItem onClick={() => setEditOpen(true)}>
+            <Pencil className="mr-2 h-4 w-4" />
+            <span>Edit</span>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setMoveExpensesOpen(true)}>
             <ArrowRightLeft className="mr-2 h-4 w-4" />
-            <span>Move expenses</span>
+            <span>Move Expenses</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => setDeleteOpen(true)}
+            className="text-destructive focus:text-destructive"
+          >
+            <Trash2 className="mr-2 h-4 w-4" />
+            <span>Delete Category</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {/* Edit Name Dialog */}
-      <EditCategoryDialog
+      <EditCategoryModal
         category={category}
-        open={editNameOpen}
-        onOpenChange={setEditNameOpen}
+        open={editOpen}
+        onOpenChange={setEditOpen}
       />
 
-      {/* Edit Budget Dialog */}
-      <EditCategoryBudgetDialog
-        category={category}
-        open={editBudgetOpen}
-        onOpenChange={setEditBudgetOpen}
-      />
-
-      {/* Move Expenses Dialog */}
       <MoveExpensesDialog
         category={category}
         categories={categories}
         expenses={expenses}
         open={moveExpensesOpen}
         onOpenChange={setMoveExpensesOpen}
+      />
+
+      <DeleteCategoryModal
+        category={category}
+        categories={categories}
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
       />
     </>
   )
