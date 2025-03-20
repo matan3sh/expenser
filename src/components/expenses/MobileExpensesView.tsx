@@ -22,8 +22,6 @@ import { format } from 'date-fns'
 import { Calendar as CalendarIcon, Filter } from 'lucide-react'
 import { useState } from 'react'
 import { ExpenseAmount } from './ExpenseAmount'
-import { ExpenseEditDialog } from './ExpenseEditDialog'
-import { ExpenseReceiptDialog } from './ExpenseReceiptDialog'
 
 interface MobileExpensesViewProps {
   expenses: Expense[]
@@ -127,53 +125,44 @@ export function MobileExpensesView({ expenses }: MobileExpensesViewProps) {
         <div className="flex-1 overflow-y-auto px-4">
           <div className="space-y-2">
             {paginatedExpenses.map((expense) => {
-              return (
-                <Card key={expense.id} className="p-2.5">
-                  <div className="flex justify-between items-start mb-1">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <div
-                          className="w-2 h-2 rounded-full"
-                          style={{ backgroundColor: expense.category?.color }}
-                        />
-                        <h3 className="font-medium text-sm">
-                          {expense.description}
-                        </h3>
-                      </div>
-                      <p className="text-xs text-muted-foreground mt-0.5">
-                        {expense.location}
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <ExpenseAmount
-                        amount={expense.amount}
-                        currency={expense.currency}
-                        className="font-medium text-sm"
-                        originalAmountClassName="text-[10px] text-muted-foreground"
-                      />
-                    </div>
-                  </div>
+              const categoryColor = expense.category?.color || '#64748b'
 
-                  <div className="flex justify-between items-center text-xs text-muted-foreground">
-                    <div className="flex items-center gap-2">
-                      <span>
+              return (
+                <Card
+                  key={expense.id}
+                  className="w-full overflow-hidden border-0 shadow-md transition-all hover:shadow-lg"
+                >
+                  <div className="flex">
+                    <div
+                      className="w-1"
+                      style={{ backgroundColor: categoryColor }}
+                    />
+                    <div
+                      className="flex-1 p-4"
+                      style={{ backgroundColor: `${categoryColor}10` }}
+                    >
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h3 className="text-lg font-semibold tracking-tight">
+                            {expense.description}
+                          </h3>
+                          <p className="text-sm text-muted-foreground">
+                            {expense.location}
+                          </p>
+                        </div>
+
+                        <div>
+                          <ExpenseAmount
+                            amount={expense.amount}
+                            currency={expense.currency}
+                            converted={expense.converted}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="mt-2 text-sm text-muted-foreground">
                         {format(new Date(expense.date), 'MMM d, yyyy')}
-                      </span>
-                      {expense.notes && (
-                        <span className="text-[10px]">• {expense.notes}</span>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <ExpenseReceiptDialog expense={expense}>
-                        <Button variant="ghost" size="sm" className="h-7 px-2">
-                          View
-                        </Button>
-                      </ExpenseReceiptDialog>
-                      <ExpenseEditDialog expense={expense}>
-                        <Button variant="ghost" size="sm" className="h-7 px-2">
-                          Edit
-                        </Button>
-                      </ExpenseEditDialog>
+                      </div>
                     </div>
                   </div>
                 </Card>
