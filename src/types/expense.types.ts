@@ -61,11 +61,7 @@ export interface DatabaseExpense {
   notes?: string | null
   receipt?: string | null
   userIds?: string[]
-  converted?: {
-    amount: number
-    currency: string
-    symbol: string
-  }
+  converted?: Convertible
   createdAt: Date
   updatedAt: Date
 }
@@ -73,4 +69,5 @@ export interface DatabaseExpense {
 export interface Convertible {
   amount: number
   currency: string
+  symbol: string
 }
