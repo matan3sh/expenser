@@ -3,7 +3,7 @@
 import { Card } from '@/components/ui/card'
 import { useSettings } from '@/contexts/SettingsContext'
 import { useCurrencyFormat } from '@/hooks/useCurrencyFormat'
-import { Expense } from '@/types/expense'
+import { Expense } from '@/types/expense.types'
 import {
   CreditCard,
   DollarSign,

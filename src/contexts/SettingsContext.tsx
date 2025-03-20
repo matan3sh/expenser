@@ -7,7 +7,7 @@ import {
   SettingsProvider as NewSettingsProvider,
   useSettings as useNewSettings,
 } from '../components/providers/settings-provider'
-import { CurrencySelection, Settings } from '../types/settings'
+import { CurrencySelection, Settings } from '../types/settings.types'
 
 // Re-export the Settings type for backward compatibility
 export type { CurrencySelection, Settings }

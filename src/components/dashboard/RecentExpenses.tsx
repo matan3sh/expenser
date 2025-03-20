@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/table'
 import { getCategoryById } from '@/data/categories'
 import { getCurrencyByCode } from '@/data/currencies'
-import { Expense } from '@/types/expense'
+import { Expense } from '@/types/expense.types'
 import { format } from 'date-fns'
 
 interface RecentExpensesProps {

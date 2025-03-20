@@ -3,7 +3,7 @@
 import { prisma } from '@/db/prisma'
 import { auth } from '@clerk/nextjs/server'
 import { revalidatePath } from 'next/cache'
-import { Settings } from '../../types/settings'
+import { Settings } from '../../types/settings.types'
 import { serverError, serverLog } from '../logging'
 
 // Track if we're currently in the middle of an update

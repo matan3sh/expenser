@@ -7,8 +7,8 @@ import {
   PAGE_SIZE,
   serializeExpenses,
 } from '@/lib/utils/expense.utils'
-import { DatabaseExpense, Expense } from '@/types/expense'
-import { DBSettings } from '@/types/settings'
+import { DatabaseExpense, Expense } from '@/types/expense.types'
+import { DBSettings } from '@/types/settings.types'
 import { auth } from '@clerk/nextjs/server'
 import { Prisma } from '@prisma/client'
 

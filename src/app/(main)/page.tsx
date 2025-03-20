@@ -7,7 +7,7 @@ import { MobileDashboardSkeleton } from '@/components/skeletons/MobileDashboardS
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { getExpensesForSelectedMonth } from '@/lib/actions/expense.actions'
-import { Expense } from '@/types/expense'
+import { Expense } from '@/types/expense.types'
 import { auth } from '@clerk/nextjs/server'
 import Link from 'next/link'
 import { Suspense } from 'react'

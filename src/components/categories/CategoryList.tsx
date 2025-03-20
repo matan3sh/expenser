@@ -1,6 +1,6 @@
 'use client'
 
-import { CategoryWithBudget } from '@/types/category'
+import { CategoryWithBudget } from '@/types/category.types'
 import { CategoryCard } from './CategoryCard'
 
 interface CategoryListProps {

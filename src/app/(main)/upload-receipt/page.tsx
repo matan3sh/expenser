@@ -10,7 +10,7 @@ import {
   extractReceiptData,
   prepareImageData,
   validateAndFormatData,
-} from '@/utils/receipt'
+} from '@/helpers/receipt'
 import { GoogleGenerativeAI } from '@google/generative-ai'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'

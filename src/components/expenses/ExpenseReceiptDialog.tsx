@@ -10,7 +10,7 @@ import {
 import { useSettings } from '@/contexts/SettingsContext'
 import { getCategoryById } from '@/data/categories'
 import { formatCurrency } from '@/data/currencies'
-import { Expense } from '@/types/expense'
+import { Expense } from '@/types/expense.types'
 import { format } from 'date-fns'
 import { Receipt } from 'lucide-react'
 

@@ -1,7 +1,7 @@
 import { Settings, useSettings } from '@/contexts/SettingsContext'
 import { getCurrencyByCode } from '@/data/currencies'
 import { expenses } from '@/data/expenses'
-import { Expense } from '@/types/expense'
+import { Expense } from '@/types/expense.types'
 import { useMemo } from 'react'
 
 type ConvertedExpense = Expense & {

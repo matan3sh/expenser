@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/tooltip'
 import { useSettings } from '@/contexts/SettingsContext'
 import { formatCurrency } from '@/data/currencies'
-import { Expense } from '@/types/expense'
+import { Expense } from '@/types/expense.types'
 import { format, subDays } from 'date-fns'
 
 interface WeeklyVolumeChartProps {

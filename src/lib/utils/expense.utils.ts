@@ -1,6 +1,6 @@
 import { getCurrencyByCode } from '@/data/currencies'
-import { Convertible, DatabaseExpense, Expense } from '@/types/expense'
-import { DBSettings } from '@/types/settings'
+import { Convertible, DatabaseExpense, Expense } from '@/types/expense.types'
+import { DBSettings } from '@/types/settings.types'
 
 export const PAGE_SIZE = 10
 

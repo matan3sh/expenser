@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/popover'
 import { categories, getCategoryById } from '@/data/categories'
 import { cn } from '@/lib/utils'
-import { Expense } from '@/types/expense'
+import { Expense } from '@/types/expense.types'
 import { format } from 'date-fns'
 import { Calendar as CalendarIcon, Filter } from 'lucide-react'
 import { useState } from 'react'

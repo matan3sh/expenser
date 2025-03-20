@@ -1,4 +1,4 @@
-import { Settings } from '../../types/settings'
+import { Settings } from '../../types/settings.types'
 
 class SettingsService {
   private static instance: SettingsService

@@ -1,9 +1,9 @@
 import { prisma } from '@/db/prisma'
 import { getExchangeRates } from '@/lib/actions/settings.actions'
 import { convertAmount, convertExpense } from '@/lib/utils/expense.utils'
-import { CategoryWithBudget } from '@/types/category'
-import type { Expense } from '@/types/expense'
-import { DBSettings } from '@/types/settings'
+import { CategoryWithBudget } from '@/types/category.types'
+import type { Expense } from '@/types/expense.types'
+import { DBSettings } from '@/types/settings.types'
 import { auth } from '@clerk/nextjs/server'
 
 export async function getCategories(): Promise<CategoryWithBudget[]> {

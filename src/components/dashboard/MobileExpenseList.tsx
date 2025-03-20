@@ -3,7 +3,7 @@
 import { ExpenseAmount } from '@/components/expenses/ExpenseAmount'
 import { Card } from '@/components/ui/card'
 import { getCategoryById } from '@/data/categories'
-import { Expense } from '@/types/expense'
+import { Expense } from '@/types/expense.types'
 import { format } from 'date-fns'
 import { ExpenseReceiptDialog } from '../expenses/ExpenseReceiptDialog'
 

@@ -4,7 +4,7 @@ import {
   ProcessedReceiptData,
   RawReceiptData,
   ReceiptProcessingError,
-} from '@/types/receipt'
+} from '@/types/receipt.types'
 
 export const GEMINI_PROMPT = `
 Extract the following information from this receipt image and return ONLY a valid JSON object with the following structure:

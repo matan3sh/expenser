@@ -7,7 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { CategoryWithBudget } from '@/types/category'
+import { CategoryWithBudget } from '@/types/category.types'
 import {
   ArrowRightLeft,
   DollarSign,

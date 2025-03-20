@@ -12,7 +12,7 @@ import {
   useState,
 } from 'react'
 import { toast } from 'sonner'
-import { CurrencySelection, Settings } from '../../types/settings'
+import { CurrencySelection, Settings } from '../../types/settings.types'
 
 // Default settings
 const defaultSettings: Settings = {

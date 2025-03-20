@@ -1,6 +1,6 @@
 import { Settings } from '@/contexts/SettingsContext'
 import { getCurrencyByCode } from '@/data/currencies'
-import { Expense, MonthlyExpense } from '@/types/expense'
+import { Expense, MonthlyExpense } from '@/types/expense.types'
 
 export const expenses: Expense[] = [
   {

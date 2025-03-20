@@ -3,7 +3,7 @@ import { initializeUser } from '@/lib/auth/auth-init'
 import { serverLog } from '@/lib/logging'
 import { auth } from '@clerk/nextjs/server'
 import { cache } from 'react'
-import { DBSettings, Settings } from '../../types/settings'
+import { DBSettings, Settings } from '../../types/settings.types'
 import { SettingsProvider } from './settings-provider'
 
 // Cache the settings fetch to prevent multiple fetches (24 hour cache)
