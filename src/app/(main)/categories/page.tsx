@@ -35,21 +35,29 @@ export default async function CategoriesPage() {
       </div>
 
       {/* Mobile View */}
-      <div className="lg:hidden min-h-full">
-        <div className="px-4 pb-32 pt-4">
+      <div className="px-4 lg:hidden min-h-full pb-32">
+        <div className="flex justify-between  px-4 pt-4">
+          <div className="mb-6 ">
+            <h1 className="text-2xl font-bold tracking-tight mb-2">
+              Categories
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              Manage your expense categories
+            </p>
+          </div>
           <div className="mb-4">
             <CreateCategoryButton />
           </div>
-          <div className="mb-6">
-            <BudgetCard
-              totalBudget={budgetStats.totalBudget}
-              totalSpent={budgetStats.totalSpent}
-              remainingBudget={budgetStats.remainingBudget}
-              progressPercentage={budgetStats.progressPercentage}
-            />
-          </div>
-          <CategoryList categories={categories} />
         </div>
+        <div className="mb-6">
+          <BudgetCard
+            totalBudget={budgetStats.totalBudget}
+            totalSpent={budgetStats.totalSpent}
+            remainingBudget={budgetStats.remainingBudget}
+            progressPercentage={budgetStats.progressPercentage}
+          />
+        </div>
+        <CategoryList categories={categories} />
       </div>
     </>
   )
