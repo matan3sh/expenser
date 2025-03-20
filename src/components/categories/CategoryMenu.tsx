@@ -45,14 +45,14 @@ export const CategoryMenu: React.FC<CategoryMenuProps> = ({
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setMoveExpensesOpen(true)}>
             <ArrowRightLeft className="mr-2 h-4 w-4" />
-            <span>Move Expenses</span>
+            <span>Move</span>
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => setDeleteOpen(true)}
             className="text-destructive focus:text-destructive"
           >
             <Trash2 className="mr-2 h-4 w-4" />
-            <span>Delete Category</span>
+            <span>Delete</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
