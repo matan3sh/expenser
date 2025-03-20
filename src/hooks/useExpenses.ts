@@ -1,7 +1,8 @@
 import { Settings, useSettings } from '@/contexts/SettingsContext'
-import { getCurrencyByCode } from '@/data/currencies'
 import { expenses } from '@/data/expenses'
+import { convertAmount } from '@/lib/utils/expense.utils'
 import { Expense } from '@/types/expense.types'
+import { DBSettings } from '@/types/settings.types'
 import { useMemo } from 'react'
 
 type ConvertedExpense = Expense & {
@@ -12,35 +13,26 @@ type ConvertedExpense = Expense & {
   }
 }
 
-// Separate the conversion logic into a pure function
+// Replace the duplicate convertExpense function with a wrapper that uses our utility
 const convertExpense = (
   expense: Expense,
   settings: Settings
 ): ConvertedExpense => {
-  const isDifferentCurrency =
-    expense.currency !== settings.displayCurrency?.code
-  const targetCurrency = settings.displayCurrency?.code || 'USD'
+  const result = convertAmount(
+    { amount: expense.amount, currency: expense.currency },
+    settings as DBSettings,
+    settings.exchangeRates
+  )
 
-  if (!isDifferentCurrency) {
-    return expense
-  }
-
-  const convertedAmount =
-    expense.amount / settings.exchangeRates[expense.currency]
-  const originalCurrencySymbol =
-    getCurrencyByCode(expense.currency || 'USD')?.symbol || '$'
-
+  // Keep the same return structure as before
   return {
     ...expense,
-    converted: {
-      amount: expense.amount,
-      currency: expense.currency,
-      symbol: originalCurrencySymbol,
-    },
-    amount: convertedAmount,
-    currency: targetCurrency,
+    amount: result.amount,
+    currency: result.currency,
+    converted: result.converted,
   }
 }
+
 export const useExpenses = () => {
   const { settings } = useSettings()
 

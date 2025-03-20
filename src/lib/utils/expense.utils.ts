@@ -1,11 +1,11 @@
 import { getCurrencyByCode } from '@/data/currencies'
-import { Convertible, DatabaseExpense, Expense } from '@/types/expense.types'
+import { DatabaseExpense, Expense } from '@/types/expense.types'
 import { DBSettings } from '@/types/settings.types'
 
 export const PAGE_SIZE = 10
 
 export const convertAmount = (
-  item: Convertible,
+  item: { amount: number; currency: string },
   settings: DBSettings,
   exchangeRates: Record<string, number>
 ): {
@@ -27,8 +27,8 @@ export const convertAmount = (
     }
   }
 
-  const convertedAmount =
-    Number(item.amount) / (exchangeRates[item.currency] || 1)
+  const rate = exchangeRates[item.currency] || 1
+  const convertedAmount = Number(item.amount) / rate
   const originalCurrencySymbol =
     getCurrencyByCode(item.currency || 'USD')?.symbol || '$'
 
@@ -43,12 +43,54 @@ export const convertAmount = (
   }
 }
 
+/**
+ * Simple function to convert an amount from one currency to the display currency
+ * @param amount Amount to convert
+ * @param fromCurrency Source currency code
+ * @param settings User settings containing display currency and exchange rates
+ * @param exchangeRates Exchange rates record
+ * @returns Converted amount in the display currency
+ */
+export const convertSimpleAmount = (
+  amount: number,
+  fromCurrency: string,
+  settings: DBSettings,
+  exchangeRates: Record<string, number>
+): number => {
+  if (
+    !settings.displayCurrency?.code ||
+    fromCurrency === settings.displayCurrency?.code
+  ) {
+    return amount
+  }
+
+  const rate = exchangeRates[fromCurrency] || 1
+  return amount / rate
+}
+
+/**
+ * Checks if an expense's currency matches the display currency
+ * @param currency Currency code to check
+ * @param settings User settings
+ * @returns Boolean indicating if currencies match
+ */
+export const isSameCurrency = (
+  currency: string,
+  settings: DBSettings
+): boolean => {
+  return currency === settings.displayCurrency?.code
+}
+
 export const convertExpense = (
   expense: Expense,
   settings: DBSettings,
   exchangeRates: Record<string, number>
 ): Expense => {
-  const converted = convertAmount(expense, settings, exchangeRates)
+  const converted = convertAmount(
+    { amount: expense.amount, currency: expense.currency },
+    settings,
+    exchangeRates
+  )
   return {
     ...expense,
     ...converted,

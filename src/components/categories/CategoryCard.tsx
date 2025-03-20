@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/sheet'
 import { useSettings } from '@/contexts/SettingsContext'
 import { useCurrencyFormat } from '@/hooks/useCurrencyFormat'
+import { isSameCurrency } from '@/lib/utils/expense.utils'
 import { CategoryWithBudget } from '@/types/category.types'
 import React, { useMemo, useState } from 'react'
 import { BudgetProgress } from './BudgetProgress'
@@ -35,13 +36,13 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
   // Calculate total amount for the selected month with proper currency conversion
   const totalAmount = useMemo(() => {
     return expenses.reduce((sum, expense) => {
-      const currentExpense =
-        expense.currency === settings.displayCurrency?.code
-          ? expense.amount
-          : expense.converted?.amount || 0
-      return sum + currentExpense
+      if (isSameCurrency(expense.currency, settings)) {
+        return sum + expense.amount
+      } else {
+        return sum + (expense.converted?.amount || 0)
+      }
     }, 0)
-  }, [expenses, settings.displayCurrency?.code])
+  }, [expenses, settings])
 
   return (
     <>

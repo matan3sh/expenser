@@ -1,3 +1,4 @@
+import { convertSimpleAmount } from '@/lib/utils/expense.utils'
 import { Settings } from '../../types/settings.types'
 
 class SettingsService {
@@ -31,20 +32,12 @@ class SettingsService {
   }
 
   public convertAmount(amount: number, fromCurrency: string): number {
-    if (
-      !this.settings.displayCurrency?.code ||
-      fromCurrency === this.settings.displayCurrency?.code
-    ) {
-      return amount
-    }
-
-    const rate = this.settings.exchangeRates[fromCurrency]
-    if (!rate) {
-      console.warn(`No exchange rate found for ${fromCurrency}`)
-      return amount
-    }
-
-    return amount * rate
+    return convertSimpleAmount(
+      amount,
+      fromCurrency,
+      { displayCurrency: this.settings.displayCurrency },
+      this.settings.exchangeRates
+    )
   }
 }
 
