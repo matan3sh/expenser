@@ -1,6 +1,6 @@
 import { prisma } from '@/db/prisma'
 import { getExchangeRates } from '@/lib/actions/settings.actions'
-import { convertExpense } from '@/lib/utils/expense.utils'
+import { convertAmount, convertExpense } from '@/lib/utils/expense.utils'
 import { CategoryWithBudget } from '@/types/category'
 import type { Expense } from '@/types/expense'
 import { DBSettings } from '@/types/settings'
@@ -72,8 +72,14 @@ export async function getCategories(): Promise<CategoryWithBudget[]> {
     budget: category.budget
       ? {
           id: category.budget.id,
-          amount: Number(category.budget.amount),
-          currency: category.budget.currency,
+          ...convertAmount(
+            {
+              amount: Number(category.budget.amount),
+              currency: category.budget.currency,
+            },
+            settings,
+            exchangeRates
+          ),
           createdAt: category.budget.createdAt.toISOString(),
         }
       : null,

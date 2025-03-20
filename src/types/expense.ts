@@ -69,3 +69,8 @@ export interface DatabaseExpense {
   createdAt: Date
   updatedAt: Date
 }
+
+export interface Convertible {
+  amount: number
+  currency: string
+}
