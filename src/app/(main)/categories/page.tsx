@@ -36,7 +36,7 @@ export default async function CategoriesPage() {
 
       {/* Mobile View */}
       <div className="px-4 lg:hidden min-h-full pb-32">
-        <div className="flex justify-between  px-4 pt-4">
+        <div className="flex justify-between px-4 pt-4">
           <div className="mb-6 ">
             <h1 className="text-2xl font-bold tracking-tight mb-2">
               Categories
