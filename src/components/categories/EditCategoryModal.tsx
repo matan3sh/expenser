@@ -62,7 +62,7 @@ export const EditCategoryModal: React.FC<EditCategoryModalProps> = ({
 
         <form onSubmit={handleSubmit} className="space-y-6 p-6">
           <div className="space-y-2">
-            <Label htmlFor="name" className="text-base">
+            <Label htmlFor="name" className="mb-2">
               Category Name
             </Label>
             <Input
@@ -75,7 +75,7 @@ export const EditCategoryModal: React.FC<EditCategoryModalProps> = ({
           </div>
 
           <div className="space-y-4">
-            <Label className="text-base">Monthly Budget</Label>
+            <Label className="mb-2">Monthly Budget</Label>
             <div className="space-y-6">
               <Slider
                 value={[budget]}
