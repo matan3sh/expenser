@@ -35,7 +35,12 @@ class SettingsService {
     return convertSimpleAmount(
       amount,
       fromCurrency,
-      { displayCurrency: this.settings.displayCurrency },
+      {
+        displayCurrency: this.settings.displayCurrency,
+        theme: this.settings.theme,
+        selectedMonth: this.settings.selectedMonth,
+        useGeminiAI: this.settings.useGeminiAI,
+      },
       this.settings.exchangeRates
     )
   }

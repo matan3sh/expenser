@@ -123,7 +123,7 @@ export function SettingsProvider({
 
     // Call save function directly instead of using debounce
     saveSettings(settings)
-  }, [settings])
+  }, [settings, saveSettings])
 
   // Currency conversion helper
   const convertAmount = useCallback(

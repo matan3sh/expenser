@@ -2,7 +2,7 @@ import { Settings } from '@/contexts/SettingsContext'
 import { getCurrencyByCode } from '@/data/currencies'
 import { Expense, MonthlyExpense } from '@/types/expense.types'
 
-export const expenses: Expense[] = [
+export const expenses: (Expense & { categoryId: string })[] = [
   {
     id: 'exp_1',
     date: new Date().toISOString(), // Today

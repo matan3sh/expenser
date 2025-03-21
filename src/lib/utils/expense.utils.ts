@@ -5,7 +5,7 @@ import { DBSettings } from '@/types/settings.types'
 export const PAGE_SIZE = 10
 
 export const convertAmount = (
-  item: { amount: number; currency: string },
+  item: { amount: number; currency: string; symbol?: string },
   settings: DBSettings,
   exchangeRates: Record<string, number>
 ): {

@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Expense } from '@/types/expense.types'
 import { format } from 'date-fns'
 import { Clock, FileText, MapPin, Pencil, Receipt, Trash2 } from 'lucide-react'
+import Image from 'next/image'
 
 interface ExpenseReceiptProps {
   expense: Expense
@@ -118,10 +119,12 @@ export function ExpenseReceipt({
                 </div>
               </div>
               <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm">
-                <img
+                <Image
                   src={expense.receipt}
                   alt="Receipt"
-                  className="w-full rounded-lg"
+                  width={500}
+                  height={300}
+                  priority={false}
                 />
               </div>
             </div>
