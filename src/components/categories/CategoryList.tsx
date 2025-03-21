@@ -1,7 +1,7 @@
 'use client'
 
+import { CategoryCard } from '@/components/categories/category-card/CategoryCard'
 import { CategoryWithBudget } from '@/types/category.types'
-import { CategoryCard } from './CategoryCard'
 
 interface CategoryListProps {
   categories: CategoryWithBudget[]
