@@ -32,11 +32,8 @@ export default function RootLayout({
             )}
           >
             <ThemeProvider>
-              {/* Desktop version */}
-              <div className="hidden lg:block">{children}</div>
-
-              {/* Mobile version */}
-              <div className="lg:hidden h-screen flex flex-col">
+              {/* Mobile-only version */}
+              <div className="h-screen flex flex-col">
                 <ClientMobileLayout>{children}</ClientMobileLayout>
               </div>
 

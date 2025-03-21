@@ -1,5 +1,4 @@
 import { SignInForm } from '@/components/auth/SignInForm'
-import { MainLayout } from '@/components/layout/MainLayout'
 import { auth } from '@clerk/nextjs/server'
 
 export default async function Layout({
@@ -9,5 +8,5 @@ export default async function Layout({
 }) {
   const { userId } = await auth()
 
-  return <MainLayout>{userId ? children : <SignInForm />}</MainLayout>
+  return userId ? children : <SignInForm />
 }

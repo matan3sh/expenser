@@ -261,7 +261,7 @@ export const BottomNavigation = () => {
         )}
       </AnimatePresence>
 
-      <nav className="fixed bottom-0 w-full bg-background/80 backdrop-blur-md border-t border-border lg:hidden z-40 transform-gpu">
+      <nav className="fixed bottom-0 w-full bg-background/80 backdrop-blur-md border-t border-border z-40 transform-gpu">
         <div className="flex justify-around items-center h-16 relative">
           {navigationItems.map((item) => {
             if (item === null) {

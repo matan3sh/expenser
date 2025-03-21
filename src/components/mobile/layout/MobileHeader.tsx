@@ -1,6 +1,6 @@
 'use client'
 
-import { MonthSelector } from '@/components/layout/sidebar/MonthSelector'
+import { MonthSelector } from '@/components/mobile/layout/MonthSelector'
 import { useSettings } from '@/contexts/SettingsContext'
 import { UserButton } from '@clerk/nextjs'
 import { Cog6ToothIcon } from '@heroicons/react/24/outline'

@@ -71,7 +71,7 @@ const AnalyticsStats = () => {
   ]
 
   return (
-    <div className="grid gap-4 grid-cols-1 lg:grid-cols-3 w-full">
+    <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 w-full">
       {stats.map((stat) => {
         const Icon = stat.icon
         return (
