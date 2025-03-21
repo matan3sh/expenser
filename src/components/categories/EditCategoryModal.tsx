@@ -1,6 +1,6 @@
 'use client'
 
-import { CategoryDialog } from '@/components/categories/CategoryDialog'
+import { CategorySheet } from '@/components/categories/CategorySheet'
 import { CategoryWithBudget } from '@/types/category.types'
 
 interface EditCategoryModalProps {
@@ -26,7 +26,7 @@ export const EditCategoryModal: React.FC<EditCategoryModalProps> = ({
   }
 
   return (
-    <CategoryDialog
+    <CategorySheet
       mode="edit"
       category={category}
       open={open}

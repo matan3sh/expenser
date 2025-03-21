@@ -1,15 +1,15 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet'
 import { Slider } from '@/components/ui/slider'
 import { useSettings } from '@/contexts/SettingsContext'
 import { useCurrencyFormat } from '@/hooks/useCurrencyFormat'
@@ -35,7 +35,7 @@ const categorySchema = z.object({
 
 type CategoryFormData = z.infer<typeof categorySchema>
 
-interface CategoryDialogProps {
+interface CategorySheetProps {
   mode: 'create' | 'edit'
   category?: CategoryWithBudget
   open: boolean
@@ -43,7 +43,7 @@ interface CategoryDialogProps {
   onSubmit: (data: CategoryFormData) => Promise<void>
 }
 
-export const CategoryDialog: React.FC<CategoryDialogProps> = ({
+export const CategorySheet: React.FC<CategorySheetProps> = ({
   mode,
   category,
   open,
@@ -52,8 +52,7 @@ export const CategoryDialog: React.FC<CategoryDialogProps> = ({
 }) => {
   const { settings } = useSettings()
   const { formatAmount } = useCurrencyFormat()
-  const maxBudget =
-    mode === 'edit' ? Math.max(category?.budget?.amount || 0, 10000) * 2 : 1000
+  const maxBudget = 50000 // Maximum budget value
 
   const {
     register,
@@ -66,39 +65,38 @@ export const CategoryDialog: React.FC<CategoryDialogProps> = ({
     resolver: zodResolver(categorySchema),
     defaultValues: {
       title: category?.title || '',
-      budget: category?.budget?.amount || 0,
+      budget: category?.budget?.amount || 1000,
     },
   })
 
-  // Reset form when dialog opens with new data
-  useEffect(() => {
-    if (open) {
-      reset({
-        title: category?.title || '',
-        budget: category?.budget?.amount || 0,
-      })
-    }
-  }, [open, category, reset])
-
   const currentBudget = watch('budget')
 
-  const onFormSubmit = handleSubmit(async (data) => {
-    try {
-      await onSubmit(data)
-      onOpenChange(false)
-    } catch (error) {
-      console.error('Failed to handle category:', error)
+  useEffect(() => {
+    if (category) {
+      reset({
+        title: category.title,
+        budget: category.budget?.amount || 1000,
+      })
+    } else {
+      reset({
+        title: '',
+        budget: 1000,
+      })
     }
+  }, [category, reset, open])
+
+  const onFormSubmit = handleSubmit(async (data) => {
+    await onSubmit(data)
   })
 
-  const dialogContent = (
-    <DialogContent className="sm:max-w-[425px] p-0">
+  const sheetContent = (
+    <SheetContent className="sm:max-w-md">
       <div className="p-6 pb-4 border-b">
-        <DialogHeader>
-          <DialogTitle className="text-2xl">
+        <SheetHeader>
+          <SheetTitle className="text-2xl">
             {mode === 'create' ? 'Create Category' : 'Edit Category'}
-          </DialogTitle>
-        </DialogHeader>
+          </SheetTitle>
+        </SheetHeader>
       </div>
 
       <form onSubmit={onFormSubmit} className="space-y-6 p-6">
@@ -152,13 +150,13 @@ export const CategoryDialog: React.FC<CategoryDialogProps> = ({
           </Button>
         </div>
       </form>
-    </DialogContent>
+    </SheetContent>
   )
 
   // Only render trigger button for create mode
   return mode === 'create' ? (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild>
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetTrigger asChild>
         <Button
           variant="ghost"
           className={cn(
@@ -189,12 +187,12 @@ export const CategoryDialog: React.FC<CategoryDialogProps> = ({
           </div>
           <span className="translate-x-1">Add New</span>
         </Button>
-      </DialogTrigger>
-      {dialogContent}
-    </Dialog>
+      </SheetTrigger>
+      {sheetContent}
+    </Sheet>
   ) : (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      {dialogContent}
-    </Dialog>
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      {sheetContent}
+    </Sheet>
   )
 }

@@ -1,6 +1,6 @@
 'use client'
 
-import { CategoryDialog } from '@/components/categories/CategoryDialog'
+import { CategorySheet } from '@/components/categories/CategorySheet'
 import { useState } from 'react'
 
 export const CreateCategoryButton: React.FC = () => {
@@ -18,7 +18,7 @@ export const CreateCategoryButton: React.FC = () => {
   }
 
   return (
-    <CategoryDialog
+    <CategorySheet
       mode="create"
       open={open}
       onOpenChange={setOpen}
