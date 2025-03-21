@@ -87,7 +87,7 @@ const CategorySheetContent = ({
 
   return (
     <SheetContent
-      className="h-[85vh] max-h-screen p-0 bg-gray-50"
+      className="h-[75vh] max-h-screen p-0 bg-gray-50"
       side="bottom"
     >
       <div className="receipt-container flex flex-col h-full overflow-hidden bg-white rounded-t-xl shadow-top">

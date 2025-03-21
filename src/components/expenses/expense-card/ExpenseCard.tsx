@@ -65,7 +65,7 @@ export function ExpenseCard({ expense, children }: ExpenseCardProps) {
       {/* Receipt Drawer */}
       <Sheet open={state.isOpen} onOpenChange={handlers.setIsOpen}>
         <SheetContent
-          className="p-0 flex flex-col h-[90vh] bg-white"
+          className="p-0 flex flex-col h-[75vh] bg-white"
           side="bottom"
           style={{
             borderTopLeftRadius: '16px',
