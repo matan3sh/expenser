@@ -1,5 +1,6 @@
 'use client'
 
+import { cn } from '@/lib/utils'
 import {
   ArrowUpTrayIcon,
   BanknotesIcon,
@@ -9,10 +10,10 @@ import {
   PlusIcon,
   TagIcon,
 } from '@heroicons/react/24/outline'
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { memo, useCallback, useMemo, useState } from 'react'
+import { memo, useCallback, useState } from 'react'
 
 const navigationItems = [
   {
@@ -72,11 +73,11 @@ const floatingButtonVariants = {
     scale: 1,
     transition: {
       duration: 0.15,
-      delay: index * 0.02, // Reduced delay
+      delay: index * 0.02,
       type: 'spring',
-      stiffness: 600, // Increased stiffness
+      stiffness: 600,
       damping: 35,
-      mass: 0.5, // Added lower mass for snappier animation
+      mass: 0.5,
     },
   }),
   exit: (index: number) => ({
@@ -88,20 +89,6 @@ const floatingButtonVariants = {
       delay: index * 0.02,
     },
   }),
-}
-
-const labelVariants = {
-  hidden: { x: 10, opacity: 0 },
-  visible: {
-    x: 0,
-    opacity: 1,
-    transition: { duration: 0.1 },
-  },
-  exit: {
-    x: 10,
-    opacity: 0,
-    transition: { duration: 0.1 },
-  },
 }
 
 const backdropVariants = {
@@ -152,13 +139,6 @@ const FloatingActionButton = memo(
         }}
         className="flex items-center gap-3 group"
       >
-        <motion.span
-          variants={labelVariants}
-          className="hidden bg-white/90 text-sm font-medium px-4 py-2 rounded-full shadow-lg
-                 backdrop-blur-sm border border-white/10"
-        >
-          {action.name}
-        </motion.span>
         <div
           className={`${action.color} text-white p-3.5 rounded-full 
                    shadow-lg transform-gpu will-change-transform
@@ -173,40 +153,36 @@ const FloatingActionButton = memo(
 
 FloatingActionButton.displayName = 'FloatingActionButton'
 
-const NavigationItem = memo(
-  ({
-    item,
-    isActive,
-  }: {
-    item: (typeof navigationItems)[0]
-    isActive: boolean
-  }) => {
-    if (!item) return null
-
-    return (
-      <Link
-        href={item.href}
-        className={`flex flex-col items-center justify-center w-full h-full 
-                 transition-colors duration-200
-                 ${
-                   isActive
-                     ? 'text-primary'
-                     : 'text-muted-foreground hover:text-primary/80'
-                 }`}
-      >
-        <item.Icon className="w-6 h-6" />
-        <span className="text-xs mt-1">{item.name}</span>
-      </Link>
-    )
+interface NavigationItemProps {
+  item: {
+    name: string
+    href: string
+    Icon: React.ComponentType<{ className?: string }>
   }
-)
+}
 
-NavigationItem.displayName = 'NavigationItem'
+export const NavigationItem = ({ item }: NavigationItemProps) => {
+  const pathname = usePathname()
+  const isActive = pathname === item.href
+
+  return (
+    <Link
+      href={item.href}
+      className={cn(
+        'flex flex-col items-center justify-center p-2',
+        isActive
+          ? 'text-primary'
+          : 'text-muted-foreground hover:text-foreground'
+      )}
+    >
+      <item.Icon className="w-6 h-6" />
+      <span className="text-xs mt-1">{item.name}</span>
+    </Link>
+  )
+}
 
 export const BottomNavigation = () => {
-  const pathname = usePathname()
   const [isOpen, setIsOpen] = useState(false)
-  const prefersReducedMotion = useReducedMotion()
 
   const toggleMenu = useCallback(() => {
     // Use RAF to ensure smooth state updates
@@ -218,18 +194,6 @@ export const BottomNavigation = () => {
   const handleClose = useCallback(() => {
     setIsOpen(false)
   }, [])
-
-  // Optimize rendering with transition settings based on reduced motion preference
-  const transition = useMemo(
-    () => ({
-      duration: prefersReducedMotion ? 0.1 : 0.15,
-      type: 'spring',
-      stiffness: 600,
-      damping: 35,
-      mass: 0.5,
-    }),
-    [prefersReducedMotion]
-  )
 
   return (
     <>
@@ -277,7 +241,6 @@ export const BottomNavigation = () => {
                   <motion.div
                     variants={fabVariants}
                     animate={isOpen ? 'open' : 'closed'}
-                    transition={transition}
                   >
                     <PlusIcon className="w-6 h-6" />
                   </motion.div>
@@ -285,13 +248,7 @@ export const BottomNavigation = () => {
               )
             }
 
-            return (
-              <NavigationItem
-                key={item.name}
-                item={item}
-                isActive={pathname === item.href}
-              />
-            )
+            return <NavigationItem key={item.name} item={item} />
           })}
         </div>
       </nav>
