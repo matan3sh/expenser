@@ -13,7 +13,6 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata = {
   title: 'Expenser - Track Your Expenses',
   description: 'A modern expense tracking application',
-  viewport: 'width=device-width, initial-scale=1, viewport-fit=cover',
 }
 
 export const dynamic = 'force-dynamic'
