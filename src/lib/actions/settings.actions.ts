@@ -91,3 +91,52 @@ export async function getExchangeRates(
     return { [baseCurrency]: 1 }
   }
 }
+
+/**
+ * Fetches the current user's settings from the database
+ */
+export async function getUserSettings() {
+  try {
+    serverLog('Fetching user settings')
+    const { userId } = await auth()
+
+    if (!userId) {
+      serverLog('No user ID found during settings fetch')
+      return {
+        success: false,
+        error: 'Unauthorized',
+        settings: null,
+      }
+    }
+
+    // Get the user and their settings from the database
+    const user = await prisma.user.findUnique({
+      where: { userId },
+      select: {
+        settings: true,
+      },
+    })
+
+    if (!user) {
+      serverLog(`User not found for ID: ${userId}`)
+      return {
+        success: false,
+        error: 'User not found',
+        settings: null,
+      }
+    }
+
+    serverLog('Settings fetched successfully')
+    return {
+      success: true,
+      settings: user.settings || {},
+    }
+  } catch (error) {
+    serverError('Failed to fetch user settings:', error)
+    return {
+      success: false,
+      error: (error as Error).message || 'Failed to fetch settings',
+      settings: null,
+    }
+  }
+}
