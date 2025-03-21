@@ -31,7 +31,7 @@ function StatCard({ title, amount, trend, icon, subtitle }: StatCardProps) {
 
   return (
     <Card
-      className={`p-6 hover:shadow-lg transition-all bg-gradient-to-br ${
+      className={`p-6 bg-gradient-to-br ${
         gradients[title] || 'from-blue-500 to-blue-600'
       } text-white`}
     >

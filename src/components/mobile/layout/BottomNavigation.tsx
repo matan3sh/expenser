@@ -138,8 +138,8 @@ const FloatingActionButton = memo(
       initial="hidden"
       animate="visible"
       exit="exit"
-      layout={false} // Disable layout animations
-      layoutId={`fab-${action.name}`} // Add layoutId for better transitions
+      layout={false}
+      layoutId={`fab-${action.name}`}
     >
       <Link
         href={action.href}
@@ -155,16 +155,13 @@ const FloatingActionButton = memo(
         <motion.span
           variants={labelVariants}
           className="bg-white/90 text-sm font-medium px-4 py-2 rounded-full shadow-lg
-                 backdrop-blur-sm border border-white/10
-                 transition-colors duration-200
-                 group-hover:bg-white group-hover:shadow-xl"
+                 backdrop-blur-sm border border-white/10"
         >
           {action.name}
         </motion.span>
         <div
           className={`${action.color} text-white p-3.5 rounded-full 
                    shadow-lg transform-gpu will-change-transform
-                   hover:shadow-xl hover:scale-110 active:scale-95
                    ring-4 ring-white/10`}
         >
           <action.Icon className="w-6 h-6" />
@@ -250,8 +247,6 @@ export const BottomNavigation = () => {
       </AnimatePresence>
 
       <AnimatePresence mode="sync">
-        {' '}
-        {/* Changed to sync mode */}
         {isOpen && (
           <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 flex flex-col-reverse gap-3 items-center">
             {floatingActions.map((action, index) => (
@@ -276,8 +271,7 @@ export const BottomNavigation = () => {
                   onClick={toggleMenu}
                   className="absolute -top-7 left-1/2 -translate-x-1/2 p-4 
                            rounded-full bg-primary text-white 
-                           shadow-lg transform transition-all duration-200 
-                           hover:shadow-xl hover:scale-110 active:scale-95
+                           shadow-lg transform
                            ring-4 ring-background"
                 >
                   <motion.div

@@ -157,36 +157,21 @@
 
 /* Add these utility classes to your globals.css */
 .money-positive {
-  color: oklch(0.65 0.15 150); /* Soft green for income/gains */
+  color: oklch(0.65 0.15 150);
 }
 
 .money-negative {
-  color: oklch(0.65 0.25 25); /* Warm red for expenses/losses */
+  color: oklch(0.65 0.25 25);
 }
 
 .highlight-important {
-  background: oklch(0.97 0.02 250); /* Subtle blue background */
+  background: oklch(0.97 0.02 250);
   border-left: 3px solid var(--primary);
 }
 
 /* Add these subtle shadows for depth */
 .card {
   box-shadow: 0 1px 3px oklch(0 0 0 / 0.1), 0 1px 2px oklch(0 0 0 / 0.06);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 6px oklch(0 0 0 / 0.1), 0 2px 4px oklch(0 0 0 / 0.06);
-}
-
-/* Subtle animations for interactive elements */
-.button {
-  transition: all 0.2s ease;
-}
-
-.button:hover {
-  filter: brightness(1.1);
 }
 
 /* Add these typography utilities */
@@ -216,11 +201,11 @@
 
 /* Better dark mode readability */
 .dark .money-positive {
-  color: oklch(0.7 0.15 150); /* Brighter green in dark mode */
+  color: oklch(0.7 0.15 150);
 }
 
 .dark .money-negative {
-  color: oklch(0.7 0.25 25); /* Brighter red in dark mode */
+  color: oklch(0.7 0.25 25);
 }
 
 /* Add these breakpoint-specific styles */
@@ -262,15 +247,6 @@
   }
 }
 
-/* Interactive element animations */
-.interactive-element {
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.interactive-element:active {
-  transform: scale(0.98);
-}
-
 /* Success/Error feedback animations */
 .feedback-animation {
   animation: slideIn 0.3s ease-out;
@@ -299,11 +275,11 @@
   --expense-tertiary: oklch(0.75 0.1 25);
 
   /* Category-specific colors */
-  --food: oklch(0.65 0.2 80); /* Orange */
-  --transport: oklch(0.6 0.2 250); /* Blue */
-  --utilities: oklch(0.7 0.2 150); /* Green */
-  --entertainment: oklch(0.65 0.2 320); /* Purple */
-  --shopping: oklch(0.6 0.2 40); /* Red-Orange */
+  --food: oklch(0.65 0.2 80);
+  --transport: oklch(0.6 0.2 250);
+  --utilities: oklch(0.7 0.2 150);
+  --entertainment: oklch(0.65 0.2 320);
+  --shopping: oklch(0.6 0.2 40);
 }
 
 .input-field {
@@ -311,7 +287,6 @@
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   padding: 0.75rem 1rem;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .input-field:focus {
@@ -404,11 +379,6 @@
   justify-content: space-between;
   padding: 1rem;
   border-bottom: 1px solid var(--border);
-  transition: background-color 0.2s ease;
-}
-
-.transaction-item:hover {
-  background-color: var(--muted);
 }
 
 .transaction-amount {
@@ -466,11 +436,6 @@
 
 .receipt-item {
   position: relative;
-  transition: background-color 0.2s ease;
-}
-
-.receipt-item:hover {
-  background-color: rgba(0, 0, 0, 0.02);
 }
 
 .receipt-item:after {
@@ -550,10 +515,6 @@
 .dark .zigzag {
   background-image: linear-gradient(135deg, transparent 75%, #2a2a2a 75%),
     linear-gradient(225deg, transparent 75%, #2a2a2a 75%);
-}
-
-.dark .receipt-item:hover {
-  background-color: rgba(255, 255, 255, 0.04);
 }
 
 .dark .receipt-item:after,
