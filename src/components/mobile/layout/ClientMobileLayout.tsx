@@ -1,8 +1,8 @@
 'use client'
 
 import { ReactNode } from 'react'
-import { BottomNavigation } from './BottomNavigation'
 import { MobileHeader } from './MobileHeader'
+import BottomNavigation from './navigation/BottomNavigation'
 
 interface ClientMobileLayoutProps {
   children: ReactNode
