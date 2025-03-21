@@ -1,7 +1,7 @@
 'use client'
 
 import { updateUserSettings } from '@/lib/actions/settings.actions'
-import { debounce, deepEqual } from '@/lib/utils'
+import { deepEqual } from '@/lib/utils'
 import {
   createContext,
   useCallback,
@@ -96,17 +96,6 @@ export function SettingsProvider({
     }
   ).current
 
-  // Create debounced save function using useEffect to ensure it's only created once
-  const debouncedSaveSettings = useRef<((settings: Settings) => void) | null>(
-    null
-  )
-
-  useEffect(() => {
-    debouncedSaveSettings.current = debounce(saveSettings, 1000)
-
-    // No cleanup needed as this runs only once
-  }, [])
-
   // Save to database when settings change
   useEffect(() => {
     // Skip on initial load
@@ -119,7 +108,6 @@ export function SettingsProvider({
     if (!hasServerSettingsRef.current) return
 
     // Extract everything except exchange rates for comparison
-
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { exchangeRates, ...currentSettings } = settings
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -133,8 +121,8 @@ export function SettingsProvider({
     )
       return
 
-    // Call debounced save function
-    debouncedSaveSettings.current?.(settings)
+    // Call save function directly instead of using debounce
+    saveSettings(settings)
   }, [settings])
 
   // Currency conversion helper
@@ -167,24 +155,18 @@ export function SettingsProvider({
     () => ({
       settings,
       updateDisplayCurrency: (currency) => {
-        toast.info(`Display currency changed to ${currency.code}`)
         setSettings((prev) => ({ ...prev, displayCurrency: currency }))
       },
       updateExchangeRates: (rates) => {
         setSettings((prev) => ({ ...prev, exchangeRates: rates }))
       },
       updateTheme: (theme) => {
-        toast.info(`Theme changed to ${theme}`)
         setSettings((prev) => ({ ...prev, theme }))
       },
       updateSelectedMonth: (month, year) => {
-        const date = new Date(year, month, 1)
-        const monthName = date.toLocaleString('default', { month: 'long' })
-        toast.info(`Selected month changed to ${monthName} ${year}`)
         setSettings((prev) => ({ ...prev, selectedMonth: { month, year } }))
       },
       updateUseGeminiAI: (enabled) => {
-        toast.info(`Receipt processing ${enabled ? 'enabled' : 'disabled'}`)
         setSettings((prev) => ({ ...prev, useGeminiAI: enabled }))
       },
       isCurrentMonth,

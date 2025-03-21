@@ -7,6 +7,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
 import { useSettings } from '@/contexts/SettingsContext'
 import { currencies } from '@/data/currencies'
@@ -94,18 +101,21 @@ export const SettingsPopover: React.FC<SettingsPopoverProps> = ({
             <Label htmlFor="currency" className="text-sm font-medium">
               Currency
             </Label>
-            <select
-              id="currency"
+            <Select
               value={localSettings.displayCurrency?.code || 'USD'}
-              onChange={(e) => handleCurrencyChange(e.target.value)}
-              className="w-full p-2 border rounded"
+              onValueChange={(value) => handleCurrencyChange(value)}
             >
-              {currencies.map((c) => (
-                <option key={c.code} value={c.code}>
-                  {c.code} ({c.symbol})
-                </option>
-              ))}
-            </select>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select currency" />
+              </SelectTrigger>
+              <SelectContent>
+                {currencies.map((c) => (
+                  <SelectItem key={c.code} value={c.code}>
+                    {c.code} ({c.symbol})
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Theme Setting */}
@@ -113,16 +123,19 @@ export const SettingsPopover: React.FC<SettingsPopoverProps> = ({
             <Label htmlFor="theme" className="text-sm font-medium">
               Theme
             </Label>
-            <select
-              id="theme"
+            <Select
               value={localSettings.theme || 'system'}
-              onChange={(e) => handleThemeChange(e.target.value)}
-              className="w-full p-2 border rounded"
+              onValueChange={(value) => handleThemeChange(value)}
             >
-              <option value="light">Light</option>
-              <option value="dark">Dark</option>
-              <option value="system">System</option>
-            </select>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select theme" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="light">Light</SelectItem>
+                <SelectItem value="dark">Dark</SelectItem>
+                <SelectItem value="system">System</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Gemini Processing Switch */}
