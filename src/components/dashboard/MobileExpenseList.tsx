@@ -28,7 +28,7 @@ export function MobileExpenseList({ expenses }: MobileExpenseListProps) {
 
   return (
     <>
-      <div className="space-y-4">
+      <div className="space-y-4 py-2">
         {expenses.map((expense) => {
           const categoryColor = expense.category?.color || '#64748b'
 
