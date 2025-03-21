@@ -7,7 +7,18 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet'
+import Spinner from '@/components/ui/spinner'
+import { useSettings } from '@/contexts/SettingsContext'
+import {
+  GEMINI_PROMPT,
+  cleanGeminiResponse,
+  convertImageToBase64,
+  extractReceiptData,
+  prepareImageData,
+  validateAndFormatData,
+} from '@/helpers/receipt'
 import { cn } from '@/lib/utils'
+import { GoogleGenerativeAI } from '@google/generative-ai'
 import {
   ArrowUpTrayIcon,
   BanknotesIcon,
@@ -20,7 +31,8 @@ import {
 import { AnimatePresence, motion } from 'framer-motion'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { memo, useCallback, useState } from 'react'
+import { memo, useCallback, useRef, useState } from 'react'
+import { createWorker } from 'tesseract.js'
 
 const navigationItems = [
   {
@@ -189,9 +201,26 @@ export const NavigationItem = ({ item }: NavigationItemProps) => {
   )
 }
 
+interface UploadData {
+  amount?: number
+  currency?: string
+  date?: string
+  description?: string
+  location?: string
+  category?: string
+}
+
 export const BottomNavigation = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [isExpenseSheetOpen, setIsExpenseSheetOpen] = useState(false)
+  const [isUploadSheetOpen, setIsUploadSheetOpen] = useState(false)
+  const [isProcessing, setIsProcessing] = useState(false)
+  const [uploadInitialData, setUploadInitialData] = useState<
+    UploadData | undefined
+  >(undefined)
+  const [uploadError, setUploadError] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const { settings } = useSettings()
 
   const toggleMenu = useCallback(() => {
     // Use RAF to ensure smooth state updates
@@ -204,7 +233,85 @@ export const BottomNavigation = () => {
     setIsOpen(false)
   }, [])
 
-  // Create a modified version of floatingActions with the correct onClick handler
+  // Process receipt using Gemini AI
+  const processWithGeminiAI = async (file: File) => {
+    const base64Image = await convertImageToBase64(file)
+    const imageData = prepareImageData(base64Image, file.type)
+
+    const genAI = new GoogleGenerativeAI(
+      process.env.NEXT_PUBLIC_GOOGLE_AI_API_KEY!
+    )
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
+    const result = await model.generateContent([GEMINI_PROMPT, imageData])
+    const response = await result.response
+    const text = response.text()
+
+    const cleanedResponse = cleanGeminiResponse(text)
+    const parsedData = JSON.parse(cleanedResponse)
+    const processedData = validateAndFormatData(parsedData)
+
+    return {
+      amount: processedData.amount,
+      currency: processedData.currency,
+      date: processedData.date,
+      description: processedData.description,
+      location: processedData.location,
+    }
+  }
+
+  // Process receipt using Tesseract.js
+  const processWithTesseract = async (file: File) => {
+    const worker = await createWorker('eng')
+    const {
+      data: { text },
+    } = await worker.recognize(file)
+    await worker.terminate()
+
+    const extractedData = extractReceiptData(text)
+    console.log('Tesseract extracted data:', extractedData)
+
+    if (!extractedData.amount) {
+      throw new Error('Could not extract amount from receipt')
+    }
+
+    return {
+      amount: extractedData.amount,
+      currency: extractedData.currency,
+      date: extractedData.date || new Date().toISOString().split('T')[0],
+      description: extractedData.description || 'Receipt expense',
+      location: extractedData.location || 'Unknown location',
+    }
+  }
+
+  // File upload handler
+  const handleFileUpload = async (file: File) => {
+    try {
+      setIsProcessing(true)
+      setUploadError(null)
+
+      const params = await (settings?.useGeminiAI
+        ? processWithGeminiAI(file)
+        : processWithTesseract(file))
+
+      console.log('Processed params:', params)
+      setUploadInitialData(params)
+      setIsUploadSheetOpen(true)
+    } catch (error) {
+      setUploadError(
+        error instanceof Error ? error.message : 'Failed to process receipt'
+      )
+    } finally {
+      setIsProcessing(false)
+    }
+  }
+
+  // Handler for upload button click
+  const handleUploadButtonClick = () => {
+    fileInputRef.current?.click()
+    handleClose()
+  }
+
+  // Create a modified version of floatingActions with the correct onClick handlers
   const actions = floatingActions.map((action) => {
     if (action.name === 'Add') {
       return {
@@ -215,11 +322,30 @@ export const BottomNavigation = () => {
         },
       }
     }
+    if (action.name === 'Upload') {
+      return {
+        ...action,
+        href: '#',
+        onClick: handleUploadButtonClick,
+      }
+    }
     return action
   })
 
   return (
     <>
+      {/* Hidden file input for upload */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        className="hidden"
+        accept=".jpg,.jpeg,.png,.pdf"
+        onChange={(e) => {
+          const file = e.target.files?.[0]
+          if (file) handleFileUpload(file)
+        }}
+      />
+
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -248,6 +374,16 @@ export const BottomNavigation = () => {
         )}
       </AnimatePresence>
 
+      {/* Processing Overlay */}
+      {isProcessing && (
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center">
+          <div className="text-center">
+            <Spinner className="h-8 w-8" />
+            <p className="mt-2 font-medium">Processing receipt...</p>
+          </div>
+        </div>
+      )}
+
       {/* Expense Sheet */}
       <Sheet open={isExpenseSheetOpen} onOpenChange={setIsExpenseSheetOpen}>
         <SheetContent
@@ -262,6 +398,37 @@ export const BottomNavigation = () => {
               onSuccess={() => setIsExpenseSheetOpen(false)}
               onCancel={() => setIsExpenseSheetOpen(false)}
             />
+          </div>
+        </SheetContent>
+      </Sheet>
+
+      {/* Upload Sheet */}
+      <Sheet
+        open={isUploadSheetOpen}
+        onOpenChange={(open) => {
+          setIsUploadSheetOpen(open)
+          if (!open) setUploadInitialData(undefined)
+        }}
+      >
+        <SheetContent
+          className="w-full sm:w-[540px] overflow-y-auto p-0"
+          side="right"
+        >
+          <SheetHeader className="p-6 pb-2">
+            <SheetTitle className="text-2xl font-bold">Receipt Data</SheetTitle>
+          </SheetHeader>
+          <div className="p-6 pt-2">
+            {uploadError ? (
+              <div className="bg-destructive/10 text-destructive rounded-lg p-4 mb-4">
+                {uploadError}
+              </div>
+            ) : (
+              <ExpenseForm
+                initialData={uploadInitialData}
+                onSuccess={() => setIsUploadSheetOpen(false)}
+                onCancel={() => setIsUploadSheetOpen(false)}
+              />
+            )}
           </div>
         </SheetContent>
       </Sheet>
