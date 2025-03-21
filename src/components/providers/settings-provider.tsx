@@ -56,7 +56,7 @@ export function SettingsProvider({
   const originalSettingsRef = useRef<Settings | null>(initialSettings)
   const hasServerSettingsRef = useRef(!!initialSettings)
 
-  // Initialize settings from server, localStorage, or defaults
+  // Initialize settings from server
   const [settings, setSettings] = useState<Settings>(
     initialSettings || defaultSettings
   )

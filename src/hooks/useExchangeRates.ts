@@ -2,14 +2,11 @@ import { useSettings } from '@/components/providers/settings-provider'
 import { getExchangeRates } from '@/lib/actions/settings.actions'
 import { useEffect, useRef } from 'react'
 
-// Cache expiry time - 24 hours in milliseconds
-const CACHE_EXPIRY = 24 * 60 * 60 * 1000
-
 // Track which currencies we've already fetched to avoid duplicate requests
 const FETCHED_CURRENCIES = new Set<string>()
 
 export function useExchangeRates() {
-  const { settings, updateSettings } = useSettings()
+  const { settings, updateExchangeRates } = useSettings()
   const hasFetchedRef = useRef(false)
 
   useEffect(() => {
@@ -27,7 +24,7 @@ export function useExchangeRates() {
         const rates = await getExchangeRates(currencyCode)
 
         // Update settings with new rates
-        updateSettings({ exchangeRates: rates })
+        updateExchangeRates(rates)
 
         // Mark as fetched
         FETCHED_CURRENCIES.add(currencyCode)
@@ -43,5 +40,5 @@ export function useExchangeRates() {
     return () => {
       hasFetchedRef.current = false
     }
-  }, [settings.displayCurrency?.code, updateSettings])
+  }, [settings.displayCurrency?.code, updateExchangeRates])
 }
