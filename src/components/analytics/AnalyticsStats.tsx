@@ -16,7 +16,8 @@ const AnalyticsStats = () => {
       expense.currency !== settings.displayCurrency?.code
         ? expense.converted?.amount || 0
         : expense.amount
-    acc[expense.categoryId] = (acc[expense.categoryId] || 0) + amount
+    acc[expense.category?.id || ''] =
+      (acc[expense.category?.id || ''] || 0) + amount
     return acc
   }, {} as Record<string, number>)
 
