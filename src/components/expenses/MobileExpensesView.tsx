@@ -122,7 +122,7 @@ export function MobileExpensesView({ expenses }: MobileExpensesViewProps) {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-h-0">
         {/* Scrollable Expenses List */}
-        <div className="flex-1 overflow-y-auto px-4">
+        <div className="flex-1 overflow-y-auto px-4 py-2">
           <div className="space-y-2">
             {paginatedExpenses.map((expense) => {
               const categoryColor = expense.category?.color || '#64748b'
