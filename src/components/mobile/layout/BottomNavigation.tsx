@@ -1,5 +1,12 @@
 'use client'
 
+import { ExpenseForm } from '@/components/expenses/ExpenseForm'
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet'
 import { cn } from '@/lib/utils'
 import {
   ArrowUpTrayIcon,
@@ -42,9 +49,10 @@ const navigationItems = [
 const floatingActions = [
   {
     name: 'Add',
-    href: '/add-expense',
+    href: '#',
     Icon: BanknotesIcon,
     color: 'bg-primary',
+    onClick: undefined,
   },
   {
     name: 'Upload',
@@ -183,6 +191,7 @@ export const NavigationItem = ({ item }: NavigationItemProps) => {
 
 export const BottomNavigation = () => {
   const [isOpen, setIsOpen] = useState(false)
+  const [isExpenseSheetOpen, setIsExpenseSheetOpen] = useState(false)
 
   const toggleMenu = useCallback(() => {
     // Use RAF to ensure smooth state updates
@@ -194,6 +203,20 @@ export const BottomNavigation = () => {
   const handleClose = useCallback(() => {
     setIsOpen(false)
   }, [])
+
+  // Create a modified version of floatingActions with the correct onClick handler
+  const actions = floatingActions.map((action) => {
+    if (action.name === 'Add') {
+      return {
+        ...action,
+        onClick: () => {
+          setIsExpenseSheetOpen(true)
+          handleClose()
+        },
+      }
+    }
+    return action
+  })
 
   return (
     <>
@@ -213,7 +236,7 @@ export const BottomNavigation = () => {
       <AnimatePresence mode="sync">
         {isOpen && (
           <div className="fixed bottom-[104px] left-1/2 -translate-x-1/2 z-50 flex flex-col-reverse gap-3 items-center">
-            {floatingActions.map((action, index) => (
+            {actions.map((action, index) => (
               <FloatingActionButton
                 key={action.name}
                 action={action}
@@ -224,6 +247,24 @@ export const BottomNavigation = () => {
           </div>
         )}
       </AnimatePresence>
+
+      {/* Expense Sheet */}
+      <Sheet open={isExpenseSheetOpen} onOpenChange={setIsExpenseSheetOpen}>
+        <SheetContent
+          className="w-full sm:w-[540px] overflow-y-auto p-0"
+          side="right"
+        >
+          <SheetHeader className="p-6 pb-2">
+            <SheetTitle className="text-2xl font-bold">Add Expense</SheetTitle>
+          </SheetHeader>
+          <div className="p-6 pt-2">
+            <ExpenseForm
+              onSuccess={() => setIsExpenseSheetOpen(false)}
+              onCancel={() => setIsExpenseSheetOpen(false)}
+            />
+          </div>
+        </SheetContent>
+      </Sheet>
 
       <nav className="fixed bottom-0 left-0 right-0 w-full bg-background/80 backdrop-blur-md border-t border-border z-40 transform-gpu pb-safe">
         <div className="flex justify-around items-center h-16 relative">

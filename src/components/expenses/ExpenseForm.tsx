@@ -65,9 +65,15 @@ interface ExpenseFormProps {
     location?: string
     category?: string
   }
+  onSuccess?: () => void
+  onCancel?: () => void
 }
 
-export function ExpenseForm({ initialData }: ExpenseFormProps) {
+export function ExpenseForm({
+  initialData,
+  onSuccess,
+  onCancel,
+}: ExpenseFormProps) {
   const form = useForm<ExpenseFormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -92,6 +98,7 @@ export function ExpenseForm({ initialData }: ExpenseFormProps) {
     }
 
     console.log(newExpense)
+    onSuccess?.()
   }
 
   return (
@@ -196,10 +203,7 @@ export function ExpenseForm({ initialData }: ExpenseFormProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Category</FormLabel>
-              <Select
-                onValueChange={field.onChange}
-                defaultValue={initialData?.category?.id}
-              >
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select a category" />
@@ -216,7 +220,7 @@ export function ExpenseForm({ initialData }: ExpenseFormProps) {
                         className="w-3 h-3 rounded-full"
                         style={{ backgroundColor: category.color }}
                       />
-                      {category.title}
+                      {category.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -262,7 +266,7 @@ export function ExpenseForm({ initialData }: ExpenseFormProps) {
         />
 
         <div className="flex justify-end space-x-4">
-          <Button variant="outline" type="button">
+          <Button variant="outline" type="button" onClick={onCancel}>
             Cancel
           </Button>
           <Button type="submit">Save Expense</Button>
