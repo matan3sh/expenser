@@ -13,7 +13,9 @@ export default async function CategoriesPage() {
       <div className="flex justify-between px-4 pt-4">
         <div className="mb-6 ">
           <h1 className="text-2xl font-bold tracking-tight mb-2">Planner</h1>
-          <p className="text-sm text-muted-foreground">Plan your budget</p>
+          <p className="text-sm text-muted-foreground">
+            Monthly budget planner
+          </p>
         </div>
         <div className="mb-4">
           <CreateCategoryButton />

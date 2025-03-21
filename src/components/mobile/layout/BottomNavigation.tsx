@@ -21,9 +21,9 @@ const navigationItems = [
     Icon: HomeIcon,
   },
   {
-    name: 'Analytics',
-    href: '/analytics',
-    Icon: ChartBarIcon,
+    name: 'Planner',
+    href: '/categories',
+    Icon: TagIcon,
   },
   null, // Center placeholder for FAB
   {
@@ -32,9 +32,9 @@ const navigationItems = [
     Icon: BanknotesIcon,
   },
   {
-    name: 'Categories',
-    href: '/categories',
-    Icon: TagIcon,
+    name: 'Analytics',
+    href: '/analytics',
+    Icon: ChartBarIcon,
   },
 ]
 
