@@ -1,7 +1,7 @@
 'use client'
 
+import { ExpenseCard } from '@/components/expenses/expense-card/ExpenseCard'
 import { ExpenseAmount } from '@/components/expenses/ExpenseAmount'
-import { ExpenseCard } from '@/components/expenses/ExpenseCard'
 import { ExpenseEditDialog } from '@/components/expenses/ExpenseEditDialog'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'

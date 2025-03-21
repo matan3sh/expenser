@@ -1,6 +1,6 @@
 'use client'
 
-import { ExpenseCard } from '@/components/expenses/ExpenseCard'
+import { ExpenseCard } from '@/components/expenses/expense-card/ExpenseCard'
 import { Expense } from '@/types/expense.types'
 
 interface MobileExpenseListProps {
