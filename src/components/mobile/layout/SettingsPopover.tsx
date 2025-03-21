@@ -85,7 +85,7 @@ export const SettingsPopover: React.FC<SettingsPopoverProps> = ({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>{children}</PopoverTrigger>
-      <PopoverContent className="w-80 p-4">
+      <PopoverContent className="w-80 p-4" align="end">
         <div className="space-y-4">
           <h3 className="text-lg font-medium">Settings</h3>
 
