@@ -1,9 +1,16 @@
 'use client'
 
+import { ExpenseAmount } from '@/components/expenses/ExpenseAmount'
+import { Button } from '@/components/ui/button'
 import { Card, CardHeader } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
   Sheet,
+  SheetClose,
   SheetContent,
+  SheetDescription,
+  SheetFooter,
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet'
@@ -11,11 +18,12 @@ import { useSettings } from '@/contexts/SettingsContext'
 import { useCurrencyFormat } from '@/hooks/useCurrencyFormat'
 import { isSameCurrency } from '@/lib/utils/expense.utils'
 import { CategoryWithBudget } from '@/types/category.types'
+import { Expense } from '@/types/expense.types'
+import { format } from 'date-fns'
+import { Pencil, X } from 'lucide-react'
 import React, { useMemo, useState } from 'react'
 import { BudgetProgress } from './BudgetProgress'
 import { CategoryMenu } from './CategoryMenu'
-import { DetailedBudgetView } from './DetailedBudgetView'
-import { ExpenseList } from './ExpenseList'
 
 interface CategoryCardProps {
   category: CategoryWithBudget
@@ -32,6 +40,18 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
   const { formatAmount } = useCurrencyFormat()
   const { settings } = useSettings()
   const categoryColor = category.color || '#64748b'
+  const [editingExpenseId, setEditingExpenseId] = useState<string | null>(null)
+  const [editForm, setEditForm] = useState<{
+    description: string
+    amount: number
+    date: string
+    location?: string
+  }>({
+    description: '',
+    amount: 0,
+    date: '',
+    location: '',
+  })
 
   // Calculate total amount for the selected month with proper currency conversion
   const totalAmount = useMemo(() => {
@@ -43,6 +63,45 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
       }
     }, 0)
   }, [expenses, settings])
+
+  const handleEditClick = (expense: Expense) => {
+    setEditingExpenseId(expense.id)
+    setEditForm({
+      description: expense.description || '',
+      amount: expense.amount,
+      date: format(new Date(expense.date), 'yyyy-MM-dd'),
+      location: expense.location || '',
+    })
+  }
+
+  const handleCancelEdit = () => {
+    setEditingExpenseId(null)
+  }
+
+  const handleUpdateExpense = async () => {
+    if (!editingExpenseId) return
+
+    try {
+      // Implement your update logic here
+      // await updateExpense(editingExpenseId, editForm)
+      console.log('Updating expense:', editingExpenseId, editForm)
+
+      // Reset editing state after successful update
+      setEditingExpenseId(null)
+    } catch (error) {
+      console.error('Failed to update expense:', error)
+    }
+  }
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target
+    setEditForm((prev) => ({
+      ...prev,
+      [name]: name === 'amount' ? parseFloat(value) || 0 : value,
+    }))
+  }
 
   return (
     <>
@@ -88,62 +147,211 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
 
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
         <SheetContent
+          className="h-[66vh] max-h-screen p-0 bg-white"
           side="bottom"
-          className="max-h-[66vh] h-[66vh] overflow-hidden rounded-t-xl p-0 bg-white"
         >
-          <SheetHeader className="sr-only">
-            <SheetTitle>{category.title} Details</SheetTitle>
-          </SheetHeader>
-
-          <div className="receipt-container flex flex-col h-full">
-            <div className="flex-shrink-0">
-              <div className="w-full relative overflow-hidden">
-                <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-gray-100 to-gray-100 zigzag"></div>
-                <div className="w-16 h-1 bg-gray-300 rounded-full mx-auto mt-3 mb-2"></div>
-              </div>
-
-              <SheetHeader className="text-center pt-4 pb-2 border-b border-dashed border-gray-200 w-full px-6">
-                <SheetTitle className="text-2xl font-bold flex items-center justify-center gap-2">
-                  <div
-                    className="h-5 w-5 rounded-full"
-                    style={{ backgroundColor: categoryColor }}
-                  />
-                  {category.title}
-                </SheetTitle>
-                <p className="text-xl font-semibold text-gray-700 mt-1">
-                  {formatAmount(totalAmount, settings.displayCurrency?.code)}
-                </p>
-
-                {category.budget?.amount && category.budget?.amount > 0 && (
-                  <DetailedBudgetView
-                    totalAmount={totalAmount}
-                    budget={category.budget?.amount}
-                    formatAmount={formatAmount}
-                  />
-                )}
-              </SheetHeader>
+          <div className="receipt-container flex flex-col h-full overflow-hidden">
+            {/* Custom close button */}
+            <div className="absolute right-4 top-4 z-20">
+              <SheetClose asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 rounded-full bg-gray-100 hover:bg-gray-200"
+                >
+                  <X className="h-4 w-4" />
+                  <span className="sr-only">Close</span>
+                </Button>
+              </SheetClose>
             </div>
 
-            <div className="flex-1 overflow-y-auto">
-              <div className="receipt-body">
-                <div className="receipt-expenses pb-6">
-                  <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-3 px-2">
-                    Expense Details
-                  </h3>
-                  <ExpenseList categoryId={category.id} expenses={expenses} />
+            {/* Receipt Header */}
+            <SheetHeader className="border-b border-dashed border-gray-200 py-4 px-6 bg-gray-50 sticky top-0 z-10">
+              <div className="text-center">
+                <SheetTitle className="text-xl font-bold">
+                  {category.title || 'Uncategorized'}
+                </SheetTitle>
+                <SheetDescription className="text-sm mt-1">
+                  {format(new Date(), 'MMMM yyyy')} • {expenses.length} expense
+                  {expenses.length !== 1 ? 's' : ''}
+                </SheetDescription>
+              </div>
+            </SheetHeader>
+
+            {/* Receipt Body */}
+            <div className="flex-1 overflow-auto px-1 py-2">
+              {expenses.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  No expenses in this category
+                </div>
+              ) : (
+                <div className="space-y-0">
+                  {expenses.map((expense) => (
+                    <div
+                      key={expense.id}
+                      className={`border-b border-gray-100 transition-all ${
+                        editingExpenseId === expense.id
+                          ? 'bg-accent/10 p-4'
+                          : 'p-4 hover:bg-gray-50'
+                      }`}
+                    >
+                      {editingExpenseId === expense.id ? (
+                        // Editing mode
+                        <div className="space-y-3">
+                          <div className="flex flex-col space-y-2">
+                            <Label
+                              htmlFor="description"
+                              className="text-xs font-medium"
+                            >
+                              Description
+                            </Label>
+                            <Input
+                              id="description"
+                              name="description"
+                              value={editForm.description}
+                              onChange={handleInputChange}
+                              className="h-10 text-base"
+                              placeholder="What did you spend on?"
+                            />
+                          </div>
+
+                          <div className="flex flex-col space-y-2">
+                            <Label
+                              htmlFor="amount"
+                              className="text-xs font-medium"
+                            >
+                              Amount
+                            </Label>
+                            <Input
+                              id="amount"
+                              name="amount"
+                              type="number"
+                              value={editForm.amount}
+                              onChange={handleInputChange}
+                              className="h-10 text-base"
+                              step="0.01"
+                            />
+                          </div>
+
+                          <div className="flex flex-col space-y-2">
+                            <Label
+                              htmlFor="date"
+                              className="text-xs font-medium"
+                            >
+                              Date
+                            </Label>
+                            <Input
+                              id="date"
+                              name="date"
+                              type="date"
+                              value={editForm.date}
+                              onChange={handleInputChange}
+                              className="h-10 text-base"
+                            />
+                          </div>
+
+                          <div className="flex flex-col space-y-2">
+                            <Label
+                              htmlFor="location"
+                              className="text-xs font-medium"
+                            >
+                              Location (Optional)
+                            </Label>
+                            <Input
+                              id="location"
+                              name="location"
+                              value={editForm.location || ''}
+                              onChange={handleInputChange}
+                              className="h-10 text-base"
+                              placeholder="Where did you spend?"
+                            />
+                          </div>
+
+                          <div className="flex justify-end gap-2 pt-3">
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={handleCancelEdit}
+                              className="h-10 px-4"
+                            >
+                              Cancel
+                            </Button>
+                            <Button
+                              type="button"
+                              size="sm"
+                              onClick={handleUpdateExpense}
+                              className="h-10 px-4"
+                            >
+                              Update
+                            </Button>
+                          </div>
+                        </div>
+                      ) : (
+                        // View mode - Receipt item style
+                        <div className="receipt-item">
+                          <div className="flex justify-between items-start">
+                            <div className="flex-1 mr-2">
+                              <p className="text-base font-medium">
+                                {expense.description || 'Untitled Expense'}
+                              </p>
+                              {expense.location && (
+                                <p className="text-xs text-muted-foreground">
+                                  {expense.location}
+                                </p>
+                              )}
+                              <p className="text-xs text-muted-foreground mt-1">
+                                {format(new Date(expense.date), 'MMM dd, yyyy')}
+                              </p>
+                            </div>
+
+                            <div className="flex items-center">
+                              <div className="text-right mr-2 font-mono">
+                                <ExpenseAmount
+                                  amount={expense.amount}
+                                  currency={expense.currency}
+                                  converted={expense.converted}
+                                  className="font-medium"
+                                />
+                              </div>
+
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  handleEditClick(expense)
+                                }}
+                              >
+                                <Pencil className="h-4 w-4" />
+                                <span className="sr-only">Edit expense</span>
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Receipt Footer */}
+            <SheetFooter className="border-t border-dashed border-gray-200 py-4 px-6 sticky bottom-0 bg-white">
+              <div className="w-full">
+                <div className="flex justify-between items-center mb-1">
+                  <div className="text-sm font-medium">Total Items</div>
+                  <div className="font-medium">{expenses.length}</div>
+                </div>
+                <div className="flex justify-between items-center pt-1 border-t border-gray-200">
+                  <div className="text-base font-semibold">TOTAL</div>
+                  <div className="text-lg font-bold font-mono">
+                    {formatAmount(totalAmount, settings.displayCurrency?.code)}
+                  </div>
                 </div>
               </div>
-            </div>
-
-            <div className="flex-shrink-0">
-              <div className="receipt-footer mt-4 pt-4 border-t border-dashed border-gray-200 flex flex-col items-center">
-                <p className="text-sm text-gray-500 text-center mb-4">
-                  Thank you for tracking your expenses
-                </p>
-                <div className="w-24 h-1 bg-gray-200 rounded-full mb-4"></div>
-                <p className="text-xs text-gray-400 mb-2">Expenser App</p>
-              </div>
-            </div>
+            </SheetFooter>
           </div>
         </SheetContent>
       </Sheet>
