@@ -15,9 +15,10 @@ import { useState } from 'react'
 
 interface ExpenseCardProps {
   expense: Expense
+  children?: React.ReactNode
 }
 
-export function ExpenseCard({ expense }: ExpenseCardProps) {
+export function ExpenseCard({ expense, children }: ExpenseCardProps) {
   const [isOpen, setIsOpen] = useState(false)
   const categoryColor = expense.category?.color || '#64748b'
 
@@ -28,63 +29,67 @@ export function ExpenseCard({ expense }: ExpenseCardProps) {
 
   return (
     <>
-      <Card
-        key={expense.id}
-        className="w-full overflow-hidden border-0 shadow-md transition-all hover:shadow-lg"
-      >
-        <div className="flex">
-          <div className="w-1" style={{ backgroundColor: categoryColor }} />
-          <div
-            className="flex-1 p-4"
-            style={{ backgroundColor: `${categoryColor}10` }}
-          >
-            <div className="flex justify-between items-start">
-              <div>
-                <h3 className="text-lg font-semibold tracking-tight">
-                  {expense.description}
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  {expense.location}
-                </p>
+      {children ? (
+        <div onClick={handleOpenReceipt}>{children}</div>
+      ) : (
+        <Card
+          key={expense.id}
+          className="w-full overflow-hidden border-0 shadow-md transition-all hover:shadow-lg"
+        >
+          <div className="flex">
+            <div className="w-1" style={{ backgroundColor: categoryColor }} />
+            <div
+              className="flex-1 p-4"
+              style={{ backgroundColor: `${categoryColor}10` }}
+            >
+              <div className="flex justify-between items-start">
+                <div>
+                  <h3 className="text-lg font-semibold tracking-tight">
+                    {expense.description}
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    {expense.location}
+                  </p>
+                </div>
+
+                <div>
+                  <ExpenseAmount
+                    amount={expense.amount}
+                    currency={expense.currency}
+                    converted={expense.converted}
+                  />
+                </div>
               </div>
 
-              <div>
-                <ExpenseAmount
-                  amount={expense.amount}
-                  currency={expense.currency}
-                  converted={expense.converted}
-                />
-              </div>
-            </div>
-
-            <div className="flex justify-between items-center text-sm text-muted-foreground mt-2">
-              <span>{format(new Date(expense.date), 'MMM d, yyyy')}</span>
-              <button
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-primary/10 text-primary font-medium text-sm hover:bg-primary/20 transition-colors"
-                onClick={handleOpenReceipt}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
+              <div className="flex justify-between items-center text-sm text-muted-foreground mt-2">
+                <span>{format(new Date(expense.date), 'MMM d, yyyy')}</span>
+                <button
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-primary/10 text-primary font-medium text-sm hover:bg-primary/20 transition-colors"
+                  onClick={handleOpenReceipt}
                 >
-                  <path d="M21 8v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"></path>
-                  <line x1="16" x2="16" y1="4" y2="6"></line>
-                  <line x1="8" x2="8" y1="4" y2="6"></line>
-                  <line x1="3" x2="21" y1="11" y2="11"></line>
-                </svg>
-                View
-              </button>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M21 8v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"></path>
+                    <line x1="16" x2="16" y1="4" y2="6"></line>
+                    <line x1="8" x2="8" y1="4" y2="6"></line>
+                    <line x1="3" x2="21" y1="11" y2="11"></line>
+                  </svg>
+                  View
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      </Card>
+        </Card>
+      )}
 
       {/* Receipt Drawer */}
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -169,7 +174,7 @@ export function ExpenseCard({ expense }: ExpenseCardProps) {
                     <span>Notes</span>
                   </div>
                   <p className="text-sm bg-gray-50 p-3 rounded-lg italic">
-                    "{expense.notes}"
+                    &ldquo;{expense.notes}&rdquo;
                   </p>
                 </div>
               )}

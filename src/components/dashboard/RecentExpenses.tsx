@@ -1,6 +1,7 @@
 'use client'
 
-import { ExpenseReceiptDialog } from '@/components/expenses/ExpenseReceiptDialog'
+import { ExpenseCard } from '@/components/expenses/ExpenseCard'
+import { Button } from '@/components/ui/button'
 import {
   Table,
   TableBody,
@@ -30,18 +31,22 @@ export function RecentExpenses({ expenses }: RecentExpensesProps) {
       </TableHeader>
       <TableBody>
         {expenses.map((expense) => (
-          <ExpenseReceiptDialog key={expense.id} expense={expense}>
-            <TableRow className="cursor-pointer hover:bg-muted/50">
-              <TableCell>
-                {format(new Date(expense.date), 'MMM d, yyyy')}
-              </TableCell>
-              <TableCell>{expense.description}</TableCell>
-              <TableCell>
-                <div className="flex items-center gap-2">
-                  {expense.category?.title || 'Uncategorized'}
-                </div>
-              </TableCell>
-              <TableCell>
+          <TableRow
+            key={expense.id}
+            className="cursor-pointer hover:bg-muted/50"
+            onClick={() => {}} // Empty handler to maintain pointer cursor
+          >
+            <TableCell>
+              {format(new Date(expense.date), 'MMM d, yyyy')}
+            </TableCell>
+            <TableCell>{expense.description}</TableCell>
+            <TableCell>
+              <div className="flex items-center gap-2">
+                {expense.category?.title || 'Uncategorized'}
+              </div>
+            </TableCell>
+            <TableCell>
+              <div className="flex items-center justify-between">
                 <div className="flex flex-col">
                   <span>
                     {getCurrencyByCode(expense.currency)?.symbol}{' '}
@@ -54,9 +59,14 @@ export function RecentExpenses({ expenses }: RecentExpensesProps) {
                     </span>
                   )}
                 </div>
-              </TableCell>
-            </TableRow>
-          </ExpenseReceiptDialog>
+                <ExpenseCard expense={expense}>
+                  <Button variant="ghost" size="sm">
+                    View
+                  </Button>
+                </ExpenseCard>
+              </div>
+            </TableCell>
+          </TableRow>
         ))}
       </TableBody>
     </Table>

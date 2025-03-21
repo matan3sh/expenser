@@ -1,8 +1,8 @@
 'use client'
 
 import { ExpenseAmount } from '@/components/expenses/ExpenseAmount'
+import { ExpenseCard } from '@/components/expenses/ExpenseCard'
 import { ExpenseEditDialog } from '@/components/expenses/ExpenseEditDialog'
-import { ExpenseReceiptDialog } from '@/components/expenses/ExpenseReceiptDialog'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import { Card } from '@/components/ui/card'
@@ -34,20 +34,7 @@ import { Calendar as CalendarIcon } from 'lucide-react'
 import { useState } from 'react'
 
 interface TableRow {
-  original: {
-    id: string
-    date: string
-    description: string
-    amount: number
-    currency: string
-    categoryId: string
-    location: string
-    converted?: {
-      amount: number
-      currency: string
-      symbol: string
-    }
-  }
+  original: Expense
 }
 
 export function ExpensesDataTable({ expenses }: { expenses: Expense[] }) {
@@ -128,14 +115,19 @@ export function ExpensesDataTable({ expenses }: { expenses: Expense[] }) {
       header: 'Actions',
       cell: ({ row }: { row: TableRow }) => {
         const expense = row.original
+        const fullExpense: Expense = {
+          ...expense,
+          createdAt: expense.createdAt || new Date().toISOString(),
+          updatedAt: expense.updatedAt || new Date().toISOString(),
+        }
         return (
           <div className="flex items-center gap-2">
-            <ExpenseReceiptDialog expense={expense}>
+            <ExpenseCard expense={fullExpense}>
               <Button variant="ghost" size="sm">
                 View
               </Button>
-            </ExpenseReceiptDialog>
-            <ExpenseEditDialog expense={expense}>
+            </ExpenseCard>
+            <ExpenseEditDialog expense={fullExpense}>
               <Button variant="ghost" size="sm">
                 Edit
               </Button>
