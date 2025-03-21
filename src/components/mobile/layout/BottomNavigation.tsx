@@ -1,6 +1,7 @@
 'use client'
 
 import { ExpenseForm } from '@/components/expenses/ExpenseForm'
+import { Button } from '@/components/ui/button'
 import {
   Sheet,
   SheetContent,
@@ -289,6 +290,8 @@ export const BottomNavigation = () => {
       setIsProcessing(true)
       setUploadError(null)
 
+      console.log('Processing file:', file.name, file.type)
+
       const params = await (settings?.useGeminiAI
         ? processWithGeminiAI(file)
         : processWithTesseract(file))
@@ -297,16 +300,29 @@ export const BottomNavigation = () => {
       setUploadInitialData(params)
       setIsUploadSheetOpen(true)
     } catch (error) {
-      setUploadError(
+      console.error('Receipt processing failed:', error)
+      const errorMessage =
         error instanceof Error ? error.message : 'Failed to process receipt'
-      )
+      setUploadError(errorMessage)
+      // Still open the sheet to show the error
+      setIsUploadSheetOpen(true)
     } finally {
       setIsProcessing(false)
+      // Reset the file input to allow selecting the same file again
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ''
+      }
     }
   }
 
   // Handler for upload button click
   const handleUploadButtonClick = () => {
+    // Reset potential previous errors
+    setUploadError(null)
+    // Reset file input value to ensure the change event is triggered even if selecting the same file
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
     fileInputRef.current?.click()
     handleClose()
   }
@@ -407,7 +423,10 @@ export const BottomNavigation = () => {
         open={isUploadSheetOpen}
         onOpenChange={(open) => {
           setIsUploadSheetOpen(open)
-          if (!open) setUploadInitialData(undefined)
+          if (!open) {
+            setUploadInitialData(undefined)
+            setUploadError(null)
+          }
         }}
       >
         <SheetContent
@@ -415,12 +434,45 @@ export const BottomNavigation = () => {
           side="right"
         >
           <SheetHeader className="p-6 pb-2">
-            <SheetTitle className="text-2xl font-bold">Receipt Data</SheetTitle>
+            <SheetTitle className="text-2xl font-bold">
+              {uploadError ? 'Processing Error' : 'Receipt Data'}
+            </SheetTitle>
           </SheetHeader>
           <div className="p-6 pt-2">
             {uploadError ? (
-              <div className="bg-destructive/10 text-destructive rounded-lg p-4 mb-4">
-                {uploadError}
+              <div className="space-y-4">
+                <div className="bg-destructive/10 text-destructive rounded-lg p-4">
+                  {uploadError}
+                </div>
+                <p className="text-muted-foreground">
+                  Please try again with a clearer image or enter your expense
+                  details manually.
+                </p>
+                <div className="flex gap-4">
+                  <Button
+                    variant="outline"
+                    className="flex-1"
+                    onClick={() => {
+                      setIsUploadSheetOpen(false)
+                      // Small delay to ensure sheet is closed before opening again
+                      setTimeout(() => {
+                        handleUploadButtonClick()
+                      }, 300)
+                    }}
+                  >
+                    Try Again
+                  </Button>
+                  <Button
+                    variant="default"
+                    className="flex-1"
+                    onClick={() => {
+                      setIsUploadSheetOpen(false)
+                      setIsExpenseSheetOpen(true)
+                    }}
+                  >
+                    Add Manually
+                  </Button>
+                </div>
               </div>
             ) : (
               <ExpenseForm
