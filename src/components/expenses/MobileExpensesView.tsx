@@ -1,5 +1,6 @@
 'use client'
 
+import { ExpenseCard } from '@/components/expenses/ExpenseCard'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import { Card } from '@/components/ui/card'
@@ -21,7 +22,6 @@ import { Expense } from '@/types/expense.types'
 import { format } from 'date-fns'
 import { Calendar as CalendarIcon, Filter } from 'lucide-react'
 import { useState } from 'react'
-import { ExpenseAmount } from './ExpenseAmount'
 
 interface MobileExpensesViewProps {
   expenses: Expense[]
@@ -124,50 +124,9 @@ export function MobileExpensesView({ expenses }: MobileExpensesViewProps) {
         {/* Scrollable Expenses List */}
         <div className="flex-1 overflow-y-auto px-4 py-2">
           <div className="space-y-2">
-            {paginatedExpenses.map((expense) => {
-              const categoryColor = expense.category?.color || '#64748b'
-
-              return (
-                <Card
-                  key={expense.id}
-                  className="w-full overflow-hidden border-0 shadow-md transition-all hover:shadow-lg"
-                >
-                  <div className="flex">
-                    <div
-                      className="w-1"
-                      style={{ backgroundColor: categoryColor }}
-                    />
-                    <div
-                      className="flex-1 p-4"
-                      style={{ backgroundColor: `${categoryColor}10` }}
-                    >
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <h3 className="text-lg font-semibold tracking-tight">
-                            {expense.description}
-                          </h3>
-                          <p className="text-sm text-muted-foreground">
-                            {expense.location}
-                          </p>
-                        </div>
-
-                        <div>
-                          <ExpenseAmount
-                            amount={expense.amount}
-                            currency={expense.currency}
-                            converted={expense.converted}
-                          />
-                        </div>
-                      </div>
-
-                      <div className="mt-2 text-sm text-muted-foreground">
-                        {format(new Date(expense.date), 'MMM d, yyyy')}
-                      </div>
-                    </div>
-                  </div>
-                </Card>
-              )
-            })}
+            {paginatedExpenses.map((expense) => (
+              <ExpenseCard key={expense.id} expense={expense} />
+            ))}
           </div>
         </div>
 
