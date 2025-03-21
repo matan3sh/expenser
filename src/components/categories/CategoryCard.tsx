@@ -147,10 +147,10 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
 
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
         <SheetContent
-          className="h-[66vh] max-h-screen p-0 bg-white"
+          className="h-[85vh] max-h-screen p-0 bg-gray-50"
           side="bottom"
         >
-          <div className="receipt-container flex flex-col h-full overflow-hidden">
+          <div className="receipt-container flex flex-col h-full overflow-hidden bg-white rounded-t-xl shadow-top">
             {/* Custom close button */}
             <div className="absolute right-4 top-4 z-20">
               <SheetClose asChild>
@@ -165,9 +165,23 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
               </SheetClose>
             </div>
 
+            {/* Pull indicator - mobile app style */}
+            <div className="w-full flex justify-center pt-2 pb-1">
+              <div className="w-10 h-1 bg-gray-300 rounded-full" />
+            </div>
+
             {/* Receipt Header */}
-            <SheetHeader className="border-b border-dashed border-gray-200 py-4 px-6 bg-gray-50 sticky top-0 z-10">
+            <SheetHeader className="border-b border-dashed border-gray-200 py-4 px-6 bg-white sticky top-0 z-10">
               <div className="text-center">
+                <div
+                  className="w-10 h-10 rounded-full mx-auto mb-2 flex items-center justify-center"
+                  style={{ backgroundColor: `${categoryColor}30` }}
+                >
+                  <div
+                    className="w-6 h-6 rounded-full"
+                    style={{ backgroundColor: categoryColor }}
+                  />
+                </div>
                 <SheetTitle className="text-xl font-bold">
                   {category.title || 'Uncategorized'}
                 </SheetTitle>
@@ -178,21 +192,100 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
               </div>
             </SheetHeader>
 
+            {/* Budget Overview Section */}
+            {category.budget?.amount && category.budget?.amount > 0 && (
+              <div className="budget-section p-4 pb-5 border-b border-dashed border-gray-200 bg-white">
+                <div className="mb-2">
+                  <div className="flex justify-between items-center mb-1">
+                    <h3 className="font-medium text-gray-700">
+                      Monthly Budget
+                    </h3>
+                    <span className="text-sm font-medium">
+                      {formatAmount(
+                        category.budget.amount,
+                        settings.displayCurrency?.code
+                      )}
+                    </span>
+                  </div>
+
+                  {/* Progress Bar */}
+                  <div className="mt-4 mb-2">
+                    <div className="relative h-5 bg-gray-100 rounded-full overflow-hidden">
+                      <div
+                        className={`absolute inset-y-0 left-0 rounded-full ${
+                          totalAmount / category.budget.amount > 0.9
+                            ? 'bg-red-500'
+                            : totalAmount / category.budget.amount > 0.7
+                            ? 'bg-amber-500'
+                            : 'bg-emerald-500'
+                        }`}
+                        style={{
+                          width: `${Math.min(
+                            100,
+                            (totalAmount / category.budget.amount) * 100
+                          )}%`,
+                          transition: 'width 0.5s ease-out',
+                          boxShadow: '0 1px 3px rgba(0,0,0,0.1) inset',
+                        }}
+                      />
+                      {/* Percentage Label */}
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <span className="text-xs font-semibold text-gray-700">
+                          {Math.round(
+                            (totalAmount / category.budget.amount) * 100
+                          )}
+                          %
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Amounts Info */}
+                  <div className="flex justify-between mt-3 text-sm">
+                    <div className="flex flex-col items-start">
+                      <span className="text-gray-500 text-xs">Spent</span>
+                      <span className="font-semibold text-gray-900">
+                        {formatAmount(
+                          totalAmount,
+                          settings.displayCurrency?.code
+                        )}
+                      </span>
+                    </div>
+                    <div className="flex flex-col items-end">
+                      <span className="text-gray-500 text-xs">Remaining</span>
+                      <span
+                        className={`font-semibold ${
+                          category.budget.amount - totalAmount < 0
+                            ? 'text-red-600'
+                            : 'text-emerald-600'
+                        }`}
+                      >
+                        {formatAmount(
+                          Math.max(0, category.budget.amount - totalAmount),
+                          settings.displayCurrency?.code
+                        )}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Receipt Body */}
-            <div className="flex-1 overflow-auto px-1 py-2">
+            <div className="flex-1 overflow-auto bg-gray-50">
               {expenses.length === 0 ? (
                 <div className="text-center py-8 text-muted-foreground">
                   No expenses in this category
                 </div>
               ) : (
-                <div className="space-y-0">
+                <div className="space-y-2 p-3">
                   {expenses.map((expense) => (
                     <div
                       key={expense.id}
-                      className={`border-b border-gray-100 transition-all ${
+                      className={`rounded-lg border border-gray-100 transition-all ${
                         editingExpenseId === expense.id
                           ? 'bg-accent/10 p-4'
-                          : 'p-4 hover:bg-gray-50'
+                          : 'p-4 bg-white shadow-sm hover:shadow'
                       }`}
                     >
                       {editingExpenseId === expense.id ? (
@@ -338,15 +431,17 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
             </div>
 
             {/* Receipt Footer */}
-            <SheetFooter className="border-t border-dashed border-gray-200 py-4 px-6 sticky bottom-0 bg-white">
+            <SheetFooter className="border-t border-dashed border-gray-200 py-4 px-6 sticky bottom-0 bg-white shadow-lg">
               <div className="w-full">
                 <div className="flex justify-between items-center mb-1">
-                  <div className="text-sm font-medium">Total Items</div>
+                  <div className="text-sm text-gray-500">Total Items</div>
                   <div className="font-medium">{expenses.length}</div>
                 </div>
-                <div className="flex justify-between items-center pt-1 border-t border-gray-200">
-                  <div className="text-base font-semibold">TOTAL</div>
-                  <div className="text-lg font-bold font-mono">
+                <div className="flex justify-between items-center pt-2 border-t border-gray-200">
+                  <div className="text-base font-semibold text-gray-700">
+                    TOTAL
+                  </div>
+                  <div className="text-xl font-bold font-mono text-gray-900">
                     {formatAmount(totalAmount, settings.displayCurrency?.code)}
                   </div>
                 </div>
