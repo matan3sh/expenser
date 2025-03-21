@@ -40,13 +40,13 @@ const navigationItems = [
 
 const floatingActions = [
   {
-    name: 'Add Expense',
+    name: 'Add',
     href: '/add-expense',
     Icon: BanknotesIcon,
     color: 'bg-primary',
   },
   {
-    name: 'Upload Receipt',
+    name: 'Upload',
     href: '/upload-receipt',
     Icon: ArrowUpTrayIcon,
     color: 'bg-primary',
@@ -154,7 +154,7 @@ const FloatingActionButton = memo(
       >
         <motion.span
           variants={labelVariants}
-          className="bg-white/90 text-sm font-medium px-4 py-2 rounded-full shadow-lg
+          className="hidden bg-white/90 text-sm font-medium px-4 py-2 rounded-full shadow-lg
                  backdrop-blur-sm border border-white/10"
         >
           {action.name}
@@ -248,7 +248,7 @@ export const BottomNavigation = () => {
 
       <AnimatePresence mode="sync">
         {isOpen && (
-          <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-50 flex flex-col-reverse gap-3 items-center">
+          <div className="fixed bottom-[104px] left-1/2 -translate-x-1/2 z-50 flex flex-col-reverse gap-3 items-center">
             {floatingActions.map((action, index) => (
               <FloatingActionButton
                 key={action.name}
