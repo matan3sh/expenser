@@ -57,20 +57,9 @@ export function SettingsProvider({
   const hasServerSettingsRef = useRef(!!initialSettings)
 
   // Initialize settings from server, localStorage, or defaults
-  const [settings, setSettings] = useState<Settings>(() => {
-    if (initialSettings) return initialSettings
-
-    if (typeof window !== 'undefined') {
-      try {
-        const savedSettings = localStorage.getItem('settings')
-        if (savedSettings) return JSON.parse(savedSettings)
-      } catch (e) {
-        console.error('Failed to parse settings from localStorage', e)
-      }
-    }
-
-    return defaultSettings
-  })
+  const [settings, setSettings] = useState<Settings>(
+    initialSettings || defaultSettings
+  )
 
   // Create a properly typed save function
   const saveSettings = useRef<(settingsToSave: Settings) => Promise<void>>(
@@ -117,13 +106,6 @@ export function SettingsProvider({
 
     // No cleanup needed as this runs only once
   }, [])
-
-  // Sync with localStorage
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('settings', JSON.stringify(settings))
-    }
-  }, [settings])
 
   // Save to database when settings change
   useEffect(() => {
