@@ -240,7 +240,7 @@ export const BottomNavigation = () => {
             initial="hidden"
             animate="visible"
             exit="hidden"
-            className="fixed inset-0 bg-black/80 backdrop-blur-[2px]"
+            className="absolute inset-0 bg-black/80 backdrop-blur-[2px]"
             onClick={handleClose}
           />
         )}
@@ -248,7 +248,7 @@ export const BottomNavigation = () => {
 
       <AnimatePresence mode="sync">
         {isOpen && (
-          <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 flex flex-col-reverse gap-3 items-center">
+          <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-50 flex flex-col-reverse gap-3 items-center">
             {floatingActions.map((action, index) => (
               <FloatingActionButton
                 key={action.name}
@@ -261,7 +261,7 @@ export const BottomNavigation = () => {
         )}
       </AnimatePresence>
 
-      <nav className="fixed bottom-0 w-full bg-background/80 backdrop-blur-md border-t border-border z-40 transform-gpu">
+      <nav className="fixed bottom-0 left-0 right-0 w-full bg-background/80 backdrop-blur-md border-t border-border z-40 transform-gpu pb-safe">
         <div className="flex justify-around items-center h-16 relative">
           {navigationItems.map((item) => {
             if (item === null) {

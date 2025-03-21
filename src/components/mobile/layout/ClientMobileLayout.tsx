@@ -10,9 +10,9 @@ interface ClientMobileLayoutProps {
 
 export const ClientMobileLayout = ({ children }: ClientMobileLayoutProps) => {
   return (
-    <div className="fixed inset-0 flex flex-col">
+    <div className="flex flex-col h-full">
       <MobileHeader />
-      <main className="flex-1 overflow-hidden">{children}</main>
+      <main className="flex-1 overflow-auto pb-16">{children}</main>
       <BottomNavigation />
     </div>
   )
