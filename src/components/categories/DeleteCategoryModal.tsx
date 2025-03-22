@@ -54,7 +54,7 @@ export const DeleteCategoryModal: React.FC<DeleteCategoryModalProps> = ({
             <DialogTitle className="text-2xl">Delete Category</DialogTitle>
             <DialogDescription className="text-base mt-2">
               Please select a category to move existing expenses before deleting{' '}
-              <span className="font-medium">{category.title}</span>.
+              <span className="font-medium">{category.name}</span>.
             </DialogDescription>
           </DialogHeader>
         </div>
@@ -79,7 +79,7 @@ export const DeleteCategoryModal: React.FC<DeleteCategoryModalProps> = ({
                       className="w-3 h-3 rounded-full"
                       style={{ backgroundColor: cat.color }}
                     />
-                    {cat.title}
+                    {cat.name}
                   </SelectItem>
                 ))}
               </SelectContent>

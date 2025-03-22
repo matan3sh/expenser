@@ -1,6 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { ColorPicker } from '@/components/ui/color-picker'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
@@ -31,6 +32,7 @@ const categorySchema = z.object({
     .number()
     .min(0, 'Budget must be positive')
     .max(1000000, 'Budget too high'),
+  color: z.string().regex(/^#[0-9A-Fa-f]{6}$/, 'Invalid color format'),
 })
 
 type CategoryFormData = z.infer<typeof categorySchema>
@@ -43,16 +45,33 @@ interface CategorySheetProps {
   onSubmit: (data: CategoryFormData) => Promise<void>
 }
 
-export const CategorySheet: React.FC<CategorySheetProps> = ({
-  mode,
+const defaultValues = {
+  title: '',
+  budget: 0,
+  color: '#64748b', // Add default color
+}
+
+export function CategorySheet({
+  mode = 'create',
   category,
   open,
   onOpenChange,
   onSubmit,
-}) => {
+}: CategorySheetProps) {
   const { settings } = useSettings()
   const { formatAmount } = useCurrencyFormat()
   const maxBudget = 50000 // Maximum budget value
+
+  const form = useForm<CategoryFormData>({
+    resolver: zodResolver(categorySchema),
+    defaultValues: category
+      ? {
+          title: category.name,
+          budget: category.budget?.amount || 0,
+          color: category.color || '#64748b',
+        }
+      : defaultValues,
+  })
 
   const {
     register,
@@ -61,20 +80,14 @@ export const CategorySheet: React.FC<CategorySheetProps> = ({
     watch,
     reset,
     formState: { errors },
-  } = useForm<CategoryFormData>({
-    resolver: zodResolver(categorySchema),
-    defaultValues: {
-      title: category?.title || '',
-      budget: category?.budget?.amount || 1000,
-    },
-  })
+  } = form
 
   const currentBudget = watch('budget')
 
   useEffect(() => {
     if (category) {
       reset({
-        title: category.title,
+        title: category.name,
         budget: category.budget?.amount || 1000,
       })
     } else {
@@ -112,6 +125,17 @@ export const CategorySheet: React.FC<CategorySheetProps> = ({
           />
           {errors.title && (
             <p className="text-sm text-destructive">{errors.title.message}</p>
+          )}
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="color">Color</Label>
+          <ColorPicker
+            value={watch('color')}
+            onChange={(color) => setValue('color', color)}
+          />
+          {errors.color && (
+            <p className="text-sm text-destructive">{errors.color.message}</p>
           )}
         </div>
 

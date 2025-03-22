@@ -40,7 +40,8 @@ model UserBudget {
 model Category {
   id        String          @id @default(uuid())
   title     String
-  budget    CategoryBudget? // Changed to reference the CategoryBudget model
+  color     String // New field with no default (handled in migration)
+  budget    CategoryBudget?
   user      User            @relation(fields: [userId], references: [userId], onDelete: Cascade)
   userId    String
   expenses  Expense[]

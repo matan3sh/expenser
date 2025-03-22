@@ -51,6 +51,8 @@ export const MoveExpensesDialog: React.FC<MoveExpensesDialogProps> = ({
   }
 
   const handleSelectAll = () => {
+    if (!expenses) return
+
     if (selectedExpenses.length === expenses.length) {
       setSelectedExpenses([])
     } else {
@@ -99,7 +101,7 @@ export const MoveExpensesDialog: React.FC<MoveExpensesDialogProps> = ({
                       className="w-3 h-3 rounded-full"
                       style={{ backgroundColor: cat.color }}
                     />
-                    {cat.title}
+                    {cat.name}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -110,12 +112,11 @@ export const MoveExpensesDialog: React.FC<MoveExpensesDialogProps> = ({
             <div className="p-6 space-y-4">
               <div className="flex items-center justify-between">
                 <Button
-                  type="button"
                   variant="outline"
-                  size="sm"
+                  className="w-full"
                   onClick={handleSelectAll}
                 >
-                  {selectedExpenses.length === expenses.length
+                  {selectedExpenses.length === (expenses?.length || 0)
                     ? 'Deselect All'
                     : 'Select All'}
                 </Button>
@@ -125,7 +126,7 @@ export const MoveExpensesDialog: React.FC<MoveExpensesDialogProps> = ({
               </div>
 
               <div className="space-y-2">
-                {expenses.map((expense) => (
+                {expenses?.map((expense) => (
                   <div
                     key={expense.id}
                     className="flex items-center space-x-4 p-4 rounded-lg border hover:bg-accent hover:text-accent-foreground transition-colors"

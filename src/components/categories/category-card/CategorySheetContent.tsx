@@ -123,7 +123,7 @@ const CategorySheetContent = ({
               />
             </div>
             <SheetTitle className="text-xl font-bold">
-              {category.title || 'Uncategorized'}
+              {category.name || 'Uncategorized'}
             </SheetTitle>
             <SheetDescription className="text-sm mt-1">
               {format(new Date(), 'MMMM yyyy')} • {expenses.length} expense

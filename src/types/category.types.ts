@@ -1,4 +1,4 @@
-import { Convertible } from '@/types/expense.types'
+import { Expense } from '@/types/expense.types'
 
 export interface Category {
   id: string
@@ -6,38 +6,13 @@ export interface Category {
   description: string
   color: string
   icon: string
-  budget?: number
+  budget?: {
+    amount: number
+    currency: string
+  }
   totalExpenses?: number
 }
 
-export type CategoryWithBudget = {
-  id: string
-  title: string
-  createdAt: string
-  color: string
-  budget: {
-    id: string
-    amount: number
-    currency: string
-    createdAt: string
-    converted?: Convertible
-  } | null
-  expenses: {
-    id: string
-    date: string
-    description: string
-    amount: number
-    currency: string
-    location: string
-    notes: string | null
-    receipt: string | null
-    category: {
-      id: string
-      title: string
-      color: string
-    }
-    createdAt: string
-    updatedAt: string
-    converted?: Convertible
-  }[]
+export interface CategoryWithBudget extends Category {
+  expenses?: Expense[]
 }

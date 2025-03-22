@@ -9,9 +9,9 @@ export const calculateBudgetStats = (categories: CategoryWithBudget[]) => {
   const totalSpent = categories.reduce((sum, category) => {
     return (
       sum +
-      category.expenses.reduce((expSum: number, expense: Expense) => {
+      (category.expenses?.reduce((expSum: number, expense: Expense) => {
         return expSum + expense.amount
-      }, 0)
+      }, 0) || 0)
     )
   }, 0)
 

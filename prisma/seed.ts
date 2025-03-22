@@ -1,8 +1,41 @@
 import { PrismaClient } from '@prisma/client'
-import { categories } from '../src/data/categories'
 import { currencies } from '../src/data/currencies'
 
 const prisma = new PrismaClient()
+
+// First, define the proper types
+interface SeedCategory {
+  id: string
+  name: string
+  color: string
+  budget: {
+    amount: number
+    currency: string
+  }
+}
+
+// Then define your seed data with the correct structure
+const categories: SeedCategory[] = [
+  {
+    id: 'uuid-1',
+    name: 'Groceries',
+    color: '#22c55e',
+    budget: {
+      amount: 500,
+      currency: 'USD',
+    },
+  },
+  {
+    id: 'uuid-2',
+    name: 'Utilities',
+    color: '#3b82f6',
+    budget: {
+      amount: 300,
+      currency: 'USD',
+    },
+  },
+  // ... other categories
+]
 
 async function main() {
   // Sample user for testing (you can modify this)
@@ -33,10 +66,11 @@ async function main() {
       create: {
         id: category.id,
         title: category.name,
+        color: category.color,
         budget: {
           create: {
-            amount: category.budget,
-            currency: 'USD',
+            amount: category.budget.amount,
+            currency: category.budget.currency,
           },
         },
         userId: testUser.userId,

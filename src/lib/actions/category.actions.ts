@@ -1,7 +1,6 @@
-import { getCurrencyByCode } from '@/data/currencies'
 import { prisma } from '@/db/prisma'
 import { getExchangeRates } from '@/lib/actions/settings.actions'
-import { convertAmount, convertExpense } from '@/lib/utils/expense.utils'
+import { convertExpense } from '@/lib/utils/expense.utils'
 import { CategoryWithBudget } from '@/types/category.types'
 import type { Expense } from '@/types/expense.types'
 import { DBSettings } from '@/types/settings.types'
@@ -66,26 +65,17 @@ export async function getCategories(): Promise<CategoryWithBudget[]> {
   })
 
   return categories.map((category, index) => ({
-    id: category.id,
-    title: category.title,
-    color: `var(--chart-${(index % 5) + 1})`,
-    createdAt: category.createdAt.toISOString(),
+    ...category,
+    name: category.title,
+    description: '',
+    icon: '',
+    color: category.color || `var(--chart-${(index % 5) + 1})`,
     budget: category.budget
       ? {
-          id: category.budget.id,
-          ...convertAmount(
-            {
-              amount: Number(category.budget.amount),
-              currency: category.budget.currency,
-              symbol:
-                getCurrencyByCode(category.budget.currency)?.symbol || '$',
-            },
-            settings,
-            exchangeRates
-          ),
-          createdAt: category.budget.createdAt.toISOString(),
+          amount: Number(category.budget.amount),
+          currency: category.budget.currency,
         }
-      : null,
+      : undefined,
     expenses: category.expenses.map((expense) => {
       const convertedExpense = convertExpense(
         expense as unknown as Expense,
@@ -113,4 +103,36 @@ export async function getCategories(): Promise<CategoryWithBudget[]> {
       }
     }),
   }))
+}
+
+export async function createCategory(data: {
+  title: string
+  budget?: number
+  color: string
+}) {
+  const { userId } = await auth()
+
+  if (!userId) {
+    throw new Error('Unauthorized')
+  }
+
+  return prisma.category.create({
+    data: {
+      title: data.title,
+      color: data.color,
+      user: {
+        connect: {
+          userId,
+        },
+      },
+      ...(data.budget && {
+        budget: {
+          create: {
+            amount: data.budget,
+            currency: 'USD',
+          },
+        },
+      }),
+    },
+  })
 }

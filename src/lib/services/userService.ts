@@ -1,4 +1,3 @@
-import { categories } from '@/data/categories'
 import { currencies } from '@/data/currencies'
 import { serverError, serverLog } from '@/lib/logging'
 import { prisma } from '@/lib/prisma'
@@ -15,6 +14,59 @@ const defaultUserSettings = {
   },
   useGeminiAI: true,
 }
+
+const DEFAULT_CATEGORIES = [
+  {
+    title: 'Groceries',
+    color: '#22c55e', // Green
+    budget: {
+      create: {
+        amount: 500,
+        currency: 'USD',
+      },
+    },
+  },
+  {
+    title: 'Utilities',
+    color: '#3b82f6', // Blue
+    budget: {
+      create: {
+        amount: 300,
+        currency: 'USD',
+      },
+    },
+  },
+  {
+    title: 'Entertainment',
+    color: '#f59e0b', // Yellow
+    budget: {
+      create: {
+        amount: 200,
+        currency: 'USD',
+      },
+    },
+  },
+  {
+    title: 'Transport',
+    color: '#ef4444', // Red
+    budget: {
+      create: {
+        amount: 400,
+        currency: 'USD',
+      },
+    },
+  },
+  {
+    title: 'Other',
+    color: '#64748b', // Slate
+    budget: {
+      create: {
+        amount: 100,
+        currency: 'USD',
+      },
+    },
+  },
+]
 
 export class UserService {
   static async initializeUser(userId: string) {
@@ -74,15 +126,7 @@ export class UserService {
             },
             // Create categories in the same transaction
             categories: {
-              create: categories.map((category) => ({
-                title: category.name,
-                budget: {
-                  create: {
-                    amount: category.budget,
-                    currency: 'USD',
-                  },
-                },
-              })),
+              create: DEFAULT_CATEGORIES,
             },
             currencies: {
               createMany: {

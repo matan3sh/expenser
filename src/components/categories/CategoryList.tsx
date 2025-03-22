@@ -1,6 +1,7 @@
 'use client'
 
 import { CategoryCard } from '@/components/categories/category-card/CategoryCard'
+import { useSettings } from '@/contexts/SettingsContext'
 import { CategoryWithBudget } from '@/types/category.types'
 
 interface CategoryListProps {
@@ -8,6 +9,8 @@ interface CategoryListProps {
 }
 
 export function CategoryList({ categories }: CategoryListProps) {
+  const { settings } = useSettings()
+
   if (categories.length === 0) {
     return (
       <div className="text-center py-8">
@@ -23,7 +26,8 @@ export function CategoryList({ categories }: CategoryListProps) {
           key={category.id}
           category={category}
           categories={categories}
-          expenses={category.expenses}
+          expenses={category.expenses || []}
+          settings={settings}
         />
       ))}
     </div>

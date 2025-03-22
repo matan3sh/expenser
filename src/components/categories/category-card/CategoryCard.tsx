@@ -2,41 +2,64 @@
 
 import { Card, CardHeader } from '@/components/ui/card'
 import { Sheet } from '@/components/ui/sheet'
-import { useSettings } from '@/contexts/SettingsContext'
 import { useCurrencyFormat } from '@/hooks/useCurrencyFormat'
-import { isSameCurrency } from '@/lib/utils/expense.utils'
+import { convertAmount, isSameCurrency } from '@/lib/utils/expense.utils'
 import { CategoryWithBudget } from '@/types/category.types'
+import { Expense } from '@/types/expense.types'
+import { Settings } from '@/types/settings.types'
 import React, { useMemo, useState } from 'react'
 import { BudgetProgress } from '../BudgetProgress'
 import { CategoryMenu } from '../CategoryMenu'
 import CategorySheetContent from './CategorySheetContent'
 
 interface CategoryCardProps {
-  category: CategoryWithBudget
-  expenses: CategoryWithBudget['expenses']
+  category: {
+    id: string
+    name: string
+    description: string
+    color: string
+    icon: string
+    budget?: {
+      amount: number
+      currency: string
+    }
+    expenses?: Expense[]
+  }
+  expenses: Expense[]
   categories: CategoryWithBudget[]
+  settings: Settings
 }
 
 export const CategoryCard: React.FC<CategoryCardProps> = ({
   category,
   expenses,
   categories,
+  settings,
 }) => {
   const [isOpen, setIsOpen] = useState(false)
   const { formatAmount } = useCurrencyFormat()
-  const { settings } = useSettings()
-  const categoryColor = category.color || '#64748b'
 
   // Calculate total amount for the selected month with proper currency conversion
   const totalAmount = useMemo(() => {
+    if (!expenses || expenses.length === 0) {
+      return 0
+    }
+
     return expenses.reduce((sum, expense) => {
       if (isSameCurrency(expense.currency, settings)) {
         return sum + expense.amount
       } else {
-        return sum + (expense.converted?.amount || 0)
+        const converted = convertAmount(
+          { amount: expense.amount, currency: expense.currency },
+          settings,
+          settings.exchangeRates || {}
+        )
+        return sum + converted.amount
       }
     }, 0)
   }, [expenses, settings])
+
+  const categoryColor = category.color || '#64748b'
 
   return (
     <>
@@ -53,7 +76,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <div className="space-y-1">
                 <h3 className="text-xl font-semibold tracking-tight">
-                  {category.title}
+                  {category.name}
                 </h3>
                 <p className="text-sm text-muted-foreground">
                   Total:{' '}

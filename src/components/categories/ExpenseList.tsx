@@ -3,6 +3,7 @@
 import { useSettings } from '@/contexts/SettingsContext'
 import { getCurrencyByCode } from '@/data/currencies'
 import { CategoryWithBudget } from '@/types/category.types'
+import { Expense } from '@/types/expense.types'
 import { format } from 'date-fns'
 
 // Types
@@ -12,7 +13,7 @@ interface ExpenseListProps {
 }
 
 interface ExpenseItemProps {
-  expense: CategoryWithBudget['expenses'][number]
+  expense: Expense
   displayCurrency: string | undefined
 }
 
