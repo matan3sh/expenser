@@ -22,19 +22,19 @@ export function ExpenseReceipt({
     <>
       {/* Receipt top edge with perforation */}
       <div className="flex items-center justify-center w-full h-6 relative">
-        <div className="absolute top-2 left-0 right-0 border-b border-dashed border-gray-200"></div>
-        <div className="w-12 h-4 bg-white rounded-b-lg relative z-10 drop-shadow-sm"></div>
+        <div className="absolute top-2 left-0 right-0 border-b border-dashed border-border"></div>
+        <div className="w-12 h-4 bg-background rounded-b-lg relative z-10 drop-shadow-sm"></div>
       </div>
 
       {/* Receipt Logo/Header */}
-      <div className="px-6 pt-3 pb-4 flex flex-col items-center border-b border-dashed border-gray-200 relative">
+      <div className="px-6 pt-3 pb-4 flex flex-col items-center border-b border-dashed border-border relative">
         <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-3">
           <Receipt className="w-6 h-6 text-primary" />
         </div>
         <h2 className="text-xl font-bold mb-1 text-center">
           {expense.description}
         </h2>
-        <p className="text-sm text-gray-500 flex items-center gap-1">
+        <p className="text-sm text-muted-foreground flex items-center gap-1">
           <MapPin className="w-3 h-3" />
           {expense.location}
         </p>
@@ -63,11 +63,13 @@ export function ExpenseReceipt({
       </div>
 
       {/* Receipt Body */}
-      <div className="flex-1 overflow-y-auto px-6 py-4 bg-white">
+      <div className="flex-1 overflow-y-auto px-6 py-4 bg-background">
         <div className="space-y-6">
           {/* Amount Section */}
-          <div className="flex flex-col items-center py-4 border-b border-dashed border-gray-200">
-            <p className="text-sm uppercase text-gray-500 mb-1">Total Amount</p>
+          <div className="flex flex-col items-center py-4 border-b border-dashed border-border">
+            <p className="text-sm uppercase text-muted-foreground mb-1">
+              Total Amount
+            </p>
             <div className="scale-125 mb-1">
               <ExpenseAmount
                 amount={expense.amount}
@@ -76,15 +78,15 @@ export function ExpenseReceipt({
                 className="font-bold"
               />
             </div>
-            <div className="flex items-center mt-1 text-xs text-gray-500">
+            <div className="flex items-center mt-1 text-xs text-muted-foreground">
               <Clock className="w-3 h-3 mr-1" />
               {format(new Date(expense.date), 'EEEE, MMMM d, yyyy • h:mm a')}
             </div>
           </div>
 
           {/* Category Section */}
-          <div className="flex items-center justify-between pb-3 border-b border-dashed border-gray-200">
-            <div className="text-sm text-gray-500">Category</div>
+          <div className="flex items-center justify-between pb-3 border-b border-dashed border-border">
+            <div className="text-sm text-muted-foreground">Category</div>
             <div className="flex items-center gap-2">
               <div
                 className="w-3 h-3 rounded-full"
@@ -98,12 +100,12 @@ export function ExpenseReceipt({
 
           {/* Notes Section (if present) */}
           {expense.notes && (
-            <div className="pb-3 border-b border-dashed border-gray-200">
-              <div className="flex items-center gap-1.5 text-sm text-gray-500 mb-2">
+            <div className="pb-3 border-b border-dashed border-border">
+              <div className="flex items-center gap-1.5 text-sm text-muted-foreground mb-2">
                 <FileText className="w-4 h-4" />
                 <span>Notes</span>
               </div>
-              <p className="text-sm bg-gray-50 p-3 rounded-lg italic">
+              <p className="text-sm bg-muted p-3 rounded-lg italic">
                 &ldquo;{expense.notes}&rdquo;
               </p>
             </div>
@@ -111,14 +113,14 @@ export function ExpenseReceipt({
 
           {/* Receipt Image (if present) */}
           {expense.receipt && (
-            <div className="pb-3 border-b border-dashed border-gray-200">
+            <div className="pb-3 border-b border-dashed border-border">
               <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-1.5 text-sm text-gray-500">
+                <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
                   <Receipt className="w-4 h-4" />
                   <span>Receipt Image</span>
                 </div>
               </div>
-              <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+              <div className="border border-border rounded-lg overflow-hidden shadow-sm">
                 <Image
                   src={expense.receipt}
                   alt="Receipt"
@@ -131,15 +133,15 @@ export function ExpenseReceipt({
           )}
 
           {/* Payment Method (placeholder - if you have this data) */}
-          <div className="flex items-center justify-between pb-3 border-b border-dashed border-gray-200">
-            <div className="text-sm text-gray-500">Payment Method</div>
+          <div className="flex items-center justify-between pb-3 border-b border-dashed border-border">
+            <div className="text-sm text-muted-foreground">Payment Method</div>
             <p className="font-medium">Credit Card</p>
           </div>
 
           {/* Transaction ID (placeholder - if you have this data) */}
           <div className="flex items-center justify-between">
-            <div className="text-sm text-gray-500">Transaction ID</div>
-            <p className="font-mono text-xs text-gray-600">
+            <div className="text-sm text-muted-foreground">Transaction ID</div>
+            <p className="font-mono text-xs text-muted-foreground">
               {expense.id.substring(0, 12).toUpperCase()}
             </p>
           </div>
@@ -147,18 +149,18 @@ export function ExpenseReceipt({
       </div>
 
       {/* Receipt Footer */}
-      <div className="flex-shrink-0 bg-white">
-        <div className="pt-2 pb-6 border-t border-dashed border-gray-200 flex flex-col items-center">
+      <div className="flex-shrink-0 bg-background">
+        <div className="pt-2 pb-6 border-t border-dashed border-border flex flex-col items-center">
           <div className="flex flex-col items-center mt-3">
             <div className="flex gap-1 mb-2">
               {[0, 1, 2, 3].map((i) => (
                 <div
                   key={i}
-                  className="w-8 h-1 bg-gray-300 rounded-full opacity-70"
+                  className="w-8 h-1 bg-muted rounded-full opacity-70"
                 ></div>
               ))}
             </div>
-            <p className="text-xs text-gray-400">
+            <p className="text-xs text-muted-foreground">
               Expenser • {format(new Date(), 'yyyy')}
             </p>
           </div>

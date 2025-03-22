@@ -17,7 +17,7 @@ export function ExpenseDeleteConfirmation({
   return (
     <div className="h-full flex flex-col">
       {/* Delete Confirmation Header */}
-      <div className="px-6 pt-6 pb-4 border-b border-gray-200">
+      <div className="px-6 pt-6 pb-4 border-b border-border">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold text-destructive">Delete Expense</h2>
         </div>
@@ -48,7 +48,7 @@ export function ExpenseDeleteConfirmation({
       </div>
 
       {/* Delete Confirmation Footer */}
-      <div className="border-t border-gray-200 p-6">
+      <div className="border-t border-border p-6">
         <div className="flex justify-end gap-3">
           <Button variant="outline" onClick={onCancel} className="flex-1 h-11">
             Cancel

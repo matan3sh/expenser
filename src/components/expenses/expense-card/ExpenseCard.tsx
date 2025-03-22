@@ -26,14 +26,16 @@ export function ExpenseCard({ expense, children }: ExpenseCardProps) {
       ) : (
         <Card
           key={expense.id}
-          className="w-full overflow-hidden border-0 shadow-md transition-all hover:shadow-lg cursor-pointer"
+          className="w-full overflow-hidden border-0 shadow-md transition-all hover:shadow-lg cursor-pointer bg-background"
           onClick={handlers.handleOpenReceipt}
         >
           <div className="flex">
             <div className="w-1" style={{ backgroundColor: categoryColor }} />
             <div
               className="flex-1 p-4"
-              style={{ backgroundColor: `${categoryColor}10` }}
+              style={{
+                backgroundColor: `color-mix(in srgb, ${categoryColor} 10%, var(--background))`,
+              }}
             >
               <div className="flex justify-between items-start">
                 <div>
@@ -65,7 +67,7 @@ export function ExpenseCard({ expense, children }: ExpenseCardProps) {
       {/* Receipt Drawer */}
       <Sheet open={state.isOpen} onOpenChange={handlers.setIsOpen}>
         <SheetContent
-          className="p-0 flex flex-col h-[75vh] bg-white"
+          className="p-0 flex flex-col h-[95vh] bg-background"
           side="bottom"
           style={{
             borderTopLeftRadius: '16px',
