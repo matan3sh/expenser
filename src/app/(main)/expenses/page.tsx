@@ -1,10 +1,16 @@
-'use client'
-
 import { MobileExpensesView } from '@/components/expenses/MobileExpensesView'
-import { useExpenses } from '@/hooks/useExpenses'
+import { getExpensesForSelectedMonth } from '@/lib/actions/expense.actions'
+import { auth } from '@clerk/nextjs/server'
 
-export default function ExpensesPage() {
-  const expenses = useExpenses()
+export default async function ExpensesPage() {
+  const { userId } = await auth()
+
+  if (!userId) {
+    return null
+  }
+
+  // Fetch expenses from the database using the server action
+  const { expenses } = await getExpensesForSelectedMonth({})
 
   return (
     <div className="flex flex-col h-full">
