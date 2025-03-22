@@ -21,6 +21,7 @@ export function MobileExpensesView({
 }: MobileExpensesViewProps) {
   const {
     filters,
+    searchInput,
     isFilterSheetOpen,
     page,
     expenses,
@@ -40,7 +41,7 @@ export function MobileExpensesView({
         <div className="mx-4 p-3 mb-3 flex gap-2">
           <Input
             placeholder="Search expenses..."
-            value={filters.query || ''}
+            value={searchInput}
             onChange={handleSearchChange}
             className="h-9"
           />

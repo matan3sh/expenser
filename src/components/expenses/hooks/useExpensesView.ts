@@ -1,5 +1,6 @@
 'use client'
 
+import { useDebounce } from '@/hooks/useDebounce'
 import { Expense } from '@/types/expense.types'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
@@ -26,6 +27,13 @@ export function useExpensesView(initialExpenses: {
   const [isFilterSheetOpen, setIsFilterSheetOpen] = useState(false)
   const [expenses, setExpenses] = useState(initialExpenses.expenses)
   const [totalPages, setTotalPages] = useState(initialExpenses.totalPages)
+
+  // Local state for immediate input value
+  const [searchInput, setSearchInput] = useState(
+    searchParams.get('query') || ''
+  )
+  // Debounced search value
+  const debouncedSearch = useDebounce(searchInput, 500)
 
   // Get current filters from URL
   const filters: Filters = {
@@ -65,12 +73,9 @@ export function useExpensesView(initialExpenses: {
 
   const handleSearchChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      updateUrl({
-        query: e.target.value,
-        page: '1', // Reset to first page on search
-      })
+      setSearchInput(e.target.value)
     },
-    [updateUrl]
+    []
   )
 
   const handleFilterClick = () => setIsFilterSheetOpen(true)
@@ -94,12 +99,20 @@ export function useExpensesView(initialExpenses: {
 
   const handleFilterReset = () => {
     router.push(window.location.pathname)
-    setIsFilterSheetOpen(false)
+    setIsFilterOpen(false)
   }
 
   const handlePageChange = (newPage: number) => {
     updateUrl({ page: String(newPage) })
   }
+
+  // Effect to update URL when debounced search value changes
+  useEffect(() => {
+    updateUrl({
+      query: debouncedSearch || undefined,
+      page: '1', // Reset to first page on search
+    })
+  }, [debouncedSearch, updateUrl])
 
   // Update local state when URL params change
   useEffect(() => {
@@ -109,6 +122,7 @@ export function useExpensesView(initialExpenses: {
 
   return {
     filters,
+    searchInput,
     isFilterSheetOpen,
     page,
     expenses,
