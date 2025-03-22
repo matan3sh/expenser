@@ -36,14 +36,6 @@ export default function RootLayout({
             <ThemeProvider>
               {/* Mobile container with device frame on desktop, native on mobile */}
               <div className="relative w-full h-full max-w-[500px] bg-background overflow-hidden md:shadow-2xl">
-                {/* Desktop-only device frame */}
-                <div className="hidden md:block absolute inset-0 rounded-[32px] border-[12px] border-gray-900 pointer-events-none z-10">
-                  {/* Device notch - desktop only */}
-                  <div className="absolute top-0 left-0 right-0 h-6 bg-gray-900 flex justify-center items-center">
-                    <div className="w-36 h-4 bg-gray-900 rounded-b-xl"></div>
-                  </div>
-                </div>
-
                 {/* App content - add padding only on desktop */}
                 <div className="h-screen w-full md:pt-6">
                   <ClientMobileLayout>{children}</ClientMobileLayout>
