@@ -17,15 +17,23 @@ import { Area, AreaChart, ResponsiveContainer, Tooltip } from 'recharts'
 
 interface MonthlyVolumeChartProps {
   expenses: Expense[]
+  selectedMonth: { month: number; year: number } | null
 }
 
-export function WeeklyVolumeChart({ expenses }: MonthlyVolumeChartProps) {
+export function WeeklyVolumeChart({
+  expenses,
+  selectedMonth,
+}: MonthlyVolumeChartProps) {
   const { settings, convertAmount } = useSettings()
   const displayCurrency = settings?.displayCurrency?.code || 'USD'
 
   const monthInterval = {
-    start: startOfMonth(new Date()),
-    end: endOfMonth(new Date()),
+    start: selectedMonth
+      ? startOfMonth(new Date(selectedMonth.year, selectedMonth.month))
+      : startOfMonth(new Date()),
+    end: selectedMonth
+      ? endOfMonth(new Date(selectedMonth.year, selectedMonth.month))
+      : endOfMonth(new Date()),
   }
 
   const extendedInterval = {
@@ -83,12 +91,12 @@ export function WeeklyVolumeChart({ expenses }: MonthlyVolumeChartProps) {
                   <stop
                     offset="5%"
                     stopColor="oklch(0.55 0.2 250)"
-                    stopOpacity={0.3}
+                    stopOpacity={0.85}
                   />
                   <stop
                     offset="95%"
                     stopColor="oklch(0.55 0.2 250)"
-                    stopOpacity={0.02}
+                    stopOpacity={0.05}
                   />
                 </linearGradient>
               </defs>

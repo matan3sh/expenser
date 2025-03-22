@@ -140,3 +140,20 @@ export async function getUserSettings() {
     }
   }
 }
+
+export async function getUserSelectedMonth() {
+  const { userId } = await auth()
+
+  if (!userId) {
+    throw new Error('Unauthorized')
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { userId },
+    select: {
+      settings: true,
+    },
+  })
+
+  return (user?.settings as Settings)?.selectedMonth ?? null
+}
