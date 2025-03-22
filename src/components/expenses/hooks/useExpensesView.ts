@@ -99,7 +99,7 @@ export function useExpensesView(initialExpenses: {
 
   const handleFilterReset = () => {
     router.push(window.location.pathname)
-    setIsFilterOpen(false)
+    setIsFilterSheetOpen(false)
   }
 
   const handlePageChange = (newPage: number) => {

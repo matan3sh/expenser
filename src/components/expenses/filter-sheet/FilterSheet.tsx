@@ -45,13 +45,18 @@ export function FilterSheet({
 
   return (
     <Sheet open={open} onOpenChange={onClose}>
-      <SheetContent className="w-full sm:max-w-md">
-        <SheetHeader>
-          <SheetTitle>Filter Expenses</SheetTitle>
+      <SheetContent
+        className="w-full sm:w-[540px] overflow-y-auto p-0"
+        side="right"
+      >
+        <SheetHeader className="p-6 pb-2">
+          <SheetTitle className="text-2xl font-bold">
+            Filter Expenses
+          </SheetTitle>
         </SheetHeader>
 
-        <div className="space-y-4 py-4">
-          <div className="space-y-2">
+        <div className="p-6 pt-2 space-y-6">
+          <div className="space-y-3">
             <label className="text-sm font-medium">Category</label>
             <Select
               value={filters.category}
@@ -72,9 +77,9 @@ export function FilterSheet({
             </Select>
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-3">
             <label className="text-sm font-medium">Date Range</label>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-3">
               <Input
                 type="date"
                 value={filters.startDate}
@@ -92,9 +97,9 @@ export function FilterSheet({
             </div>
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-3">
             <label className="text-sm font-medium">Amount Range</label>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-3">
               <Input
                 type="number"
                 placeholder="Min"
@@ -124,7 +129,7 @@ export function FilterSheet({
             </div>
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-3">
             <label className="text-sm font-medium">Sort By</label>
             <Select
               value={filters.sort}
@@ -143,17 +148,19 @@ export function FilterSheet({
           </div>
         </div>
 
-        <div className="flex gap-2 mt-6">
-          <Button
-            variant="outline"
-            className="flex-1"
-            onClick={hasActiveFilters ? onReset : onClose}
-          >
-            {hasActiveFilters ? 'Reset' : 'Cancel'}
-          </Button>
-          <Button className="flex-1" onClick={() => onApply(filters)}>
-            Apply Filters
-          </Button>
+        <div className="p-6 pt-2">
+          <div className="flex gap-3">
+            <Button
+              variant="outline"
+              className="flex-1"
+              onClick={hasActiveFilters ? onReset : onClose}
+            >
+              {hasActiveFilters ? 'Reset' : 'Cancel'}
+            </Button>
+            <Button className="flex-1" onClick={() => onApply(filters)}>
+              Apply Filters
+            </Button>
+          </div>
         </div>
       </SheetContent>
     </Sheet>

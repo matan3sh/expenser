@@ -13,32 +13,30 @@ interface SearchParams {
   page?: string
 }
 
-export default async function ExpensesPage({
-  searchParams,
-}: {
-  searchParams: SearchParams
-}) {
+interface PageProps {
+  searchParams: Promise<SearchParams>
+}
+
+export default async function ExpensesPage({ searchParams }: PageProps) {
   const { userId } = await auth()
+  // Await the searchParams
+  const params = await searchParams
 
   if (!userId) {
     return null
   }
 
-  const page = searchParams.page ? parseInt(searchParams.page) : 1
+  const page = params.page ? parseInt(params.page) : 1
   const expensesData = await getAllExpenses(
     {
       userId,
-      query: searchParams.query,
-      category: searchParams.category,
-      startDate: searchParams.startDate,
-      endDate: searchParams.endDate,
-      minAmount: searchParams.minAmount
-        ? Number(searchParams.minAmount)
-        : undefined,
-      maxAmount: searchParams.maxAmount
-        ? Number(searchParams.maxAmount)
-        : undefined,
-      sort: searchParams.sort,
+      query: params.query,
+      category: params.category,
+      startDate: params.startDate,
+      endDate: params.endDate,
+      minAmount: params.minAmount ? Number(params.minAmount) : undefined,
+      maxAmount: params.maxAmount ? Number(params.maxAmount) : undefined,
+      sort: params.sort,
       page,
     },
     {} // You'll need to pass the exchange rates here
