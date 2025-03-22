@@ -2,7 +2,6 @@
 
 import { ExpenseCard } from '@/components/expenses/expense-card/ExpenseCard'
 import { Button } from '@/components/ui/button'
-import { Calendar } from '@/components/ui/calendar'
 import { Card } from '@/components/ui/card'
 import {
   DropdownMenu,
@@ -11,16 +10,12 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
+import { NativeCalendar } from '@/components/ui/native-calendar'
 import { categories, getCategoryById } from '@/data/categories'
 import { cn } from '@/lib/utils'
 import { Expense } from '@/types/expense.types'
 import { format } from 'date-fns'
-import { Calendar as CalendarIcon, Filter } from 'lucide-react'
+import { Filter } from 'lucide-react'
 import { useState } from 'react'
 
 interface MobileExpensesViewProps {
@@ -88,32 +83,21 @@ export function MobileExpensesView({ expenses }: MobileExpensesViewProps) {
                 </DropdownMenuContent>
               </DropdownMenu>
 
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className={cn(
-                      'justify-start text-left font-normal flex-1 h-9',
-                      !filters.dateFrom && 'text-muted-foreground'
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {filters.dateFrom
-                      ? format(filters.dateFrom, 'PPP')
-                      : 'Date'}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
-                  <Calendar
-                    mode="single"
-                    selected={filters.dateFrom}
-                    onSelect={(date) =>
-                      setFilters({ ...filters, dateFrom: date })
-                    }
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
+              <NativeCalendar
+                value={
+                  filters.dateFrom ? format(filters.dateFrom, 'yyyy-MM-dd') : ''
+                }
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  const date = e.target.value
+                    ? new Date(e.target.value)
+                    : undefined
+                  setFilters({ ...filters, dateFrom: date })
+                }}
+                className={cn(
+                  'flex-1 h-9',
+                  !filters.dateFrom && 'text-muted-foreground'
+                )}
+              />
             </div>
           </div>
         </Card>
