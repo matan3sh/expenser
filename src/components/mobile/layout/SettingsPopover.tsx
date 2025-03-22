@@ -17,6 +17,7 @@ import {
 import { Switch } from '@/components/ui/switch'
 import { useSettings } from '@/contexts/SettingsContext'
 import { currencies } from '@/data/currencies'
+import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
 
 interface SettingsPopoverProps {
@@ -26,6 +27,7 @@ interface SettingsPopoverProps {
 export const SettingsPopover: React.FC<SettingsPopoverProps> = ({
   children,
 }) => {
+  const { setTheme } = useTheme()
   const { settings, updateDisplayCurrency, updateTheme, updateUseGeminiAI } =
     useSettings()
 
@@ -76,6 +78,7 @@ export const SettingsPopover: React.FC<SettingsPopoverProps> = ({
 
     if (localSettings.theme !== settings.theme) {
       updateTheme(localSettings.theme)
+      setTheme(localSettings.theme)
     }
 
     if (localSettings.useGeminiAI !== settings.useGeminiAI) {

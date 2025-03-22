@@ -2,6 +2,7 @@
 
 import { updateUserSettings } from '@/lib/actions/settings.actions'
 import { deepEqual } from '@/lib/utils'
+import { useTheme } from 'next-themes'
 import {
   createContext,
   useCallback,
@@ -50,6 +51,8 @@ export function SettingsProvider({
   children,
   initialSettings,
 }: SettingsProviderProps) {
+  const { setTheme } = useTheme()
+
   // State and refs setup
   const initialLoadRef = useRef(true)
   const isSavingRef = useRef(false)
@@ -162,6 +165,7 @@ export function SettingsProvider({
       },
       updateTheme: (theme) => {
         setSettings((prev) => ({ ...prev, theme }))
+        setTheme(theme)
       },
       updateSelectedMonth: (month, year) => {
         setSettings((prev) => ({ ...prev, selectedMonth: { month, year } }))
@@ -172,8 +176,15 @@ export function SettingsProvider({
       isCurrentMonth,
       convertAmount,
     }),
-    [settings, isCurrentMonth, convertAmount]
+    [settings, isCurrentMonth, convertAmount, setTheme]
   )
+
+  // Sync initial theme
+  useEffect(() => {
+    if (settings.theme) {
+      setTheme(settings.theme)
+    }
+  }, [settings.theme, setTheme])
 
   return (
     <SettingsContext.Provider value={contextValue}>
