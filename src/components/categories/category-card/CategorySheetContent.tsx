@@ -86,18 +86,15 @@ const CategorySheetContent = ({
   }
 
   return (
-    <SheetContent
-      className="h-[75vh] max-h-screen p-0 bg-gray-50"
-      side="bottom"
-    >
-      <div className="receipt-container flex flex-col h-full overflow-hidden bg-white rounded-t-xl shadow-top">
+    <SheetContent className="h-[75vh] max-h-screen p-0" side="bottom">
+      <div className="receipt-container flex flex-col h-full overflow-hidden bg-card rounded-t-xl shadow-top">
         {/* Custom close button */}
         <div className="absolute right-4 top-4 z-20">
           <SheetClose asChild>
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8 rounded-full bg-gray-100 hover:bg-gray-200"
+              className="h-8 w-8 rounded-full bg-muted hover:bg-muted/80"
             >
               <X className="h-4 w-4" />
               <span className="sr-only">Close</span>
@@ -107,11 +104,11 @@ const CategorySheetContent = ({
 
         {/* Pull indicator - mobile app style */}
         <div className="w-full flex justify-center pt-2 pb-1">
-          <div className="w-10 h-1 bg-gray-300 rounded-full" />
+          <div className="w-10 h-1 bg-muted rounded-full" />
         </div>
 
         {/* Receipt Header */}
-        <SheetHeader className="border-b border-dashed border-gray-200 py-4 px-6 bg-white sticky top-0 z-10">
+        <SheetHeader className="border-b border-dashed border-border py-4 px-6 bg-card sticky top-0 z-10">
           <div className="text-center">
             <div
               className="w-10 h-10 rounded-full mx-auto mb-2 flex items-center justify-center"
@@ -143,7 +140,7 @@ const CategorySheetContent = ({
         )}
 
         {/* Receipt Body */}
-        <div className="flex-1 overflow-auto bg-gray-50">
+        <div className="flex-1 overflow-auto bg-muted/50">
           {expenses.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
               No expenses in this category

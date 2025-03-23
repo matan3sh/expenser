@@ -37,8 +37,8 @@ const ExpenseItem = ({
 }: ExpenseItemProps) => {
   return (
     <div
-      className={`rounded-lg border border-gray-100 transition-all ${
-        isEditing ? 'bg-accent/10 p-4' : 'p-4 bg-white shadow-sm hover:shadow'
+      className={`rounded-lg border border-border transition-all ${
+        isEditing ? 'bg-accent/10 p-4' : 'p-4 bg-card shadow-sm hover:shadow'
       }`}
     >
       {isEditing ? (
