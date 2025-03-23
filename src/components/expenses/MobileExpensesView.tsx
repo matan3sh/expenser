@@ -35,16 +35,18 @@ export function MobileExpensesView({
   } = useExpensesView(initialExpenses)
 
   return (
-    <div className="flex flex-col h-[calc(100vh-12rem)]">
+    <div className="flex flex-col h-[calc(100vh-12rem)] w-full">
       {/* Fixed Header - Search and Filter */}
-      <div className="flex-none">
-        <div className="mx-4 p-3 mb-3 flex gap-2">
-          <Input
-            placeholder="Search expenses..."
-            value={searchInput}
-            onChange={handleSearchChange}
-            className="h-9"
-          />
+      <div className="flex-none w-full">
+        <div className="flex gap-2 w-full px-4 py-2">
+          <div className="flex-1">
+            <Input
+              placeholder="Search expenses..."
+              value={searchInput}
+              onChange={handleSearchChange}
+              className="h-9 w-full"
+            />
+          </div>
           <Button
             variant="outline"
             className="h-9 px-3"
