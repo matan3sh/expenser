@@ -1,3 +1,4 @@
+import { prisma } from '@/db/prisma'
 import { unstable_cache } from 'next/cache'
 
 // Cache user settings with a short TTL to ensure fresh data
