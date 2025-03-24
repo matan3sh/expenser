@@ -2,7 +2,7 @@
 
 import { prisma } from '@/db/prisma'
 import { auth } from '@clerk/nextjs/server'
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, revalidateTag } from 'next/cache'
 import { Settings } from '../../types/settings.types'
 import { serverError, serverLog } from '../logging'
 
@@ -47,6 +47,11 @@ export async function updateUserSettings(settings: Settings) {
     // Revalidate related paths to update UI
     revalidatePath('/dashboard')
     revalidatePath('/settings')
+    revalidateTag('user-settings')
+
+    if (settings.displayCurrency?.code) {
+      revalidateTag(`exchange-rates-${settings.displayCurrency.code}`)
+    }
 
     serverLog('Settings updated successfully')
 
@@ -75,7 +80,12 @@ export async function getExchangeRates(
     serverLog(`Fetching exchange rates for ${baseCurrency}`)
     const response = await fetch(
       `https://api.exchangerate-api.com/v4/latest/${baseCurrency}`,
-      { next: { revalidate: 86400 } } // Cache for 24 hours
+      {
+        next: {
+          revalidate: 86400, // 24 hours
+          tags: [`exchange-rates-${baseCurrency}`], // Add cache tag
+        },
+      }
     )
 
     if (!response.ok) {

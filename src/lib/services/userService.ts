@@ -1,4 +1,8 @@
 import { currencies } from '@/data/currencies'
+import {
+  getCachedInitializationState,
+  getCachedUserSettings,
+} from '@/lib/cache/cache-utils'
 import { serverError, serverLog } from '@/lib/logging'
 import { prisma } from '@/lib/prisma'
 import { clerkClient } from '@clerk/nextjs/server'
@@ -71,6 +75,19 @@ const DEFAULT_CATEGORIES = [
 export class UserService {
   static async initializeUser(userId: string) {
     try {
+      // Check cached initialization state first
+      const isInitialized = await getCachedInitializationState(userId)
+
+      if (isInitialized) {
+        serverLog('User already initialized (cached):', userId)
+        const cachedSettings = await getCachedUserSettings(userId)
+        return {
+          userId,
+          isExistingUser: true,
+          settings: cachedSettings,
+        }
+      }
+
       serverLog('Checking if user exists in database:', userId)
       const dbUser = await prisma.user.findUnique({
         where: { userId },
@@ -233,8 +250,8 @@ export class UserService {
 
       return user
     } catch (error) {
-      serverError('User initialization failed:', error)
-      throw error // Re-throw to let the caller handle it
+      serverError('Error in user initialization:', error)
+      throw error
     }
   }
 }
