@@ -138,3 +138,102 @@ export async function createCategory(data: {
     },
   })
 }
+
+export async function updateCategory(data: {
+  id: string
+  title: string
+  budget?: number
+  color: string
+  currency?: string
+}): Promise<CategoryWithBudget> {
+  const { userId } = await auth()
+
+  if (!userId) {
+    throw new Error('Unauthorized')
+  }
+
+  const category = await prisma.category.findUnique({
+    where: {
+      id: data.id,
+      userId,
+    },
+    include: {
+      budget: true,
+    },
+  })
+
+  if (!category) {
+    throw new Error('Category not found')
+  }
+
+  const updatedCategory = await prisma.category.update({
+    where: {
+      id: data.id,
+      userId,
+    },
+    data: {
+      title: data.title,
+      color: data.color,
+      ...(data.budget === undefined
+        ? {
+            budget: {
+              delete: true,
+            },
+          }
+        : {
+            budget: {
+              upsert: {
+                create: {
+                  amount: data.budget,
+                  currency: data.currency || 'USD',
+                },
+                update: {
+                  amount: data.budget,
+                },
+              },
+            },
+          }),
+    },
+    include: {
+      budget: true,
+      expenses: true,
+    },
+  })
+
+  return {
+    ...updatedCategory,
+    name: updatedCategory.title,
+    description: '',
+    icon: '',
+    color: updatedCategory.color || `var(--chart-1)`,
+    budget: updatedCategory.budget
+      ? {
+          amount: Number(updatedCategory.budget.amount),
+          currency: updatedCategory.budget.currency,
+        }
+      : undefined,
+    expenses: updatedCategory.expenses.map((expense) => ({
+      id: expense.id,
+      date: expense.date.toISOString(),
+      description: expense.description,
+      amount: Number(expense.amount),
+      currency: expense.currency,
+      location: expense.location || '',
+      notes: expense.notes,
+      receipt: expense.receipt,
+      categoryId: expense.categoryId || updatedCategory.id,
+      category: {
+        id: updatedCategory.id,
+        title: updatedCategory.title,
+        color: updatedCategory.color || `var(--chart-1)`,
+      },
+      createdAt: expense.createdAt.toISOString(),
+      updatedAt: expense.updatedAt.toISOString(),
+      converted: {
+        amount: Number(expense.amount),
+        currency: expense.currency,
+        symbol: '$',
+      },
+    })),
+  }
+}
