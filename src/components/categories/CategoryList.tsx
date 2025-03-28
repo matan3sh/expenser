@@ -20,7 +20,7 @@ export function CategoryList({ categories }: CategoryListProps) {
   }
 
   return (
-    <div className="grid gap-6 sm:grid-cols-2">
+    <div className="grid gap-6">
       {categories.map((category) => (
         <CategoryCard
           key={category.id}
