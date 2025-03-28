@@ -12,6 +12,7 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 import { Slider } from '@/components/ui/slider'
+import Spinner from '@/components/ui/spinner'
 import { useSettings } from '@/contexts/SettingsContext'
 import { useCurrencyFormat } from '@/hooks/useCurrencyFormat'
 import { cn } from '@/lib/utils'
@@ -43,6 +44,7 @@ interface CategorySheetProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   onSubmit: (data: CategoryFormData) => Promise<void>
+  isPending?: boolean
 }
 
 const defaultValues = {
@@ -57,6 +59,7 @@ export function CategorySheet({
   open,
   onOpenChange,
   onSubmit,
+  isPending,
 }: CategorySheetProps) {
   const { settings } = useSettings()
   const { formatAmount } = useCurrencyFormat()
@@ -168,11 +171,21 @@ export function CategorySheet({
             variant="outline"
             onClick={() => onOpenChange(false)}
             className="flex-1 h-12"
+            disabled={isPending}
           >
             Cancel
           </Button>
-          <Button type="submit" className="flex-1 h-12">
-            {mode === 'create' ? 'Create' : 'Save Changes'}
+          <Button type="submit" className="flex-1 h-12" disabled={isPending}>
+            {isPending ? (
+              <>
+                <Spinner className="mr-2" />
+                {mode === 'create' ? 'Creating...' : 'Saving...'}
+              </>
+            ) : mode === 'create' ? (
+              'Create'
+            ) : (
+              'Save Changes'
+            )}
           </Button>
         </div>
       </form>

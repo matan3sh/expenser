@@ -14,7 +14,7 @@ interface CategoryFormData {
 export const CreateCategoryButton: React.FC = () => {
   const [open, setOpen] = useState(false)
   const router = useRouter()
-  const [, startTransition] = useTransition()
+  const [isPending, startTransition] = useTransition()
 
   const handleSubmit = async (data: CategoryFormData) => {
     try {
@@ -38,6 +38,7 @@ export const CreateCategoryButton: React.FC = () => {
       open={open}
       onOpenChange={setOpen}
       onSubmit={handleSubmit}
+      isPending={isPending}
     />
   )
 }
