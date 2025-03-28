@@ -1,3 +1,5 @@
+'use server'
+
 import { prisma } from '@/db/prisma'
 import { getExchangeRates } from '@/lib/actions/settings.actions'
 import { convertExpense } from '@/lib/utils/expense.utils'

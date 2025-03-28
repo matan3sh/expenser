@@ -1,7 +1,9 @@
 'use client'
 
 import { CategorySheet } from '@/components/categories/CategorySheet'
-import { useState } from 'react'
+import { createCategory } from '@/lib/actions/category.actions'
+import { useRouter } from 'next/navigation'
+import { useState, useTransition } from 'react'
 
 interface CategoryFormData {
   title: string
@@ -11,17 +13,20 @@ interface CategoryFormData {
 
 export const CreateCategoryButton: React.FC = () => {
   const [open, setOpen] = useState(false)
+  const router = useRouter()
+  const [, startTransition] = useTransition()
 
   const handleSubmit = async (data: CategoryFormData) => {
     try {
-      console.log(data)
-      // Update your create category logic to include color
-      // await createCategory({
-      //   name: data.title,
-      //   budget: data.budget,
-      //   color: data.color
-      // })
-      setOpen(false)
+      startTransition(async () => {
+        await createCategory({
+          title: data.title,
+          budget: data.budget,
+          color: data.color,
+        })
+        router.refresh() // Refresh the page to show the new category
+        setOpen(false)
+      })
     } catch (error) {
       console.error('Failed to create category:', error)
     }

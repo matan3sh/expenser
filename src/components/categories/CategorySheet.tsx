@@ -89,11 +89,13 @@ export function CategorySheet({
       reset({
         title: category.name,
         budget: category.budget?.amount || 1000,
+        color: category.color || '#64748b',
       })
     } else {
       reset({
         title: '',
         budget: 1000,
+        color: '#64748b',
       })
     }
   }, [category, reset, open])
